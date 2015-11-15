@@ -1,5 +1,3 @@
-// a ver
-
 #include "MyApp.h"
 
 int main()
