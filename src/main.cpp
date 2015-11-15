@@ -15,8 +15,7 @@
  *
  * BORRAR comentarios
  *********************************************************************/
-=======
->>>>>>> refs/remotes/origin/alberto
+
 #include "MyApp.h"
 
 int main()
