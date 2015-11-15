@@ -1,5 +1,4 @@
-
-// Buena version y ahora mas
+// a ver
 
 #include "MyApp.h"
 
