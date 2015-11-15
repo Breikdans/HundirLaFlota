@@ -3,7 +3,9 @@
 
 int main() {
   MyApp app;
-  app.start();
+//  app.start();
+
+  cout << "Corcholis";
 
   return 0;
 }
