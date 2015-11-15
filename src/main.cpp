@@ -1,5 +1,3 @@
-
-
 #include "MyApp.h"
 
 int main()
@@ -9,5 +7,3 @@ int main()
 
 	return 0;
 }
-
-// CORCHOLIS
