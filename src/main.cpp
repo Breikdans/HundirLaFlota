@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*********************************************************************
  * Módulo 2. Curso de Experto en Desarrollo de Videojuegos
  * Autor: Carlos González Morcillo     Carlos.Gonzalez@uclm.es
@@ -14,11 +15,14 @@
  *
  * BORRAR comentarios
  *********************************************************************/
+=======
+>>>>>>> refs/remotes/origin/alberto
 #include "MyApp.h"
 
-int main() {
-  MyApp app;
-  app.start();
+int main()
+{
+	MyApp app;
+	app.start();
 
-  return 0;
+	return 0;
 }
