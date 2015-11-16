@@ -1,5 +1,4 @@
 #include "MyApp.h"
-#include <CEGUI.h>
 
 MyApp::MyApp() {
   _sceneManager = NULL;
@@ -13,7 +12,6 @@ MyApp::~MyApp() {
 
 int MyApp::start() {
   _root = new Ogre::Root();
-
   if(!_root->restoreConfig()) {
     _root->showConfigDialog();
     _root->saveConfig();
@@ -93,8 +91,3 @@ void MyApp::createScene() {
   _sceneManager->getRootSceneNode()->addChild(node2);
 }
 
-void MyApp::createOverlay() {
-  _overlayManager = Ogre::OverlayManager::getSingletonPtr();
-  Ogre::Overlay *overlay = _overlayManager->getByName("Info");
-  overlay->show();
-}

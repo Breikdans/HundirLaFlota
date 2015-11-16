@@ -15,5 +15,5 @@ public:
   int start();
   void loadResources();
   void createScene();
-  void createOverlay();
+
 };
