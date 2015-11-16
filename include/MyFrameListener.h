@@ -15,7 +15,7 @@ private:
 
 public:
   MyFrameListener(Ogre::RenderWindow* win, Ogre::Camera* cam, 
-		  Ogre::SceneNode* node, Ogre::OverlayManager* om);
+		  Ogre::SceneNode* node);
   ~MyFrameListener();
   bool frameStarted(const Ogre::FrameEvent& evt);  
 };
