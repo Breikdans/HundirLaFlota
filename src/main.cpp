@@ -8,9 +8,5 @@ int main()
 	return 0;
 }
 
-// e que pasa
 
-
-
-
-
+// que pasa con la guasa

@@ -21,6 +21,7 @@ int MyApp::start()
 		_root->showConfigDialog();	// mostramos dialogo de configuracion
 		_root->saveConfig();		// Guardamos
 	}
+
 	// Creamos nuestra ventana. true = creacion automatica de la ventana.
 	Ogre::RenderWindow* window = _root->initialise(true,"Hundir la Flota!");
 	// Creamos Gestor de Escena, en modo ST_GENERIC (modo mínimo no optimizado)
