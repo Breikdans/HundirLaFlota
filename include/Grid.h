@@ -5,8 +5,8 @@
 #ifndef GRID_H_
 #define GRID_H_
 
-#define MAX_ROWS_GRID			10
-#define MAX_COLS_GRID			10
+const int MAX_ROWS_GRID	=		10;
+const int MAX_COLS_GRID	=		10;
 
 typedef unsigned short int usint16;
 
@@ -35,7 +35,7 @@ class Grid
 {
 	private:
 		usint16 _CasillasVivas;
-		usint16 _tbl_Grid[MAX_ROWS_GRID][MAX_COLS_GRID] = {};	// Asi se inicializa el array a 0 (AGUA)
+		usint16 _tbl_Grid[MAX_ROWS_GRID][MAX_COLS_GRID];			// Asi se inicializa el array a 0 (AGUA)
 	public:
 		Grid(usint16 C = 5+4+3+3+2);								// constructor
 		usint16& operator() (usint16 F, usint16 C);					// para escribir en posicion del grid

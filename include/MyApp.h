@@ -1,4 +1,5 @@
 #include <Ogre.h>
+#include "Grid.h"
 #include "MyFrameListener.h"
 
 class MyApp
