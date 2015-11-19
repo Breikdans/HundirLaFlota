@@ -131,6 +131,7 @@ void MyApp::createScene()
 			node_CPU[i][j] = _sceneManager->createSceneNode(s_node_cpu_aux.str());
 			node_CPU[i][j]->attachObject(ent_tablero_CPU[i][j]);
 			main_node_tablero_CPU->addChild(node_CPU[i][j]);
+			node_CPU[i][j]->translate(j+MAX_COLS_GRID+2,0,i);
 
 
 		}
