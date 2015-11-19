@@ -96,10 +96,31 @@ void MyApp::loadResources()
 
 void MyApp::createScene()
 {
-	Ogre::Entity* ent1 = _sceneManager->createEntity("Sinbad.mesh");
-	Ogre::SceneNode* node1 = _sceneManager->createSceneNode("SinbadNode");
-	node1->attachObject(ent1);
-	_sceneManager->getRootSceneNode()->addChild(node1);
+	// creacion de tablas de punteros a entidades para cargar los .mesh de las celdas
+	Ogre::Entity *tablero_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
+	Ogre::Entity *tablero_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
+
+	// creamos nodos de escena para tablero de CPU y tablero de Player
+	Ogre::SceneNode* nodeCPU = _sceneManager->createSceneNode("tablero_CPU");
+	Ogre::SceneNode* nodePlayer = _sceneManager->createSceneNode("tablero_Player");
+
+	// creamos las entidades y las cargamos en las tablas de punteros
+	// enlazamos a los nodos, los objetos de cada tipo
+	for (int i = 0; i < MAX_ROWS_GRID ; i++ )
+	{
+		for (int j = 0; j < MAX_COLS_GRID ; j++ )
+		{
+			tablero_CPU[i][j] = _sceneManager->createEntity("celda.mesh");
+			tablero_Player[i][j] = _sceneManager->createEntity("celda.mesh");
+
+			nodeCPU->attachObject(tablero_CPU[i][j]);
+			nodePlayer->attachObject(tablero_Player[i][j]);
+		}
+	}
+
+	// añadimos a Root un nodo hijo nodeCPU y nodePlayer
+	_sceneManager->getRootSceneNode()->addChild(nodeCPU);
+	_sceneManager->getRootSceneNode()->addChild(nodePlayer);
 
 	Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, -5);
 	Ogre::MeshManager::getSingleton().createPlane("plane1",
