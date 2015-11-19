@@ -96,6 +96,14 @@ void MyApp::loadResources()
 
 void MyApp::createScene()
 {
+	Ogre::Entity* tbl_celdas_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
+	Ogre::Entity* tbl_celdas_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
+	for (int i = 0; i < MAX_ROWS_GRID ; i ++) {
+		for (int j = 0; j < MAX_COLS_GRID ; j ++ ) {
+
+		}
+	}
+
 	Ogre::Entity* ent1 = _sceneManager->createEntity("Sinbad.mesh");
 	Ogre::SceneNode* node1 = _sceneManager->createSceneNode("SinbadNode");
 	node1->attachObject(ent1);
@@ -118,6 +126,8 @@ void MyApp::createScene()
 	node2->attachObject(light);
 
 	_sceneManager->getRootSceneNode()->addChild(node2);
+
+
 }
 
 
