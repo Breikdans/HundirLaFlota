@@ -7,6 +7,3 @@ int main()
 
 	return 0;
 }
-
-
-// que pasa con la guasa de tomaasa

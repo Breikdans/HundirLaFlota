@@ -57,6 +57,9 @@ int MyApp::start()
 	return 0;
 }
 
+/**
+ * Carga el fichero de recursos resources.cfg
+ */
 void MyApp::loadResources()
 {
 	Ogre::ConfigFile cf;
@@ -116,4 +119,6 @@ void MyApp::createScene()
 
 	_sceneManager->getRootSceneNode()->addChild(node2);
 }
+
+
 
