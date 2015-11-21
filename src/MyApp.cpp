@@ -47,11 +47,8 @@ int MyApp::start()
 	loadResources();	// cargamos fichero de recursos
 	createScene();		// creamos la escena
 
-	// Recuperamos el nodo de escena "SinbadNode"
-	//Ogre::SceneNode *node = _sceneManager->getSceneNode("SinbadNode");
-
-	//_framelistener = new MyFrameListener(window, cam, node);
-	//_root->addFrameListener(_framelistener);
+	_framelistener = new MyFrameListener(window);
+	_root->addFrameListener(_framelistener);
 
 	_root->startRendering();
 	return 0;
@@ -102,8 +99,8 @@ void MyApp::createScene()
 	Ogre::Entity *ent_tablero_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
 
 	// creacion de tablas de punteros a nodos para cargar las entidades
-	Ogre::SceneNode *node_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
-	Ogre::SceneNode *node_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
+	Ogre::SceneNode *tbl_node_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
+	Ogre::SceneNode *tbl_node_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
 
 	// creamos nodos de escena para tablero de CPU y tablero de Player
 	Ogre::SceneNode* main_node_tablero_CPU = _sceneManager->createSceneNode("tablero_CPU");
@@ -119,45 +116,29 @@ void MyApp::createScene()
 			ent_tablero_CPU[i][j] = _sceneManager->createEntity("Celda.mesh");
 			ent_tablero_Player[i][j] = _sceneManager->createEntity("Celda.mesh");
 
+			// creamos nodos para el tablero de jugador y atachamos la entidad
+			// colgamos de main_node_tablero_Player, todos los nodos del tablero
 			std::stringstream s_node_player_aux;
 			s_node_player_aux << "node_player_" << i << "_" << j;
-			node_Player[i][j] = _sceneManager->createSceneNode(s_node_player_aux.str());
-			node_Player[i][j]->attachObject(ent_tablero_Player[i][j]);
-			main_node_tablero_Player->addChild(node_Player[i][j]);
-			node_Player[i][j]->translate(j,0,i);
+			tbl_node_Player[i][j] = _sceneManager->createSceneNode(s_node_player_aux.str());
+			tbl_node_Player[i][j]->attachObject(ent_tablero_Player[i][j]);
+			tbl_node_Player[i][j]->translate((-1*j)-2,0,i);
+			main_node_tablero_Player->addChild(tbl_node_Player[i][j]);
 
+			// creamos nodos para el tablero de CPU y atachamos la entidad
+			// colgamos de main_node_tablero_CPU, todos los nodos del tablero
 			std::stringstream s_node_cpu_aux;
 			s_node_cpu_aux << "node_cpu_" << i << "_" << j;
-			node_CPU[i][j] = _sceneManager->createSceneNode(s_node_cpu_aux.str());
-			node_CPU[i][j]->attachObject(ent_tablero_CPU[i][j]);
-			main_node_tablero_CPU->addChild(node_CPU[i][j]);
-
-
+			tbl_node_CPU[i][j] = _sceneManager->createSceneNode(s_node_cpu_aux.str());
+			tbl_node_CPU[i][j]->attachObject(ent_tablero_CPU[i][j]);
+			tbl_node_CPU[i][j]->translate(j+2,0,i);
+			main_node_tablero_CPU->addChild(tbl_node_CPU[i][j]);
 		}
 	}
 
-	// añadimos a Root un nodo hijo nodeCPU y nodePlayer
+	// añadimos a Root los nodos hijo main_node_tablero_CPU y main_node_tablero_Player
 	_sceneManager->getRootSceneNode()->addChild(main_node_tablero_CPU);
 	_sceneManager->getRootSceneNode()->addChild(main_node_tablero_Player);
-
-	//Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, -5);
-	//Ogre::MeshManager::getSingleton().createPlane("plane1",
-	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane1,
-	//200,200,1,1,true,1,20,20,Ogre::Vector3::UNIT_Z);
-
-	//Ogre::SceneNode* node2 = _sceneManager->createSceneNode("ground");
-	//Ogre::Entity* groundEnt = _sceneManager->createEntity("planeEnt", "plane1");
-//	groundEnt->setMaterialName("Ground");
-//	node2->attachObject(groundEnt);
-
-	//_sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-	//Ogre::Light* light = _sceneManager->createLight("Light1");
-	//light->setType(Ogre::Light::LT_DIRECTIONAL);
-	//light->setDirection(Ogre::Vector3(1,-1,0));
-	//node2->attachObject(light);
-
-	//_sceneManager->getRootSceneNode()->addChild(node2);
-
 
 }
 
