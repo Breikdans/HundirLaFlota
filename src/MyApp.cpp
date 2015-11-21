@@ -48,10 +48,10 @@ int MyApp::start()
 	createScene();		// creamos la escena
 
 	// Recuperamos el nodo de escena "SinbadNode"
-	Ogre::SceneNode *node = _sceneManager->getSceneNode("SinbadNode");
+	//Ogre::SceneNode *node = _sceneManager->getSceneNode("SinbadNode");
 
-	_framelistener = new MyFrameListener(window, cam, node);
-	_root->addFrameListener(_framelistener);
+	//_framelistener = new MyFrameListener(window, cam, node);
+	//_root->addFrameListener(_framelistener);
 
 	_root->startRendering();
 	return 0;
@@ -96,13 +96,18 @@ void MyApp::loadResources()
 
 void MyApp::createScene()
 {
+
 	// creacion de tablas de punteros a entidades para cargar los .mesh de las celdas
-	Ogre::Entity *tablero_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
-	Ogre::Entity *tablero_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
+	Ogre::Entity *ent_tablero_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
+	Ogre::Entity *ent_tablero_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
+
+	// creacion de tablas de punteros a nodos para cargar las entidades
+	Ogre::SceneNode *node_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
+	Ogre::SceneNode *node_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
 
 	// creamos nodos de escena para tablero de CPU y tablero de Player
-	Ogre::SceneNode* nodeCPU = _sceneManager->createSceneNode("tablero_CPU");
-	Ogre::SceneNode* nodePlayer = _sceneManager->createSceneNode("tablero_Player");
+	Ogre::SceneNode* main_node_tablero_CPU = _sceneManager->createSceneNode("tablero_CPU");
+	Ogre::SceneNode* main_node_tablero_Player = _sceneManager->createSceneNode("tablero_Player");
 
 	// creamos las entidades y las cargamos en las tablas de punteros
 	// enlazamos a los nodos, los objetos de cada tipo
@@ -110,35 +115,50 @@ void MyApp::createScene()
 	{
 		for (int j = 0; j < MAX_COLS_GRID ; j++ )
 		{
-			tablero_CPU[i][j] = _sceneManager->createEntity("celda.mesh");
-			tablero_Player[i][j] = _sceneManager->createEntity("celda.mesh");
+			// crea entidades 3d
+			ent_tablero_CPU[i][j] = _sceneManager->createEntity("Celda.mesh");
+			ent_tablero_Player[i][j] = _sceneManager->createEntity("Celda.mesh");
 
-			nodeCPU->attachObject(tablero_CPU[i][j]);
-			nodePlayer->attachObject(tablero_Player[i][j]);
+			std::stringstream s_node_player_aux;
+			s_node_player_aux << "node_player_" << i << "_" << j;
+			node_Player[i][j] = _sceneManager->createSceneNode(s_node_player_aux.str());
+			node_Player[i][j]->attachObject(ent_tablero_Player[i][j]);
+			main_node_tablero_Player->addChild(node_Player[i][j]);
+			node_Player[i][j]->translate(j,0,i);
+
+			std::stringstream s_node_cpu_aux;
+			s_node_cpu_aux << "node_cpu_" << i << "_" << j;
+			node_CPU[i][j] = _sceneManager->createSceneNode(s_node_cpu_aux.str());
+			node_CPU[i][j]->attachObject(ent_tablero_CPU[i][j]);
+			main_node_tablero_CPU->addChild(node_CPU[i][j]);
+
+
 		}
 	}
 
 	// añadimos a Root un nodo hijo nodeCPU y nodePlayer
-	_sceneManager->getRootSceneNode()->addChild(nodeCPU);
-	_sceneManager->getRootSceneNode()->addChild(nodePlayer);
+	_sceneManager->getRootSceneNode()->addChild(main_node_tablero_CPU);
+	_sceneManager->getRootSceneNode()->addChild(main_node_tablero_Player);
 
-	Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, -5);
-	Ogre::MeshManager::getSingleton().createPlane("plane1",
-	Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane1,
-	200,200,1,1,true,1,20,20,Ogre::Vector3::UNIT_Z);
+	//Ogre::Plane plane1(Ogre::Vector3::UNIT_Y, -5);
+	//Ogre::MeshManager::getSingleton().createPlane("plane1",
+	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane1,
+	//200,200,1,1,true,1,20,20,Ogre::Vector3::UNIT_Z);
 
-	Ogre::SceneNode* node2 = _sceneManager->createSceneNode("ground");
-	Ogre::Entity* groundEnt = _sceneManager->createEntity("planeEnt", "plane1");
-	groundEnt->setMaterialName("Ground");
-	node2->attachObject(groundEnt);
+	//Ogre::SceneNode* node2 = _sceneManager->createSceneNode("ground");
+	//Ogre::Entity* groundEnt = _sceneManager->createEntity("planeEnt", "plane1");
+//	groundEnt->setMaterialName("Ground");
+//	node2->attachObject(groundEnt);
 
-	_sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-	Ogre::Light* light = _sceneManager->createLight("Light1");
-	light->setType(Ogre::Light::LT_DIRECTIONAL);
-	light->setDirection(Ogre::Vector3(1,-1,0));
-	node2->attachObject(light);
+	//_sceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+	//Ogre::Light* light = _sceneManager->createLight("Light1");
+	//light->setType(Ogre::Light::LT_DIRECTIONAL);
+	//light->setDirection(Ogre::Vector3(1,-1,0));
+	//node2->attachObject(light);
 
-	_sceneManager->getRootSceneNode()->addChild(node2);
+	//_sceneManager->getRootSceneNode()->addChild(node2);
+
+
 }
 
 
