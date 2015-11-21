@@ -1,21 +1,18 @@
 #include "MyFrameListener.h"
 
-MyFrameListener::MyFrameListener(Ogre::RenderWindow* win,
-								 Ogre::Camera* cam,
-								 Ogre::SceneNode *node)
+MyFrameListener::MyFrameListener(Ogre::RenderWindow* win)	// necesario para obtener el handle de ventana dl S.O.
 {
-	OIS::ParamList param;
-	size_t windowHandle;  std::ostringstream wHandleStr;
+	OIS::ParamList param;			// Lista de parametros necesaria para OIS
+	size_t windowHandle;			// Para recoger el handle de ventana del S.O.
+	std::ostringstream wHandleStr;	// Para pasar el handle de ventana a formato STRING. Asi lo necesita OIS
 
-	_camera = cam;  _node = node;
+	win->getCustomAttribute("WINDOW", &windowHandle);			// Recogemos del S.O. el handle de la ventana de renderizado...
+	wHandleStr << windowHandle;									// Lo pasamos a cadena...
+	param.insert(std::make_pair("WINDOW", wHandleStr.str()));	// Insertamos en parametros de OIS, la dupla: "WINDOW","HandleVentana"
 
-	win->getCustomAttribute("WINDOW", &windowHandle);
-	wHandleStr << windowHandle;
-	param.insert(std::make_pair("WINDOW", wHandleStr.str()));
-
-	_inputManager = OIS::InputManager::createInputSystem(param);
-	_keyboard = static_cast<OIS::Keyboard*>	(_inputManager->createInputObject(OIS::OISKeyboard, false));
-	_mouse = static_cast<OIS::Mouse*> (_inputManager->createInputObject(OIS::OISMouse, false));
+	_inputManager = OIS::InputManager::createInputSystem(param);// Creamos InpuntManager con los parametros recogidos
+	_keyboard = static_cast<OIS::Keyboard*>	(_inputManager->createInputObject(OIS::OISKeyboard, false)); // Creamos Objeto Input de tipo Teclado
+	_mouse = static_cast<OIS::Mouse*>	(_inputManager->createInputObject(OIS::OISMouse, false)); // Creamos Objeto Input de tipo Mouse
 }
 
 MyFrameListener::~MyFrameListener()
@@ -27,39 +24,8 @@ MyFrameListener::~MyFrameListener()
 
 bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 {
-	Ogre::Vector3 vt(0,0,0);     Ogre::Real tSpeed = 20.0;
-	Ogre::Real r = 0;
-	Ogre::Real deltaT = evt.timeSinceLastFrame;
+	_keyboard->capture();	// Capturamos tecla
 
-	_keyboard->capture();
-	if(_keyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
-	if(_keyboard->isKeyDown(OIS::KC_UP))    vt+=Ogre::Vector3(0,0,-1);
-	if(_keyboard->isKeyDown(OIS::KC_DOWN))  vt+=Ogre::Vector3(0,0,1);
-	if(_keyboard->isKeyDown(OIS::KC_LEFT))  vt+=Ogre::Vector3(-1,0,0);
-	if(_keyboard->isKeyDown(OIS::KC_RIGHT)) vt+=Ogre::Vector3(1,0,0);
-
-
-	_camera->moveRelative(vt * deltaT * tSpeed);
-	if (_camera->getPosition().length() < 10.0)
-	{
-		_camera->moveRelative(-vt * deltaT * tSpeed);
-	}
-
-
-	if(_keyboard->isKeyDown(OIS::KC_R)) r+=180;
-	_node->yaw(Ogre::Degree(r * deltaT));
-
-	_mouse->capture();
-	float rotx = _mouse->getMouseState().X.rel * deltaT * -1;
-	float roty = _mouse->getMouseState().Y.rel * deltaT * -1;
-	_camera->yaw(Ogre::Radian(rotx));
-	_camera->pitch(Ogre::Radian(roty));
-
+	if(_keyboard->isKeyDown(OIS::KC_ESCAPE)) return false;	// Si es ESC.. devolviendo false salimos
 	return true;
 }
-
-bool MyFrameListener::frameEnded(const Ogre::FrameEvent& evt)
-{
-	return true;
-}
-
