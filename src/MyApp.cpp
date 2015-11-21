@@ -136,10 +136,31 @@ void MyApp::createScene()
 		}
 	}
 
-	// añadimos a Root los nodos hijo main_node_tablero_CPU y main_node_tablero_Player
-	_sceneManager->getRootSceneNode()->addChild(main_node_tablero_CPU);
-	_sceneManager->getRootSceneNode()->addChild(main_node_tablero_Player);
+	// definimos un plano
+	Ogre::Plane planoAgua(Ogre::Vector3::UNIT_Y,	// Vector normal del plano (el eje perpendicular)
+						  -5);						// estará situado a -5 unidades respecto del vector normal.
+													// Esta definición se corresponde con un plano infinito (descripción matemática abstracta)
+	// creamos el plano:
+	Ogre::MeshManager::getSingleton().createPlane("plano_agua",				// nombre malla resultante
+												  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, // grupo de mallas
+												  planoAgua,				// objeto donde se ha definido el plano
+												  200,200,					// ancho y alto del plano en coordenadas del mundo
+												  1,1,						// numero de segmentos para definir el plano (1x1)
+												  true,						// true indica que los vectores normales se calculan perpendicular al plano
+												  1,						// conjunto de coordenadas de texturas (por defecto 1)
+												  20,20,					// numero de replicacion de la textura en horizontal y vertical
+												  Ogre::Vector3::UNIT_Z);	// indica la direccion del vector del plano (up)
 
+	Ogre::SceneNode* node_water = _sceneManager->createSceneNode("node_water");	// creamos nodo de escena para el fondo de agua
+	Ogre::Entity* entWater = _sceneManager->createEntity("fondo_plano_agua", "plano_agua");
+	entWater->setMaterialName("Water");		// establecemos el material a usar
+	node_water->attachObject(entWater);		// adjuntamos al nodo, la entidad
+
+	// Creamos estructura de grafos.....
+	// del root cuelga el nodo_water... y de ahi los tableros CPU y Player
+	_sceneManager->getRootSceneNode()->addChild(node_water);
+	node_water->addChild(main_node_tablero_CPU);
+	node_water->addChild(main_node_tablero_Player);
 }
 
 
