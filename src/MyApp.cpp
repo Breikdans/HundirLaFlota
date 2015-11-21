@@ -31,10 +31,10 @@ int MyApp::start()
 
 	// creamos camara virtual
 	Ogre::Camera* cam = _sceneManager->createCamera("MainCamera");
-	cam->setPosition(Ogre::Vector3(5,20,20));	// posicionamos...
+	cam->setPosition(Ogre::Vector3(0.5,20,40));	// posicionamos...
 	cam->lookAt(Ogre::Vector3(0,0,0));			// enfocamos a 0,0,0
 	cam->setNearClipDistance(5);		// establecemos plano cercano del frustum
-	cam->setFarClipDistance(10000);		// establecemos plano lejano del frustum
+	cam->setFarClipDistance(300);		// establecemos plano lejano del frustum
 
 
 	// Creamos el plano de imagen (lienzo) asociado a la camara
@@ -47,7 +47,7 @@ int MyApp::start()
 	loadResources();	// cargamos fichero de recursos
 	createScene();		// creamos la escena
 
-	_framelistener = new MyFrameListener(window);
+	_framelistener = new MyFrameListener(window, _sceneManager, cam);
 	_root->addFrameListener(_framelistener);
 
 	_root->startRendering();
@@ -94,13 +94,13 @@ void MyApp::loadResources()
 void MyApp::createScene()
 {
 
-	// creacion de tablas de punteros a entidades para cargar los .mesh de las celdas
-	Ogre::Entity *ent_tablero_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
-	Ogre::Entity *ent_tablero_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
+	// creacion punteros a entidades para cargar los .mesh de las celdas
+	Ogre::Entity *ent_CeldaCPU;
+	Ogre::Entity *ent_CeldaPlayer;
 
-	// creacion de tablas de punteros a nodos para cargar las entidades
-	Ogre::SceneNode *tbl_node_CPU[MAX_ROWS_GRID][MAX_COLS_GRID];
-	Ogre::SceneNode *tbl_node_Player[MAX_ROWS_GRID][MAX_COLS_GRID];
+	// creacion de nodos para cargar las entidades
+	Ogre::SceneNode *node_CPU;
+	Ogre::SceneNode *node_Player;
 
 	// creamos nodos de escena para tablero de CPU y tablero de Player
 	Ogre::SceneNode* main_node_tablero_CPU = _sceneManager->createSceneNode("tablero_CPU");
@@ -113,26 +113,30 @@ void MyApp::createScene()
 		for (int j = 0; j < MAX_COLS_GRID ; j++ )
 		{
 			// crea entidades 3d
-			ent_tablero_CPU[i][j] = _sceneManager->createEntity("Celda.mesh");
-			ent_tablero_Player[i][j] = _sceneManager->createEntity("Celda.mesh");
+			ent_CeldaPlayer = _sceneManager->createEntity("Celda.mesh");
+			ent_CeldaCPU = _sceneManager->createEntity("Celda.mesh");
+
+			// Establecemos mascaras de busqueda para nuestras querys
+			ent_CeldaPlayer->setQueryFlags(PLAYER_CELLS);
+			ent_CeldaCPU->setQueryFlags(CPU_CELLS);
 
 			// creamos nodos para el tablero de jugador y atachamos la entidad
 			// colgamos de main_node_tablero_Player, todos los nodos del tablero
 			std::stringstream s_node_player_aux;
 			s_node_player_aux << "node_player_" << i << "_" << j;
-			tbl_node_Player[i][j] = _sceneManager->createSceneNode(s_node_player_aux.str());
-			tbl_node_Player[i][j]->attachObject(ent_tablero_Player[i][j]);
-			tbl_node_Player[i][j]->translate((-1*j)-2,0,i);
-			main_node_tablero_Player->addChild(tbl_node_Player[i][j]);
+			node_Player = _sceneManager->createSceneNode(s_node_player_aux.str());
+			node_Player->attachObject(ent_CeldaPlayer);
+			node_Player->translate((-1*j)-2,0,i);
+			main_node_tablero_Player->addChild(node_Player);
 
 			// creamos nodos para el tablero de CPU y atachamos la entidad
 			// colgamos de main_node_tablero_CPU, todos los nodos del tablero
 			std::stringstream s_node_cpu_aux;
 			s_node_cpu_aux << "node_cpu_" << i << "_" << j;
-			tbl_node_CPU[i][j] = _sceneManager->createSceneNode(s_node_cpu_aux.str());
-			tbl_node_CPU[i][j]->attachObject(ent_tablero_CPU[i][j]);
-			tbl_node_CPU[i][j]->translate(j+2,0,i);
-			main_node_tablero_CPU->addChild(tbl_node_CPU[i][j]);
+			node_CPU = _sceneManager->createSceneNode(s_node_cpu_aux.str());
+			node_CPU->attachObject(ent_CeldaCPU);
+			node_CPU->translate(j+2,0,i);
+			main_node_tablero_CPU->addChild(node_CPU);
 		}
 	}
 
@@ -148,7 +152,7 @@ void MyApp::createScene()
 												  1,1,						// numero de segmentos para definir el plano (1x1)
 												  true,						// true indica que los vectores normales se calculan perpendicular al plano
 												  1,						// conjunto de coordenadas de texturas (por defecto 1)
-												  20,20,					// numero de replicacion de la textura en horizontal y vertical
+												  10,10,					// numero de replicacion de la textura en horizontal y vertical
 												  Ogre::Vector3::UNIT_Z);	// indica la direccion del vector del plano (up)
 
 	Ogre::SceneNode* node_water = _sceneManager->createSceneNode("node_water");	// creamos nodo de escena para el fondo de agua
