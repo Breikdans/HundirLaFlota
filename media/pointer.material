@@ -1,4 +1,4 @@
-material panelInfoM
+material pointer 
 {
 	technique 
 	{
@@ -6,8 +6,8 @@ material panelInfoM
 		{
 			scene_blend src_alpha one_minus_src_alpha
 			texture_unit 
-     		{
-				texture panel.tga
+			{
+				texture cursor.png
 			}
 		}
 	}

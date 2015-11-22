@@ -4,6 +4,10 @@
 #include <OgreOverlayManager.h>
 #include <OIS/OIS.h>
 
+#define PLAYER_CELLS 	1 << 0		// = 1. 32 bits de mascara.
+#define CPU_CELLS 		1 << 1		// = 2. 32 bits de mascara.
+
+typedef unsigned int uint32;
 /**
  * FrameListener se basa en el patrón Observador
  *
@@ -17,8 +21,14 @@ class MyFrameListener : public Ogre::FrameListener
 		OIS::InputManager* _inputManager;
 		OIS::Keyboard* _keyboard;
 		OIS::Mouse* _mouse;
+		Ogre::RenderWindow* _window;
+		Ogre::SceneManager* _sceneManager;
+		Ogre::OverlayManager* _overlayManager;
+		Ogre::Camera* _camera;
+		Ogre::RaySceneQuery *_raySceneQuery;
 	public:
-		MyFrameListener(Ogre::RenderWindow* win);
+		MyFrameListener(Ogre::RenderWindow *win, Ogre::SceneManager *sm, Ogre::OverlayManager *om, Ogre::Camera *cam);
 		~MyFrameListener();
 		bool frameStarted(const Ogre::FrameEvent& evt);
+		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 };

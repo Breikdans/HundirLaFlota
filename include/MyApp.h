@@ -5,9 +5,10 @@
 class MyApp
 {
 	private:
-		Ogre::SceneManager* _sceneManager;	// gestor de escena
-		Ogre::Root* _root;					// nodo root de Ogre
-		MyFrameListener* _framelistener;	// gestion listener frames
+		Ogre::SceneManager* _sceneManager;		// gestor de escena
+		Ogre::Root* _root;						// nodo root de Ogre
+		MyFrameListener* _framelistener;		// gestion listener frames
+		Ogre::OverlayManager* _overlayManager;	// gestor de Overlays
 		Grid CPUGrid;
 		Grid PlayerGrid;
 
@@ -17,5 +18,6 @@ class MyApp
 		int start();
 		void loadResources();
 		void createScene();
+		void createOverlay();
 		void ActualizaTablero(usint16 F, usint16 C);
 };
