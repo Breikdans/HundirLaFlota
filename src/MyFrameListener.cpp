@@ -67,6 +67,16 @@ bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 	oe = _overlayManager->getOverlayElement("cursor");
 	oe->setLeft(posx); oe->setTop(posy);
 
+	std::ostringstream s_posMouse;
+	s_posMouse << posx;
+	oe = _overlayManager->getOverlayElement("PosXMouse");
+	oe->setCaption(s_posMouse.str());
+
+	s_posMouse.str("");
+	s_posMouse << posy;
+	oe = _overlayManager->getOverlayElement("PosYMouse");
+	oe->setCaption(s_posMouse.str());
+
 	return true;
 }
 

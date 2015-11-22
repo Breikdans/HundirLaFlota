@@ -30,11 +30,11 @@ int MyApp::start()
 	_sceneManager = _root->createSceneManager(Ogre::ST_GENERIC);
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-	 _sceneManager->addRenderQueueListener(new Ogre::OverlaySystem());
+	_sceneManager->addRenderQueueListener(new Ogre::OverlaySystem());
 
 	// creamos camara virtual
 	Ogre::Camera* cam = _sceneManager->createCamera("MainCamera");
-	cam->setPosition(Ogre::Vector3(0.5,20,40));	// posicionamos...
+	cam->setPosition(Ogre::Vector3(0.5,20,30));	// posicionamos...
 	cam->lookAt(Ogre::Vector3(0,0,0));			// enfocamos a 0,0,0
 	cam->setNearClipDistance(5);		// establecemos plano cercano del frustum
 	cam->setFarClipDistance(300);		// establecemos plano lejano del frustum
