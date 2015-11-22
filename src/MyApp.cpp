@@ -117,8 +117,8 @@ void MyApp::createScene()
 		for (int j = 0; j < MAX_COLS_GRID ; j++ )
 		{
 			// crea entidades 3d
-			ent_CeldaPlayer = _sceneManager->createEntity("Celda.mesh");
-			ent_CeldaCPU = _sceneManager->createEntity("Celda.mesh");
+			ent_CeldaPlayer = _sceneManager->createEntity("celda.mesh");
+			ent_CeldaCPU = _sceneManager->createEntity("celda.mesh");
 
 			// Establecemos mascaras de busqueda para nuestras querys
 			ent_CeldaPlayer->setQueryFlags(PLAYER_CELLS);
@@ -131,7 +131,7 @@ void MyApp::createScene()
 			node_Player = _sceneManager->createSceneNode(s_node_player_aux.str());
 			node_Player->attachObject(ent_CeldaPlayer);
 			node_Player->translate((-1 * ((MAX_COLS_GRID + ESPACIO_ENTRE_TABLEROS) - j) ), 0, i);
-			main_node_tablero_Player->addChild(node_Player);
+			//main_node_tablero_Player->addChild(node_Player);
 
 			// creamos nodos para el tablero de CPU y atachamos la entidad
 			// colgamos de main_node_tablero_CPU, todos los nodos del tablero
@@ -139,7 +139,7 @@ void MyApp::createScene()
 			s_node_cpu_aux << "node_cpu_" << i << "_" << j;	// node_cpu_X_Y
 			node_CPU = _sceneManager->createSceneNode(s_node_cpu_aux.str());
 			node_CPU->attachObject(ent_CeldaCPU);
-			node_CPU->translate(j+2,0,i);
+			node_CPU->translate(j*4,0,i*4);
 			main_node_tablero_CPU->addChild(node_CPU);
 		}
 	}
@@ -147,7 +147,7 @@ void MyApp::createScene()
 	// definimos un plano
 	Ogre::Plane planoAgua(Ogre::Vector3::UNIT_Y,	// Vector normal del plano (el eje perpendicular)
 						  -5);						// estará situado a -5 unidades respecto del vector normal.
-													// Esta definición se corresponde con un plano infinito (descripción matemática abstracta)
+					 								// Esta definición se corresponde con un plano infinito (descripción matemática abstracta)
 	// creamos el plano:
 	Ogre::MeshManager::getSingleton().createPlane("plano_agua",				// nombre malla resultante
 												  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, // grupo de mallas
