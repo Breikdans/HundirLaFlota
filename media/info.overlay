@@ -11,7 +11,7 @@ template element TextArea(MyTemplates/SmallText)
 	font_name Blue
 	metrics_mode pixels
 	char_height 12
-	colour 1.0 1.0 1.0    
+	colour 1.0 1.0 1.0
 }
 
 Info
