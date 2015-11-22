@@ -97,7 +97,7 @@ void MyApp::loadResources()
 
 void MyApp::createScene()
 {
-
+	const int ESPACIO_ENTRE_TABLEROS = 2;
 	// creacion punteros a entidades para cargar los .mesh de las celdas
 	Ogre::Entity *ent_CeldaCPU;
 	Ogre::Entity *ent_CeldaPlayer;
@@ -130,7 +130,7 @@ void MyApp::createScene()
 			s_node_player_aux << "node_player_" << i << "_" << j;	// node_player_X_Y
 			node_Player = _sceneManager->createSceneNode(s_node_player_aux.str());
 			node_Player->attachObject(ent_CeldaPlayer);
-			node_Player->translate((-1*j)-2,0,i);
+			node_Player->translate((-1 * ((MAX_COLS_GRID + ESPACIO_ENTRE_TABLEROS) - j) ), 0, i);
 			main_node_tablero_Player->addChild(node_Player);
 
 			// creamos nodos para el tablero de CPU y atachamos la entidad
