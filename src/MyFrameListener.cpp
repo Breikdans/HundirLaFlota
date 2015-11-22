@@ -1,10 +1,11 @@
 #include <iostream>
 #include "MyFrameListener.h"
 
-MyFrameListener::MyFrameListener(Ogre::RenderWindow* win,	// necesario para obtener el handle de ventana dl S.O.
-								 Ogre::SceneManager *sm,	// para nuestro SceneManager
-								 Ogre::Camera *cam
-								 )
+MyFrameListener::MyFrameListener(Ogre::RenderWindow *win,	// necesario para obtener el handle de ventana dl S.O.
+								 Ogre::SceneManager *sm,	// para nuestro OverlayManager
+								 Ogre::OverlayManager *om,	// para nuestro SceneManager
+								 Ogre::Camera *cam			// para nuestro SceneManager
+								 ) : _window(win), _sceneManager(sm), _overlayManager(om), _camera(cam)
 {
 	OIS::ParamList param;			// Lista de parametros necesaria para OIS
 	size_t windowHandle;			// Para recoger el handle de ventana del S.O.
@@ -33,6 +34,7 @@ MyFrameListener::~MyFrameListener()
 {
 	_inputManager->destroyInputObject(_keyboard);
 	_inputManager->destroyInputObject(_mouse);
+	_sceneManager->destroyQuery(_raySceneQuery);
 	OIS::InputManager::destroyInputSystem(_inputManager);
 }
 
@@ -56,11 +58,15 @@ bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 	if(mbleft)
 	{
 		std::cout << "holaaa izquierdooo: X: " << posx << " Y: " << posy << std::endl;
-		Ogre::Ray r;
 		uint32 mask = PLAYER_CELLS | CPU_CELLS;
-		r = setRayQuery(posx, posy, mask);
+		Ogre::Ray r = setRayQuery(posx, posy, mask);
 	}
 
+	// Gestion del overlay -----------------------------
+/*	Ogre::OverlayElement *oe;
+	oe = _overlayManager->getOverlayElement("cursor");
+	oe->setLeft(posx); oe->setTop(posy);
+*/
 	return true;
 }
 

@@ -22,11 +22,12 @@ class MyFrameListener : public Ogre::FrameListener
 		OIS::Keyboard* _keyboard;
 		OIS::Mouse* _mouse;
 		Ogre::RenderWindow* _window;
-		Ogre::Camera* _camera;
 		Ogre::SceneManager* _sceneManager;
+		Ogre::OverlayManager* _overlayManager;
+		Ogre::Camera* _camera;
 		Ogre::RaySceneQuery *_raySceneQuery;
 	public:
-		MyFrameListener(Ogre::RenderWindow* win, Ogre::SceneManager *sm, Ogre::Camera *cam);
+		MyFrameListener(Ogre::RenderWindow *win, Ogre::SceneManager *sm, Ogre::OverlayManager *om, Ogre::Camera *cam);
 		~MyFrameListener();
 		bool frameStarted(const Ogre::FrameEvent& evt);
 		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);

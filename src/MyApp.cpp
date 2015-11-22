@@ -2,8 +2,10 @@
 
 MyApp::MyApp()
 {
-	_sceneManager = NULL;
-	_framelistener = NULL;
+	_sceneManager 	= NULL;
+	_framelistener 	= NULL;
+	_root			= NULL;
+	_overlayManager	= NULL;
 }
 
 MyApp::~MyApp()
@@ -46,8 +48,9 @@ int MyApp::start()
 
 	loadResources();	// cargamos fichero de recursos
 	createScene();		// creamos la escena
+//	createOverlay();	// creamos el overlay
 
-	_framelistener = new MyFrameListener(window, _sceneManager, cam);
+	_framelistener = new MyFrameListener(window, _sceneManager, _overlayManager, cam);
 	_root->addFrameListener(_framelistener);
 
 	_root->startRendering();
@@ -123,7 +126,7 @@ void MyApp::createScene()
 			// creamos nodos para el tablero de jugador y atachamos la entidad
 			// colgamos de main_node_tablero_Player, todos los nodos del tablero
 			std::stringstream s_node_player_aux;
-			s_node_player_aux << "node_player_" << i << "_" << j;
+			s_node_player_aux << "node_player_" << i << "_" << j;	// node_player_X_Y
 			node_Player = _sceneManager->createSceneNode(s_node_player_aux.str());
 			node_Player->attachObject(ent_CeldaPlayer);
 			node_Player->translate((-1*j)-2,0,i);
@@ -132,7 +135,7 @@ void MyApp::createScene()
 			// creamos nodos para el tablero de CPU y atachamos la entidad
 			// colgamos de main_node_tablero_CPU, todos los nodos del tablero
 			std::stringstream s_node_cpu_aux;
-			s_node_cpu_aux << "node_cpu_" << i << "_" << j;
+			s_node_cpu_aux << "node_cpu_" << i << "_" << j;	// node_cpu_X_Y
 			node_CPU = _sceneManager->createSceneNode(s_node_cpu_aux.str());
 			node_CPU->attachObject(ent_CeldaCPU);
 			node_CPU->translate(j+2,0,i);
@@ -165,6 +168,13 @@ void MyApp::createScene()
 	_sceneManager->getRootSceneNode()->addChild(node_water);
 	node_water->addChild(main_node_tablero_CPU);
 	node_water->addChild(main_node_tablero_Player);
+}
+
+void MyApp::createOverlay()
+{
+	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
+	Ogre::Overlay *overlay = _overlayManager->getByName("Info");
+	overlay->show();
 }
 
 
