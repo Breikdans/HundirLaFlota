@@ -31,7 +31,7 @@ material celda
             transparent_sorting on
             texture_unit 
 			{
-				texture water.png
+				texture water.jpg
 			}
 
         }

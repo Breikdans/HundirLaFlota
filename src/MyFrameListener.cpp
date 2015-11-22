@@ -60,7 +60,7 @@ bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 
 	if(mbleft)
 	{
-		std::cout << "holaaa izquierdooo: X: " << posx << " Y: " << posy << std::endl;
+		//std::cout << "holaaa izquierdooo: X: " << posx << " Y: " << posy << std::endl;
 		uint32 mask = PLAYER_CELLS | CPU_CELLS;
 		Ogre::Ray r = setRayQuery(posx, posy, mask);
 		Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
