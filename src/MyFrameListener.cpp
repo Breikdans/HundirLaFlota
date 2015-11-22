@@ -55,15 +55,28 @@ bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 //	bool mbmiddle = _mouse->getMouseState().buttonDown(OIS::MB_Middle);
 //	bool mbright = _mouse->getMouseState().buttonDown(OIS::MB_Right);
 
+
+	std::ostringstream s_CellName;
+
 	if(mbleft)
 	{
 		std::cout << "holaaa izquierdooo: X: " << posx << " Y: " << posy << std::endl;
 		uint32 mask = PLAYER_CELLS | CPU_CELLS;
 		Ogre::Ray r = setRayQuery(posx, posy, mask);
+		Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
+		Ogre::RaySceneQueryResult::iterator it;
+		it = result.begin();
+		if (it != result.end())
+		{
+			s_CellName << it->movable->getParentSceneNode()->getName();
+		}
 	}
 
 	// Gestion del overlay -----------------------------
 	Ogre::OverlayElement *oe;
+	oe = _overlayManager->getOverlayElement("CPUSeleccion");
+	oe->setCaption(s_CellName.str());
+
 	oe = _overlayManager->getOverlayElement("cursor");
 	oe->setLeft(posx); oe->setTop(posy);
 
