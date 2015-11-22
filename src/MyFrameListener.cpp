@@ -63,10 +63,10 @@ bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 	}
 
 	// Gestion del overlay -----------------------------
-/*	Ogre::OverlayElement *oe;
+	Ogre::OverlayElement *oe;
 	oe = _overlayManager->getOverlayElement("cursor");
 	oe->setLeft(posx); oe->setTop(posy);
-*/
+
 	return true;
 }
 

@@ -30,6 +30,7 @@ int MyApp::start()
 	_sceneManager = _root->createSceneManager(Ogre::ST_GENERIC);
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneManager->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+	 _sceneManager->addRenderQueueListener(new Ogre::OverlaySystem());
 
 	// creamos camara virtual
 	Ogre::Camera* cam = _sceneManager->createCamera("MainCamera");
@@ -48,7 +49,7 @@ int MyApp::start()
 
 	loadResources();	// cargamos fichero de recursos
 	createScene();		// creamos la escena
-//	createOverlay();	// creamos el overlay
+ 	createOverlay();	// creamos el overlay
 
 	_framelistener = new MyFrameListener(window, _sceneManager, _overlayManager, cam);
 	_root->addFrameListener(_framelistener);
