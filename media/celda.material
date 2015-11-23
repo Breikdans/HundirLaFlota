@@ -1,12 +1,12 @@
-// Celda genrated by blender2ogre 0.6.0
+// celda genrated by blender2ogre 0.6.0
 
-material Celda 
+material celda 
 {
     receive_shadows on 
 
     technique
     {
-        pass Celda
+        pass celda
         {
             ambient 0.800000011920929 0.800000011920929 0.800000011920929 1.0
             diffuse 0.6400000190734865 0.6400000190734865 0.6400000190734865 1.0
@@ -29,6 +29,10 @@ material Celda
             scene_blend_op add
             shading gouraud
             transparent_sorting on
+            texture_unit 
+			{
+				texture water.jpg
+			}
 
         }
     }
