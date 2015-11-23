@@ -29,11 +29,14 @@ material celda
             scene_blend_op add
             shading gouraud
             transparent_sorting on
-            texture_unit 
-			{
-				texture water.jpg
-			}
 
+            texture_unit 
+            {
+                texture water.jpg
+                tex_address_mode wrap
+                scale 1.0 1.0
+                colour_op modulate
+            }
         }
     }
 }
