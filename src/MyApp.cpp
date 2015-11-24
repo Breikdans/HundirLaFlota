@@ -34,8 +34,8 @@ int MyApp::start()
 
 	// creamos camara virtual
 	Ogre::Camera* cam = _sceneManager->createCamera("MainCamera");
-	cam->setPosition(Ogre::Vector3(0.5,20,30));	// posicionamos...
-	cam->lookAt(Ogre::Vector3(0,0,0));			// enfocamos a 0,0,0
+	cam->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 2.5));	// posicionamos...
+	cam->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
 	cam->setNearClipDistance(5);		// establecemos plano cercano del frustum
 	cam->setFarClipDistance(300);		// establecemos plano lejano del frustum
 
@@ -130,8 +130,8 @@ void MyApp::createScene()
 			s_node_player_aux << "node_player_" << i << "_" << j;	// node_player_X_Y
 			node_Player = _sceneManager->createSceneNode(s_node_player_aux.str());
 			node_Player->attachObject(ent_CeldaPlayer);
-			node_Player->translate((-1 * ((MAX_COLS_GRID + ESPACIO_ENTRE_TABLEROS) - j) ), 0, i);
-			//main_node_tablero_Player->addChild(node_Player);
+			node_Player->translate(j*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, i*CELL_WIDTH);
+			main_node_tablero_Player->addChild(node_Player);
 
 			// creamos nodos para el tablero de CPU y atachamos la entidad
 			// colgamos de main_node_tablero_CPU, todos los nodos del tablero
@@ -139,7 +139,7 @@ void MyApp::createScene()
 			s_node_cpu_aux << "node_cpu_" << i << "_" << j;	// node_cpu_X_Y
 			node_CPU = _sceneManager->createSceneNode(s_node_cpu_aux.str());
 			node_CPU->attachObject(ent_CeldaCPU);
-			node_CPU->translate(j*4,0,i*4);
+			node_CPU->translate(j*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, i*CELL_WIDTH);
 			main_node_tablero_CPU->addChild(node_CPU);
 		}
 	}
@@ -152,11 +152,11 @@ void MyApp::createScene()
 	Ogre::MeshManager::getSingleton().createPlane("plano_agua",				// nombre malla resultante
 												  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, // grupo de mallas
 												  planoAgua,				// objeto donde se ha definido el plano
-												  200,200,					// ancho y alto del plano en coordenadas del mundo
+												  300,300,					// ancho y alto del plano en coordenadas del mundo
 												  1,1,						// numero de segmentos para definir el plano (1x1)
 												  true,						// true indica que los vectores normales se calculan perpendicular al plano
 												  1,						// conjunto de coordenadas de texturas (por defecto 1)
-												  10,10,					// numero de replicacion de la textura en horizontal y vertical
+												  70,70,					// numero de replicacion de la textura en horizontal y vertical
 												  Ogre::Vector3::UNIT_Z);	// indica la direccion del vector del plano (up)
 
 	Ogre::SceneNode* node_water = _sceneManager->createSceneNode("node_water");	// creamos nodo de escena para el fondo de agua
