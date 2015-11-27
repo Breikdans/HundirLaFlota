@@ -5,8 +5,8 @@
 #ifndef GRID_H_
 #define GRID_H_
 
-const int MAX_ROWS_GRID	=		4;
-const int MAX_COLS_GRID	=		4;
+const int MAX_ROWS_GRID	=		10;
+const int MAX_COLS_GRID	=		10;
 
 const int CELL_WIDTH	= 		4;
 
