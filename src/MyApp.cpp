@@ -34,7 +34,7 @@ int MyApp::start()
 
 	// creamos camara virtual
 	Ogre::Camera* cam = _sceneManager->createCamera("MainCamera");
-	cam->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 2.5));	// posicionamos...
+	cam->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 1.7));	// posicionamos...
 	cam->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
 	cam->setNearClipDistance(5);		// establecemos plano cercano del frustum
 	cam->setFarClipDistance(300);		// establecemos plano lejano del frustum
