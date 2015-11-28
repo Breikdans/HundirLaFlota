@@ -40,6 +40,9 @@ MyFrameListener::~MyFrameListener()
 
 bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 {
+	// guardamos el nombre del ultimo nodo seleccionado, para devolverle al estado normal
+	static std::string s_LastCell= "";
+
 	// Capturamos eventos
 	_keyboard->capture();
 	_mouse->capture();
@@ -55,27 +58,57 @@ bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 //	bool mbmiddle = _mouse->getMouseState().buttonDown(OIS::MB_Middle);
 //	bool mbright = _mouse->getMouseState().buttonDown(OIS::MB_Right);
 
+	std::string s_CellName;
+	Ogre::SceneNode *node = NULL;
+	Ogre::Entity *pEnt = NULL;
+	std::string s_Material = "";
 
-	std::ostringstream s_CellName;
-
-	if(mbleft)
+	uint32 mask = PLAYER_CELLS | CPU_CELLS;			// mascara para la query...
+	Ogre::Ray r = setRayQuery(posx, posy, mask);	// establecemos query...
+	Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
+	Ogre::RaySceneQueryResult::iterator it;
+	it = result.begin();
+	if (it != result.end())
 	{
-		//std::cout << "holaaa izquierdooo: X: " << posx << " Y: " << posy << std::endl;
-		uint32 mask = PLAYER_CELLS | CPU_CELLS;
-		Ogre::Ray r = setRayQuery(posx, posy, mask);
-		Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
-		Ogre::RaySceneQueryResult::iterator it;
-		it = result.begin();
-		if (it != result.end())
+		s_CellName = it->movable->getParentSceneNode()->getName();	// cogemos el nombre del nodo seleccionado con el rayo
+
+		// si habia una celda seleccionada... y es distinta a la actual... la dejamos con color NORMAL
+		if(s_LastCell.size() != 0 && s_LastCell != s_CellName)
 		{
-			s_CellName << it->movable->getParentSceneNode()->getName();
+			node = _sceneManager->getSceneNode(s_LastCell);
+			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
+
+			s_Material = "celda";
+			// cambiamos la textura del objeto a NORMAL
+			if (pEnt)
+				pEnt->setMaterialName(s_Material);
+		}
+
+		node = _sceneManager->getSceneNode(s_CellName);
+		pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_CellName));
+		s_Material = "celda_light";
+		// cambiamos la textura del objeto a SELECCIONADA
+		pEnt->setMaterialName(s_Material);
+		s_LastCell = s_CellName;
+
+	}
+	else	// si sacamos el cursor de las celdas, dejamos la ultima con color NORMAL
+	{
+		if(s_LastCell.size())
+		{
+			node = _sceneManager->getSceneNode(s_LastCell);
+			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
+			s_Material = "celda";
+			// cambiamos la textura del objeto a oscura
+			if (pEnt)
+				pEnt->setMaterialName(s_Material);
 		}
 	}
 
 	// Gestion del overlay -----------------------------
 	Ogre::OverlayElement *oe;
 	oe = _overlayManager->getOverlayElement("CPUSeleccion");
-	oe->setCaption(s_CellName.str());
+	oe->setCaption(s_CellName);
 
 	oe = _overlayManager->getOverlayElement("cursor");
 	oe->setLeft(posx); oe->setTop(posy);
