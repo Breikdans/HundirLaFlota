@@ -4,8 +4,9 @@
 #include <OgreOverlayManager.h>
 #include <OIS/OIS.h>
 
-#define PLAYER_CELLS 	1 << 0		// = 1. 32 bits de mascara.
-#define CPU_CELLS 		1 << 1		// = 2. 32 bits de mascara.
+#define SEA_BACKGROUND	1 << 0		// = 1. 32 bits de mascara.
+#define PLAYER_CELLS 	1 << 1		// = 2. 32 bits de mascara.
+#define CPU_CELLS 		1 << 2		// = 4. 32 bits de mascara.
 
 typedef unsigned int uint32;
 /**

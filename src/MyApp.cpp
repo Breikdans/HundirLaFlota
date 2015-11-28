@@ -116,27 +116,28 @@ void MyApp::createScene()
 	{
 		for (int j = 0; j < MAX_COLS_GRID ; j++ )
 		{
-			// crea entidades 3d
-			ent_CeldaPlayer = _sceneManager->createEntity("celda.mesh");
-			ent_CeldaCPU = _sceneManager->createEntity("celda.mesh");
-
-			// Establecemos mascaras de busqueda para nuestras querys
-			ent_CeldaPlayer->setQueryFlags(PLAYER_CELLS);
-			ent_CeldaCPU->setQueryFlags(CPU_CELLS);
-
 			// creamos nodos para el tablero de jugador y atachamos la entidad
 			// colgamos de main_node_tablero_Player, todos los nodos del tablero
 			std::stringstream s_node_player_aux;
 			s_node_player_aux << "node_player_" << i << "_" << j;	// node_player_X_Y
-			node_Player = _sceneManager->createSceneNode(s_node_player_aux.str());
-			node_Player->attachObject(ent_CeldaPlayer);
-			node_Player->translate(j*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, i*CELL_WIDTH);
-			main_node_tablero_Player->addChild(node_Player);
 
 			// creamos nodos para el tablero de CPU y atachamos la entidad
 			// colgamos de main_node_tablero_CPU, todos los nodos del tablero
 			std::stringstream s_node_cpu_aux;
 			s_node_cpu_aux << "node_cpu_" << i << "_" << j;	// node_cpu_X_Y
+
+			// crea entidades 3d
+			ent_CeldaPlayer = _sceneManager->createEntity(s_node_player_aux.str(), "celda.mesh");
+			ent_CeldaCPU = _sceneManager->createEntity(s_node_cpu_aux.str(),"celda.mesh");
+
+			// Establecemos mascaras de busqueda para nuestras querys
+			ent_CeldaPlayer->setQueryFlags(PLAYER_CELLS);
+			ent_CeldaCPU->setQueryFlags(CPU_CELLS);
+
+			node_Player = _sceneManager->createSceneNode(s_node_player_aux.str());
+			node_Player->attachObject(ent_CeldaPlayer);
+			node_Player->translate(j*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, i*CELL_WIDTH);
+			main_node_tablero_Player->addChild(node_Player);
 			node_CPU = _sceneManager->createSceneNode(s_node_cpu_aux.str());
 			node_CPU->attachObject(ent_CeldaCPU);
 			node_CPU->translate(j*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, i*CELL_WIDTH);
@@ -161,8 +162,9 @@ void MyApp::createScene()
 
 	Ogre::SceneNode* node_water = _sceneManager->createSceneNode("node_water");	// creamos nodo de escena para el fondo de agua
 	Ogre::Entity* entWater = _sceneManager->createEntity("fondo_plano_agua", "plano_agua");
-	entWater->setMaterialName("Water");		// establecemos el material a usar
-	node_water->attachObject(entWater);		// adjuntamos al nodo, la entidad
+	entWater->setMaterialName("Water");			// establecemos el material a usar
+	entWater->setQueryFlags(SEA_BACKGROUND);	// Lo identificamos para las Queries...
+	node_water->attachObject(entWater);			// adjuntamos al nodo, la entidad
 
 	// Creamos estructura de grafos.....
 	// del root cuelga el nodo_water... y de ahi los tableros CPU y Player
