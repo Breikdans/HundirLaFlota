@@ -44,6 +44,8 @@ info:
 # Enlazado -----------------------------------------------------------
 $(EXEC): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	@echo
+	@echo 'Compilacion terminada!'
 
 # Compilación --------------------------------------------------------
 $(DIROBJ)%.o: $(DIRSRC)%.cpp

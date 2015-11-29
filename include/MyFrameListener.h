@@ -4,18 +4,32 @@
 #include <OgreOverlayManager.h>
 #include <OIS/OIS.h>
 
-class MyFrameListener : public Ogre::FrameListener {
-private:
-  OIS::InputManager* _inputManager;
-  OIS::Keyboard* _keyboard;
-  OIS::Mouse* _mouse;
-  Ogre::Camera* _camera;
-  Ogre::SceneNode* _node;
-  Ogre::OverlayManager* _overlayManager;
+#define SEA_BACKGROUND	1 << 0		// = 1. 32 bits de mascara.
+#define PLAYER_CELLS 	1 << 1		// = 2. 32 bits de mascara.
+#define CPU_CELLS 		1 << 2		// = 4. 32 bits de mascara.
 
-public:
-  MyFrameListener(Ogre::RenderWindow* win, Ogre::Camera* cam, 
-		  Ogre::SceneNode* node, Ogre::OverlayManager* om);
-  ~MyFrameListener();
-  bool frameStarted(const Ogre::FrameEvent& evt);  
+typedef unsigned int uint32;
+/**
+ * FrameListener se basa en el patrón Observador
+ *
+ * Antes de representar un frame, Ogre itera sobre todos
+ * los FrameListener añadidos, ejecutando el método frameStarted de cada uno de ellos.
+ */
+
+class MyFrameListener : public Ogre::FrameListener
+{
+	private:
+		OIS::InputManager* _inputManager;
+		OIS::Keyboard* _keyboard;
+		OIS::Mouse* _mouse;
+		Ogre::RenderWindow* _window;
+		Ogre::SceneManager* _sceneManager;
+		Ogre::OverlayManager* _overlayManager;
+		Ogre::Camera* _camera;
+		Ogre::RaySceneQuery *_raySceneQuery;
+	public:
+		MyFrameListener(Ogre::RenderWindow *win, Ogre::SceneManager *sm, Ogre::OverlayManager *om, Ogre::Camera *cam);
+		~MyFrameListener();
+		bool frameStarted(const Ogre::FrameEvent& evt);
+		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 };
