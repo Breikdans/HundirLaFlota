@@ -1,0 +1,61 @@
+<scene export_time="1448799674.8401482" formatVersion="1.0.1" exported_by="jose" previous_export_time="1448799589.9249823" >
+  <nodes >
+    <node name="Point" >
+      <position z="-6.701458" y="0.569296" x="13.764176" />
+      <rotation qw="1.000000" qx="0.000000" qz="-0.000000" qy="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+    </node>
+    <node name="Sun" >
+      <position z="6.062989" y="13.792408" x="7.273982" />
+      <rotation qw="1.000000" qx="0.000000" qz="-0.000000" qy="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light powerScale="1.0" type="directional" name="Sun" >
+        <position z="6.062989" y="13.792408" x="7.273982" />
+        <lightAttenuation linear="0.04" constant="1.0" quadratic="0.0" range="5000" />
+        <direction z="0.0" y="-1.0" x="0.0" />
+        <colourDiffuse r="1.0" g="1.0" b="1.0" />
+        <colourSpecular r="1.0" g="1.0" b="1.0" />
+      </light>
+    </node>
+    <node name="proa" >
+      <position z="-3.337021" y="2.511777" x="0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qz="-0.000000" qy="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_trans_y="False" lock_trans_x="False" mass="1.0" friction_z="1.0" name="proa" lock_rot_z="False" friction_y="1.0" meshFile="proa.mesh" physics_type="STATIC" velocity_max="0.0" anisotropic_friction="False" lock_rot_x="False" lock_rot_y="False" ghost="False" inertia_tensor="0.4000000059604645" friction_x="1.0" lock_trans_z="False" velocity_min="0.0" actor="False" mass_radius="1.0" damping_rot="0.1589999943971634" damping_trans="0.02539999969303608" />
+    </node>
+    <node name="Camera" >
+      <position z="-6.973087" y="8.030402" x="13.038373" />
+      <rotation qw="0.399272" qx="0.374170" qz="-0.465071" qy="0.695908" />
+      <scale z="0.687921" y="0.924643" x="0.996890" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera fov="0.5033799435163735" projectionType="perspective" name="Camera" >
+        <clipping farPlaneDist="100.0" nearPlaneDist="0.10000000149011612" near="0.10000000149011612" far="100.0" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="/home/jose/dev/workspace/HundirLaFlota/doc/blender/fuente_barcos/export/proa.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourBackground r="0.05087608844041824" g="0.05087608844041824" b="0.05087608844041824" />
+    <colourAmbient r="0.0" g="0.0" b="0.0" />
+    <colourDiffuse r="0.05087608844041824" g="0.05087608844041824" b="0.05087608844041824" />
+  </environment>
+</scene>
