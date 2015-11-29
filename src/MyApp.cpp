@@ -171,6 +171,18 @@ void MyApp::createScene()
 	_sceneManager->getRootSceneNode()->addChild(node_water);
 	node_water->addChild(main_node_tablero_CPU);
 	node_water->addChild(main_node_tablero_Player);
+
+	CPUGrid.IniciaBarcosAleatorio();
+	PlayerGrid.IniciaBarcosAleatorio();
+
+//	for(int x = 0; x < MAX_COLS_GRID; x++)
+//	{
+//		for(int y = 0; y < MAX_COLS_GRID; y++)
+//		{
+//			ActualizaTablero(node_Player, x, y);
+//			ActualizaTablero(node_CPU, x, y);
+//		}
+//	}
 }
 
 void MyApp::createOverlay()
