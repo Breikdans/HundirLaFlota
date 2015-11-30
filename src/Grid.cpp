@@ -153,72 +153,24 @@ void Grid::ColocaBarco(usint16 casillas)
 	{
 		for (int i = 0; i < casillas; i++)
 		{
-			switch(i)
-			{
-				case 0:
-					_tbl_Grid[PosXInicial+i][PosYInicial] = PROA_H;
-					break;
-				case 1:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					else
-						_tbl_Grid[PosXInicial+i][PosYInicial] = CUERPO1_H;
-					break;
-				case 2:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					else
-						_tbl_Grid[PosXInicial+i][PosYInicial] = CUERPO2_H;
-					break;
-				case 3:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					else
-					{
-						if (casillas == 5)
-							_tbl_Grid[PosXInicial+i][PosYInicial] = CUERPO1_H;
-					}
-					break;
-				case 4:
-					_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					break;
-			}
+			if(i == 0)
+				_tbl_Grid[PosXInicial+i][PosYInicial] = PROA_H;
+			else if(i == casillas-1)
+				_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
+			else
+				_tbl_Grid[PosXInicial+i][PosYInicial] = static_cast<usint16>(rangeRandomNumber(CUERPO1_H,CUERPO2_H));
 		}
 	}
 	else if(sw_orientacion == VERTICAL)
 	{
 		for (int i = 0; i < casillas; i++)
 		{
-			switch(i)
-			{
-				case 0:
-					_tbl_Grid[PosXInicial][PosYInicial+i] = PROA_V;
-					break;
-				case 1:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					else
-						_tbl_Grid[PosXInicial][PosYInicial+i] = CUERPO1_V;
-					break;
-				case 2:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					else
-						_tbl_Grid[PosXInicial][PosYInicial+i] = CUERPO2_V;
-					break;
-				case 3:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					else
-					{
-						if (casillas == 5)
-							_tbl_Grid[PosXInicial][PosYInicial+i] = CUERPO1_V;
-					}
-					break;
-				case 4:
-					_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					break;
-			}
+			if(i == 0)
+				_tbl_Grid[PosXInicial][PosYInicial+i] = PROA_V;
+			else if(i == casillas-1)
+				_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
+			else
+				_tbl_Grid[PosXInicial][PosYInicial+i] = static_cast<usint16>(rangeRandomNumber(CUERPO1_V,CUERPO2_V));
 		}
 	}
 }
