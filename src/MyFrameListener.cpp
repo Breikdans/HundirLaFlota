@@ -18,6 +18,22 @@ MyFrameListener::MyFrameListener(Ogre::RenderWindow *win,	// necesario para obte
 	wHandleStr << windowHandle;									// Lo pasamos a cadena...
 	param.insert(std::make_pair("WINDOW", wHandleStr.str()));	// Insertamos en parametros de OIS, la dupla: "WINDOW","HandleVentana"
 
+#if defined _DEBUG
+	// insert the following lines right before calling mInputSystem = OIS::InputManager::createInputSystem( paramList );
+	// Usando esta lista de parámetros además de la obligatoria que le indica a OIS la ventana donde trabajar evitaremos que OIS se haga dueño y señor del teclado y el ratón.
+	#if defined OIS_WIN32_PLATFORM
+		param.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND" )));
+		param.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+		param.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+		param.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+	#elif defined OIS_LINUX_PLATFORM
+		param.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+		param.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+		param.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+		param.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+	#endif
+#endif
+
 	_inputManager = OIS::InputManager::createInputSystem(param);// Creamos InpuntManager con los parametros recogidos
 	_keyboard = static_cast<OIS::Keyboard*>	(_inputManager->createInputObject(OIS::OISKeyboard, false)); // Creamos Objeto Input de tipo Teclado
 	_mouse = static_cast<OIS::Mouse*>	(_inputManager->createInputObject(OIS::OISMouse, false)); // Creamos Objeto Input de tipo Mouse
