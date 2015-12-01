@@ -6,6 +6,7 @@ template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 void PlayState::enter ()
 {
 	_root = Ogre::Root::getSingletonPtr();
+	_overlaySystem = new Ogre::OverlaySystem();
 
 	// Se recupera el gestor de escena y la cámara.
 	_sceneMgr 	= _root->getSceneManager("SceneManager");
@@ -16,7 +17,8 @@ void PlayState::enter ()
 
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-	_sceneMgr->addRenderQueueListener(new Ogre::OverlaySystem());	// consulta de rayos
+
+	_sceneMgr->addRenderQueueListener(_overlaySystem);	// consulta de rayos
 
 	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 1.7));	// posicionamos...
 	_camera->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
@@ -29,8 +31,9 @@ void PlayState::enter ()
 	double height = _viewport->getActualHeight();	// recogemos alto del viewport actual
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
+	loadResources();
 	createScene();		// creamos la escena
-//	createOverlay();	// creamos el overlay
+	createOverlay();	// creamos el overlay
 
 	_exitGame = false;
 }
@@ -196,8 +199,43 @@ void PlayState::createScene()
 
 void PlayState::createOverlay()
 {
-	//_overlayManager = Ogre::OverlayManager::getSingletonPtr();
-//	Ogre::Overlay *overlay = _overlayManager->getByName("Info");
-//	overlay->show();
+	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
+	Ogre::Overlay *overlay = _overlayManager->getByName("Info");
+	overlay->show();
 }
 
+void PlayState::loadResources() {
+Ogre::ConfigFile cf;
+	cf.load("resources.cfg");	// cargamos el fichero de recursos
+
+//	ejemplo de resources.cfg:
+//
+//	[General]
+//	FileSystem=media
+//  Zip=media/celda.zip
+
+	Ogre::ConfigFile::SectionIterator sI = cf.getSectionIterator();	// Iterador de SECCIONES []
+	Ogre::String sectionstr;	// Guardara toda la cadena a parsear
+	Ogre::String typestr;		// Guardara la Clave
+	Ogre::String datastr;		// Guardara el Valor
+
+	while (sI.hasMoreElements())// mientras haya secciones...
+	{
+		sectionstr = sI.peekNextKey();		// Cogemos nombre de la SECCION, sin avanzar ([General])
+		Ogre::ConfigFile::SettingsMultiMap *settings = sI.getNext();// Lee linea para parsear
+		Ogre::ConfigFile::SettingsMultiMap::iterator i;				// Iterador para Clave-Valor
+		for (i = settings->begin(); i != settings->end(); ++i)
+		{
+			// cogemos Clave en typestr....Valor en datastr
+			typestr = i->first;    datastr = i->second;
+			// añadimos la localizacion del recurso, al gestor de recursos...
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation( datastr,		// Clave
+																			typestr,		// Valor
+																			sectionstr);	// Seccion
+		}
+	}
+
+	// Decimos al gestor de recursos, que inicialice todos
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+}

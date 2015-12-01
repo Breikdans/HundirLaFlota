@@ -3,6 +3,9 @@
 
 #include <stack>
 #include <Ogre.h>
+#include <OgreOverlaySystem.h>
+#include <OgreOverlayElement.h>
+#include <OgreOverlayManager.h>
 #include <OgreSingleton.h>
 #include <OIS/OIS.h>
 
@@ -32,6 +35,7 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		Ogre::Root* _root;
 		Ogre::SceneManager* _sceneManager;
 		Ogre::RenderWindow* _renderWindow;
+
 
 		// Funciones de configuración.
 		void loadResources ();
