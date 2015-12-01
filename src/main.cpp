@@ -1,9 +1,36 @@
-#include "MyApp.h"
+#define UNUSED_VARIABLE(x) (void)x
 
-int main()
+#include "GameManager.h"
+#include "IntroState.h"
+#include "PlayState.h"
+#include "PauseState.h"
+
+#include <iostream>
+
+using namespace std;
+
+int main ()
 {
-	MyApp app;
-	app.start();
+	GameManager* game 		= new GameManager();
+	IntroState* introState 	= new IntroState();
+	PlayState* playState	= new PlayState();
+	PauseState* pauseState 	= new PauseState();
+
+	UNUSED_VARIABLE(introState);
+	UNUSED_VARIABLE(playState);
+	UNUSED_VARIABLE(pauseState);
+
+	try
+	{
+		// Inicializa el juego y transición al primer estado.
+		game->start(IntroState::getSingletonPtr());
+	}
+	catch (Ogre::Exception& e)
+	{
+		std::cerr << "Excepción detectada: " << e.getFullDescription();
+	}
+
+	delete game;
 
 	return 0;
 }

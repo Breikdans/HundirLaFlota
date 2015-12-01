@@ -19,5 +19,6 @@ class MyApp
 		void loadResources();
 		void createScene();
 		void createOverlay();
-		void ActualizaTablero(usint16 F, usint16 C);
+		void ActualizaTablero(Ogre::Node* node, usint16 F, usint16 C);
+
 };

@@ -34,7 +34,7 @@ int MyApp::start()
 
 	// creamos camara virtual
 	Ogre::Camera* cam = _sceneManager->createCamera("MainCamera");
-	cam->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 2.5));	// posicionamos...
+	cam->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 1.7));	// posicionamos...
 	cam->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
 	cam->setNearClipDistance(5);		// establecemos plano cercano del frustum
 	cam->setFarClipDistance(300);		// establecemos plano lejano del frustum
@@ -171,6 +171,18 @@ void MyApp::createScene()
 	_sceneManager->getRootSceneNode()->addChild(node_water);
 	node_water->addChild(main_node_tablero_CPU);
 	node_water->addChild(main_node_tablero_Player);
+
+	CPUGrid.IniciaBarcosAleatorio();
+	PlayerGrid.IniciaBarcosAleatorio();
+
+//	for(int x = 0; x < MAX_COLS_GRID; x++)
+//	{
+//		for(int y = 0; y < MAX_COLS_GRID; y++)
+//		{
+//			ActualizaTablero(node_Player, x, y);
+//			ActualizaTablero(node_CPU, x, y);
+//		}
+//	}
 }
 
 void MyApp::createOverlay()
