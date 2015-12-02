@@ -11,12 +11,17 @@ void PlayState::enter ()
 	_sceneMgr 	= _root->getSceneManager("SceneManager");
 	_camera 	= _sceneMgr->getCamera("IntroCamera");
 	_viewport 	= _root->getAutoCreatedWindow()->addViewport(_camera);
+	Ogre::OverlaySystem* _overlayManager = new Ogre::OverlaySystem();
 	// Nuevo background colour.
 //	_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
 
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-	_sceneMgr->addRenderQueueListener(new Ogre::OverlaySystem());	// consulta de rayos
+
+	createOverlay();	// creamos el overlay
+
+
+	_sceneMgr->addRenderQueueListener(_overlayManager);	// consulta de rayos
 
 	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 1.7));	// posicionamos...
 	_camera->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
@@ -30,7 +35,6 @@ void PlayState::enter ()
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
 	createScene();		// creamos la escena
-//	createOverlay();	// creamos el overlay
 
 	_exitGame = false;
 }

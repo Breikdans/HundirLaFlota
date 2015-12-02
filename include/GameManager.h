@@ -28,7 +28,7 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		static GameManager& getSingleton ();
 		static GameManager* getSingletonPtr ();
 
-		protected:
+	protected:
 		Ogre::Root* _root;
 		Ogre::SceneManager* _sceneManager;
 		Ogre::RenderWindow* _renderWindow;

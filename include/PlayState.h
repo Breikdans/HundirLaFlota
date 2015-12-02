@@ -39,6 +39,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		Ogre::SceneManager* _sceneMgr;
 		Ogre::Viewport* _viewport;
 		Ogre::Camera* _camera;
+		Ogre::OverlayManager* _overlayManager;	// gestor de Overlays
 
 		void createScene();
 		void createOverlay();
