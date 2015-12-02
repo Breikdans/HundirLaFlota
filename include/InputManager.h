@@ -41,10 +41,8 @@ class InputManager : public Ogre::Singleton<InputManager>, public OIS::KeyListen
 		bool keyReleased (const OIS::KeyEvent &e);
 
 		bool mouseMoved (const OIS::MouseEvent &e);
-		bool mousePressed (const OIS::MouseEvent &e,
-		OIS::MouseButtonID id);
-		bool mouseReleased (const OIS::MouseEvent &e,
-		OIS::MouseButtonID id);
+		bool mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id);
+		bool mouseReleased (const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
 		OIS::InputManager *_inputSystem;
 		OIS::Keyboard *_keyboard;

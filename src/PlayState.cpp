@@ -6,19 +6,17 @@ template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 void PlayState::enter ()
 {
 	_root = Ogre::Root::getSingletonPtr();
-	_overlaySystem = new Ogre::OverlaySystem();
 
 	// Se recupera el gestor de escena y la cámara.
-	_sceneMgr 	= _root->getSceneManager("SceneManager");
-	_camera 	= _sceneMgr->getCamera("IntroCamera");
-	_viewport 	= _root->getAutoCreatedWindow()->addViewport(_camera);
-	// Nuevo background colour.
-//	_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
+	_sceneMgr 		= _root->getSceneManager("SceneManager");
+	_camera 		= _sceneMgr->getCamera("IntroCamera");
+	_renderWindow 	= _root->getAutoCreatedWindow();
+	_viewport 		= _renderWindow->addViewport(_camera);
 
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
-	_sceneMgr->addRenderQueueListener(_overlaySystem);	// consulta de rayos
+	_sceneMgr->addRenderQueueListener(new Ogre::OverlaySystem());	// consulta de rayos
 
 	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 1.7));	// posicionamos...
 	_camera->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
@@ -35,18 +33,20 @@ void PlayState::enter ()
 	createScene();		// creamos la escena
 	createOverlay();	// creamos el overlay
 
+	// Creamos nuestra query de rayos
+	_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
+
 	_exitGame = false;
 }
 
 void PlayState::exit ()
 {
+	_sceneMgr->destroyQuery(_raySceneQuery);
 	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
 
-void PlayState::pause()
-{
-}
+void PlayState::pause() {}
 
 void PlayState::resume()
 {
@@ -86,15 +86,90 @@ void PlayState::keyReleased(const OIS::KeyEvent &e)
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
+	// guardamos el nombre del ultimo nodo seleccionado, para devolverle al estado normal
+	static std::string s_LastCell= "";
+
+	// posiciones del puntero del raton en pixeles
+	int posx = e.state.X.abs;
+	int posy = e.state.Y.abs;
+
+	// Botones del raton pulsados?
+//	bool mbleft = _mouse->getMouseState().buttonDown(OIS::MB_Left);
+//	bool mbmiddle = _mouse->getMouseState().buttonDown(OIS::MB_Middle);
+//	bool mbright = _mouse->getMouseState().buttonDown(OIS::MB_Right);
+
+	std::string s_CellName;
+	Ogre::SceneNode *node = NULL;
+	Ogre::Entity *pEnt = NULL;
+	std::string s_Material = "";
+
+	uint32 mask = PLAYER_CELLS | CPU_CELLS;			// mascara para la query...
+	setRayQuery(posx, posy, mask);	// establecemos query...
+	Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
+	Ogre::RaySceneQueryResult::iterator it;
+	it = result.begin();
+	if (it != result.end())
+	{
+		s_CellName = it->movable->getParentSceneNode()->getName();	// cogemos el nombre del nodo seleccionado con el rayo
+
+		// si habia una celda seleccionada... y es distinta a la actual... la dejamos con color NORMAL
+		if(s_LastCell.size() != 0 && s_LastCell != s_CellName)
+		{
+			node = _sceneMgr->getSceneNode(s_LastCell);
+			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
+
+			s_Material = "celda";
+			// cambiamos la textura del objeto a NORMAL
+			if (pEnt)
+				pEnt->setMaterialName(s_Material);
+		}
+
+		node = _sceneMgr->getSceneNode(s_CellName);
+		pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_CellName));
+		s_Material = "celda_light";
+		// cambiamos la textura del objeto a SELECCIONADA
+		pEnt->setMaterialName(s_Material);
+		s_LastCell = s_CellName;
+
+	}
+	else	// si sacamos el cursor de las celdas, dejamos la ultima con color NORMAL
+	{
+		if(s_LastCell.size())
+		{
+			node = _sceneMgr->getSceneNode(s_LastCell);
+			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
+			s_Material = "celda";
+			// cambiamos la textura del objeto a oscura
+			if (pEnt)
+				pEnt->setMaterialName(s_Material);
+		}
+	}
+
+	// Gestion del overlay -----------------------------
+	Ogre::OverlayElement *oe;
+	oe = _overlayManager->getOverlayElement("CPUSeleccion");
+	oe->setCaption(s_CellName);
+
+	oe = _overlayManager->getOverlayElement("cursor");
+	oe->setLeft(posx); oe->setTop(posy);
+
+	std::ostringstream s_posMouse;
+	s_posMouse << posx;
+	oe = _overlayManager->getOverlayElement("PosXMouse");
+	oe->setCaption(s_posMouse.str());
+
+	s_posMouse.str("");
+	s_posMouse << posy;
+	oe = _overlayManager->getOverlayElement("PosYMouse");
+	oe->setCaption(s_posMouse.str());
 }
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+	std::cout << "SU PRIMA!!" << std::endl;
 }
 
-void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{
-}
+void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
 
 PlayState* PlayState::getSingletonPtr ()
 {
@@ -187,14 +262,86 @@ void PlayState::createScene()
 	CPUGrid.IniciaBarcosAleatorio();
 	PlayerGrid.IniciaBarcosAleatorio();
 
-//	for(int x = 0; x < MAX_COLS_GRID; x++)
-//	{
-//		for(int y = 0; y < MAX_COLS_GRID; y++)
-//		{
-//			ActualizaTablero(node_Player, x, y);
-//			ActualizaTablero(node_CPU, x, y);
-//		}
-//	}
+
+	for(int x = 0; x < MAX_COLS_GRID; x++)
+	{
+		for(int y = 0; y < MAX_ROWS_GRID; y++)
+		{
+			std::stringstream nodeNamePlayer;
+			std::stringstream nodeNameCPU;
+			nodeNamePlayer << "node_player_" << x << "_" << y;	// node_player_X_Y;
+			nodeNameCPU << "node_cpu_" << x << "_" << y;	// node_cpu_X_Y;
+
+			ActualizaTablero(node_Player, PlayerGrid(x, y), nodeNamePlayer.str());
+			ActualizaTablero(node_CPU, CPUGrid(x, y), nodeNameCPU.str());
+		}
+	}
+}
+
+void PlayState::ActualizaTablero(Ogre::SceneNode* node, usint16 valor, std::string nodeName)
+{
+	Ogre::Entity* entidad=NULL;
+	Ogre::SceneNode* shipNode=NULL;
+	Ogre::SceneNode* TableroNode = _sceneMgr->getSceneNode(nodeName);
+	std::stringstream shipNodeName;
+	shipNodeName << "ship_" << nodeName;
+	std::string pieza;
+	bool pintarBarco = true;
+	bool esHorizontal = false;
+
+	switch(valor)
+	{
+		case AGUA: pintarBarco=false; break;
+		case DISPARADO: pintarBarco=false; break;
+		case PROA_H: pieza="proa.mesh";  esHorizontal=true; break;
+		case POPA_H: pieza="popa.mesh";  esHorizontal=true; break;
+		case PROA_V: pieza="proa.mesh"; break;
+		case CUERPO1_V: pieza="cuerpo1.mesh"; break;
+		case CUERPO2_V: pieza="cuerpo2.mesh"; break;
+		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; break;
+		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; break;
+		case POPA_V :pieza="popa.mesh";  break;
+		case PROA_H_T :pieza="proa.mesh"; esHorizontal=true; break;
+		case CUERPO1_H_T :pieza="cuerpo1.mesh"; esHorizontal=true; break;
+		case CUERPO2_H_T :pieza="cuerpo2.mesh"; esHorizontal=true; break;
+		case POPA_H_T :pieza="popa.mesh"; esHorizontal=true; break;
+		case PROA_V_T :pieza="proa.mesh"; break;
+		case CUERPO1_V_T :pieza="cuerpo1.mesh"; break;
+		case CUERPO2_V_T :pieza="cuerpo2.mesh"; break;
+		case POPA_V_T :pieza="popa.mesh"; break;
+		case PROA_H_Q :pieza="proa.mesh"; esHorizontal=true; break;
+		case CUERPO1_H_Q :pieza="cuerpo1.mesh"; esHorizontal=true; break;
+		case CUERPO2_H_Q :pieza="cuerpo2.mesh"; esHorizontal=true; break;
+		case POPA_H_Q :pieza="popa.mesh"; esHorizontal=true; break;
+		case PROA_V_Q :pieza="proa.mesh"; break;
+		case CUERPO1_V_Q :pieza="cuerpo1.mesh"; break;
+		case CUERPO2_V_Q :pieza="cuerpo2.mesh"; break;
+		case POPA_V_Q :pieza="popa.mesh"; break;
+	}
+
+	 if (pintarBarco) {
+		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
+		shipNode = _sceneMgr->createSceneNode(shipNodeName.str());
+		shipNode->attachObject(entidad);
+		if (!esHorizontal) {
+			shipNode->yaw(Ogre::Degree(90));
+		}
+		TableroNode->addChild(shipNode);
+	 } else {
+		 // meter lo que sea
+	 }
+
+
+}
+
+Ogre::Ray PlayState::setRayQuery(int posx, int posy, uint32 mask)
+{
+	Ogre::Ray rayMouse = _camera->getCameraToViewportRay(posx/float(_renderWindow->getWidth()),
+												   	     posy/float(_renderWindow->getHeight()));
+	_raySceneQuery->setRay(rayMouse);
+	_raySceneQuery->setSortByDistance(true);
+	_raySceneQuery->setQueryMask(mask);
+	return (rayMouse);
 }
 
 void PlayState::createOverlay()
@@ -239,3 +386,5 @@ Ogre::ConfigFile cf;
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 }
+
+

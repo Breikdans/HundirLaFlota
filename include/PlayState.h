@@ -37,16 +37,18 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 	protected:
 		Ogre::Root* _root;
 		Ogre::SceneManager* _sceneMgr;
+		Ogre::RenderWindow* _renderWindow;
 		Ogre::Viewport* _viewport;
 		Ogre::Camera* _camera;
-		Ogre::OverlaySystem* _overlaySystem;
 		Ogre::OverlayManager* _overlayManager;
+		Ogre::RaySceneQuery *_raySceneQuery;
 
 		void createScene();
 		void createOverlay();
 		void loadResources();
 
-		void ActualizaTablero(Ogre::Node* node, usint16 F, usint16 C);
+		void ActualizaTablero(Ogre::SceneNode*, usint16, std::string);
+		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 
 		bool _exitGame;
 
