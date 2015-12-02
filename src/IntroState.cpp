@@ -7,6 +7,7 @@ void IntroState::enter()
 {
 	_root 		= Ogre::Root::getSingletonPtr();
 
+
 	_sceneMgr 	= _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
 	_camera 	= _sceneMgr->createCamera("IntroCamera");
 	_viewport 	= _root->getAutoCreatedWindow()->addViewport(_camera);

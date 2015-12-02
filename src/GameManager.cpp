@@ -26,6 +26,7 @@ void GameManager::start(GameState* state)
 {
 	_root = new Ogre::Root();		// Creamos el objeto root. Sin parametros busca ogre.cfg
 
+
 	if (!configure())
 		return;
 
@@ -96,38 +97,7 @@ void GameManager::popState ()
  */
 void GameManager::loadResources()
 {
-	Ogre::ConfigFile cf;
-	cf.load("resources.cfg");	// cargamos el fichero de recursos
 
-//	ejemplo de resources.cfg:
-//
-//	[General]
-//	FileSystem=media
-//  Zip=media/celda.zip
-
-	Ogre::ConfigFile::SectionIterator sI = cf.getSectionIterator();	// Iterador de SECCIONES []
-	Ogre::String sectionstr;	// Guardara toda la cadena a parsear
-	Ogre::String typestr;		// Guardara la Clave
-	Ogre::String datastr;		// Guardara el Valor
-
-	while (sI.hasMoreElements())// mientras haya secciones...
-	{
-		sectionstr = sI.peekNextKey();		// Cogemos nombre de la SECCION, sin avanzar ([General])
-		Ogre::ConfigFile::SettingsMultiMap *settings = sI.getNext();// Lee linea para parsear
-		Ogre::ConfigFile::SettingsMultiMap::iterator i;				// Iterador para Clave-Valor
-		for (i = settings->begin(); i != settings->end(); ++i)
-		{
-			// cogemos Clave en typestr....Valor en datastr
-			typestr = i->first;    datastr = i->second;
-			// añadimos la localizacion del recurso, al gestor de recursos...
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation( datastr,		// Clave
-																			typestr,		// Valor
-																			sectionstr);	// Seccion
-		}
-	}
-
-	// Decimos al gestor de recursos, que inicialice todos
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
 bool GameManager::configure ()
