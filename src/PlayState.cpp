@@ -18,7 +18,7 @@ void PlayState::enter ()
 
 	_sceneMgr->addRenderQueueListener(new Ogre::OverlaySystem());	// consulta de rayos
 
-	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 1.7));	// posicionamos...
+	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 2.3));	// posicionamos...
 	_camera->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
 	_camera->setNearClipDistance(5);		// establecemos plano cercano del frustum
 	_camera->setFarClipDistance(300);		// establecemos plano lejano del frustum
@@ -104,7 +104,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 	std::string s_Material = "";
 
 	uint32 mask = PLAYER_CELLS | CPU_CELLS;			// mascara para la query...
-	Ogre::Ray r = setRayQuery(posx, posy, mask);	// establecemos query...
+	setRayQuery(posx, posy, mask);	// establecemos query...
 	Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
 	Ogre::RaySceneQueryResult::iterator it;
 	it = result.begin();
@@ -262,18 +262,75 @@ void PlayState::createScene()
 	CPUGrid.IniciaBarcosAleatorio();
 	PlayerGrid.IniciaBarcosAleatorio();
 
+
 	for(int x = 0; x < MAX_COLS_GRID; x++)
 	{
-		for(int y = 0; y < MAX_COLS_GRID; y++)
+		for(int y = 0; y < MAX_ROWS_GRID; y++)
 		{
-			ActualizaTablero(node_Player, x, y);
-			ActualizaTablero(node_CPU, x, y);
+			std::stringstream nodeNamePlayer;
+			std::stringstream nodeNameCPU;
+			nodeNamePlayer << "node_player_" << x << "_" << y;	// node_player_X_Y;
+			nodeNameCPU << "node_cpu_" << x << "_" << y;	// node_cpu_X_Y;
+
+			ActualizaTablero(node_Player, PlayerGrid(x, y), nodeNamePlayer.str());
+			ActualizaTablero(node_CPU, CPUGrid(x, y), nodeNameCPU.str());
 		}
 	}
 }
 
-void PlayState::ActualizaTablero(Ogre::Node* node, usint16 F, usint16 C)
+void PlayState::ActualizaTablero(Ogre::SceneNode* node, usint16 valor, std::string nodeName)
 {
+	Ogre::Entity* entidad=NULL;
+	Ogre::SceneNode* shipNode=NULL;
+	Ogre::SceneNode* TableroNode = _sceneMgr->getSceneNode(nodeName);
+	std::stringstream shipNodeName;
+	shipNodeName << "ship_" << nodeName;
+	std::string pieza;
+	bool pintarBarco = true;
+	bool esHorizontal = false;
+
+	switch(valor)
+	{
+		case AGUA: pintarBarco=false; break;
+		case DISPARADO: pintarBarco=false; break;
+		case PROA_H: pieza="proa.mesh";  esHorizontal=true; break;
+		case POPA_H: pieza="popa.mesh";  esHorizontal=true; break;
+		case PROA_V: pieza="proa.mesh"; break;
+		case CUERPO1_V: pieza="cuerpo1.mesh"; break;
+		case CUERPO2_V: pieza="cuerpo2.mesh"; break;
+		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; break;
+		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; break;
+		case POPA_V :pieza="popa.mesh";  break;
+		case PROA_H_T :pieza="proa.mesh"; esHorizontal=true; break;
+		case CUERPO1_H_T :pieza="cuerpo1.mesh"; esHorizontal=true; break;
+		case CUERPO2_H_T :pieza="cuerpo2.mesh"; esHorizontal=true; break;
+		case POPA_H_T :pieza="popa.mesh"; esHorizontal=true; break;
+		case PROA_V_T :pieza="proa.mesh"; break;
+		case CUERPO1_V_T :pieza="cuerpo1.mesh"; break;
+		case CUERPO2_V_T :pieza="cuerpo2.mesh"; break;
+		case POPA_V_T :pieza="popa.mesh"; break;
+		case PROA_H_Q :pieza="proa.mesh"; esHorizontal=true; break;
+		case CUERPO1_H_Q :pieza="cuerpo1.mesh"; esHorizontal=true; break;
+		case CUERPO2_H_Q :pieza="cuerpo2.mesh"; esHorizontal=true; break;
+		case POPA_H_Q :pieza="popa.mesh"; esHorizontal=true; break;
+		case PROA_V_Q :pieza="proa.mesh"; break;
+		case CUERPO1_V_Q :pieza="cuerpo1.mesh"; break;
+		case CUERPO2_V_Q :pieza="cuerpo2.mesh"; break;
+		case POPA_V_Q :pieza="popa.mesh"; break;
+	}
+
+	 if (pintarBarco) {
+		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
+		shipNode = _sceneMgr->createSceneNode(shipNodeName.str());
+		shipNode->attachObject(entidad);
+		if (!esHorizontal) {
+			shipNode->yaw(Ogre::Degree(90));
+		}
+		TableroNode->addChild(shipNode);
+	 } else {
+		 // meter lo que sea
+	 }
+
 
 }
 
