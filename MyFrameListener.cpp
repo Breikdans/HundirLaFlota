@@ -1,6 +1,6 @@
 #include <iostream>
 #include "MyFrameListener.h"
-
+asdasdad
 MyFrameListener::MyFrameListener(Ogre::RenderWindow *win,	// necesario para obtener el handle de ventana dl S.O.
 								 Ogre::SceneManager *sm,	// para nuestro OverlayManager
 								 Ogre::OverlayManager *om,	// para nuestro SceneManager
@@ -70,7 +70,7 @@ bool MyFrameListener::frameStarted(const Ogre::FrameEvent& evt)
 	if(_keyboard->isKeyDown(OIS::KC_ESCAPE)) return false;	// Si es ESC.. devolviendo false salimos
 
 	// Botones del raton pulsados?
-	bool mbleft = _mouse->getMouseState().buttonDown(OIS::MB_Left);
+//	bool mbleft = _mouse->getMouseState().buttonDown(OIS::MB_Left);
 //	bool mbmiddle = _mouse->getMouseState().buttonDown(OIS::MB_Middle);
 //	bool mbright = _mouse->getMouseState().buttonDown(OIS::MB_Right);
 
