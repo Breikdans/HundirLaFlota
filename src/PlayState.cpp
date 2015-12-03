@@ -18,7 +18,7 @@ void PlayState::enter ()
 
 	_sceneMgr->addRenderQueueListener(new Ogre::OverlaySystem());	// consulta de rayos
 
-	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 1.7));	// posicionamos...
+	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 2.3));	// posicionamos...
 	_camera->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
 	_camera->setNearClipDistance(5);		// establecemos plano cercano del frustum
 	_camera->setFarClipDistance(300);		// establecemos plano lejano del frustum
@@ -74,6 +74,19 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 	{
 		pushState(PauseState::getSingletonPtr());
 	}
+
+#ifdef _DEBUG
+	// movimiento de camara luego quitar
+ 	 Ogre::Vector3 vt(0,0,0);     Ogre::Real tSpeed = 20.0;
+	  if(e.key == OIS::KC_UP)    vt+=Ogre::Vector3(0,0,-1);
+	  if(e.key == OIS::KC_DOWN)  vt+=Ogre::Vector3(0,0,1);
+	  if(e.key == OIS::KC_LEFT)  vt+=Ogre::Vector3(-1,0,0);
+	  if(e.key == OIS::KC_RIGHT) vt+=Ogre::Vector3(1,0,0);
+	  _camera->moveRelative(vt * 0.1 * tSpeed);
+#endif
+
+
+
 }
 
 void PlayState::keyReleased(const OIS::KeyEvent &e)
