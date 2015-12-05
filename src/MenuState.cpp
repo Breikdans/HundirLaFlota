@@ -1,7 +1,13 @@
+
+
 #include "MenuState.h"
 #include "PlayState.h"
 
 template<> MenuState* Ogre::Singleton<MenuState>::msSingleton = 0;
+
+
+
+
 
 void MenuState::enter ()
 {
