@@ -45,7 +45,9 @@ void Grid::IniciaBarcosAleatorio()
 	{
 		ColocaBarco(barcos[i]);
 	}
+#ifdef _DEBUG
 DebugGrid();
+#endif
 }
 
 // ========================================================================
