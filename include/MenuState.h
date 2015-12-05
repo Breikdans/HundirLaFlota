@@ -1,5 +1,5 @@
-#ifndef PlayState_H
-#define PlayState_H
+#ifndef MenuState_H
+#define MenuState_H
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
@@ -8,12 +8,11 @@
 #include <OgreOverlayManager.h>
 
 #include "GameState.h"
-#include "Grid.h"
 
-class PlayState : public Ogre::Singleton<PlayState>, public GameState
+class MenuState : public Ogre::Singleton<MenuState>, public GameState
 {
 	public:
-		PlayState () {}
+		MenuState () {}
 
 		void enter ();
 		void exit ();
@@ -31,8 +30,8 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		bool frameEnded (const Ogre::FrameEvent& evt);
 
 		// Heredados de Ogre::Singleton.
-		static PlayState& getSingleton ();
-		static PlayState* getSingletonPtr ();
+		static MenuState& getSingleton ();
+		static MenuState* getSingletonPtr ();
 
 	protected:
 		Ogre::Root* _root;
@@ -44,16 +43,16 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		Ogre::RaySceneQuery *_raySceneQuery;
 
 		void createScene();
-		void createOverlay();
+		//void createOverlay();
 		//void loadResources();
 
-		void ActualizaTablero(Ogre::SceneNode*, usint16, std::string);
-		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
+		//void ActualizaTablero(Ogre::SceneNode*, usint16, std::string);
+		//Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 
 		bool _exitGame;
 
-		Grid CPUGrid;
-		Grid PlayerGrid;
+		//Grid CPUGrid;
+		//Grid PlayerGrid;
 
 };
 

@@ -11,6 +11,8 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
 	public:
 		IntroState() {}
 
+
+
 		void enter ();
 		void exit ();
 		void pause ();
@@ -35,6 +37,10 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
 		Ogre::SceneManager* _sceneMgr;
 		Ogre::Viewport* _viewport;
 		Ogre::Camera* _camera;
+		Ogre::OverlayManager* _overlayManager;
+
+		void createOverlay();
+		void loadResources();
 
 		bool _exitGame;
 };
