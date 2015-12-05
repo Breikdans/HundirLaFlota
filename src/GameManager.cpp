@@ -22,19 +22,19 @@ GameManager::~GameManager ()
 		delete _root;
 }
 
-void GameManager::createCegui()
-{
-	  _cegui_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
-	  CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-	  CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
-	  CEGUI::Font::setDefaultResourceGroup("Fonts");
-	  CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-	  CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
-
-	  CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
-	  CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-12");
-	  CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
-}
+//void GameManager::createCegui()
+//{
+//	  _cegui_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
+//	  CEGUI::Scheme::setDefaultResourceGroup("Schemes");
+//	  CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
+//	  CEGUI::Font::setDefaultResourceGroup("Fonts");
+//	  CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
+//	  CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
+//
+//	  CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
+//	  CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-12");
+//	  CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+//}
 
 void GameManager::start(GameState* state)
 {
@@ -55,7 +55,7 @@ void GameManager::start(GameState* state)
 	_root->addFrameListener(this);
 
 	// Inicialización de CEGUI
-	createCegui();
+	//createCegui();
 
 	// Transición al estado inicial.
 	changeState(state);

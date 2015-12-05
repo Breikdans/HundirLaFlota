@@ -38,7 +38,7 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		Ogre::SceneManager* _sceneManager;
 		Ogre::RenderWindow* _renderWindow;
 
-		CEGUI::OgreRenderer* _cegui_renderer;
+		//CEGUI::OgreRenderer* _cegui_renderer;
 
 		// Funciones de configuración.
 		void loadResources ();
@@ -59,7 +59,7 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		bool mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id);
 		bool mouseReleased (const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-		void createCegui();
+		//void createCegui();
 
 		// Gestor de eventos de entrada.
 		InputManager *_inputMgr;

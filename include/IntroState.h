@@ -38,9 +38,11 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
 		Ogre::Viewport* _viewport;
 		Ogre::Camera* _camera;
 		Ogre::OverlayManager* _overlayManager;
+		CEGUI::OgreRenderer* _cegui_renderer;
 
 		void createOverlay();
 		void loadResources();
+		void createCegui();
 
 		bool _exitGame;
 };
