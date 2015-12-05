@@ -19,8 +19,23 @@ void IntroState::enter()
 
 	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
 	createOverlay();	// creamos el overlay
-
+    createCegui();
 	_exitGame 	= false;
+}
+
+void IntroState::createCegui()
+{
+	  _cegui_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
+	  CEGUI::Scheme::setDefaultResourceGroup("Schemes");
+	  CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
+	  CEGUI::Font::setDefaultResourceGroup("Fonts");
+	  CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
+	  CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
+
+	  CEGUI::FontManager::getSingleton().createAll("*.font", "Fonts");
+	  CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
+	  CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-12");
+	  CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
 }
 
 
