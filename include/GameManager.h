@@ -36,7 +36,6 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		Ogre::SceneManager* _sceneManager;
 		Ogre::RenderWindow* _renderWindow;
 
-
 		// Funciones de configuración.
 		void loadResources ();
 		bool configure ();
@@ -44,6 +43,7 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		// Heredados de FrameListener.
 		bool frameStarted (const Ogre::FrameEvent& evt);
 		bool frameEnded (const Ogre::FrameEvent& evt);
+
 
 	private:
 		// Funciones para delegar eventos de teclado

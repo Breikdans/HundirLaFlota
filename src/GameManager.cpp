@@ -30,8 +30,6 @@ void GameManager::start(GameState* state)
 	if (!configure())
 		return;
 
-	loadResources();	// cargamos fichero de recursos
-
 	_inputMgr = new InputManager;
 	_inputMgr->initialise(_renderWindow);
 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout version="4">
+  <Window type="TaharezLook/FrameWindow" name="Cfg" >
+    <Property name="Text" value="Cfguration Window" />
+    <Property name="TitlebarFont" value="DejaVuSans-12" />
+    <Property name="TitlebarEnabled" value="True" />
+    <Property name="Area" value="{{0.133,0},{0.027,0},{0.320,300},{0.127,300}}" />
+    <!-- Sound parameter -->
+    <Window type="TaharezLook/StaticText" name="SndText" >
+      <Property name="Text" value="Sound Volume" />
+      <Property name="Area" value="{{0.385,0},{0.0316,0},{0.965,0},{0.174,0}}" />
+    </Window>
+    <Window type="TaharezLook/Spinner" name="SndVolume" >
+      <Property name="Text" value="SoundVolume" />
+      <Property name="StepSize" value="1" />
+      <Property name="CurrentValue" value="75" />
+      <Property name="MaximumValue" value="100" />
+      <Property name="MinimumValue" value="0" />
+      <Property name="Area" value="{{0.0598,0},{0.046,0},{0.355,0},{0.166,0}}" />
+    </Window>
+    <!-- Fullscreen parameter -->
+    <Window type="TaharezLook/StaticText" name="FullScrText" >
+      <Property name="Text" value="Fullscreen" />
+      <Property name="Area" value="{{0.385,0},{0.226,0},{0.965,0},{0.367,0}}" />
+    </Window>
+    <Window type="TaharezLook/Checkbox" name="FullscrCheckbox" >
+      <Property name="Area" value="{{0.179,0},{0.244,0},{0.231,0},{0.370,0}}" />
+    </Window>
+    <!-- Port parameter -->
+    <Window type="TaharezLook/StaticText" name="PortText" >
+      <Property name="Text" value="Port" />
+      <Property name="Area" value="{{0.385,0},{0.420,0},{0.9656,0},{0.551,0}}" />
+    </Window>
+    <Window type="TaharezLook/Editbox" name="PortEditbox" >
+      <Property name="Text" value="1234" />
+      <Property name="MaxTextLength" value="1073741823" />
+      <Property name="Area" value="{{0.0541,0},{0.417,0},{0.341,0},{0.548,0}}" />
+      <Property name="TextParsingEnabled" value="False" />
+    </Window>
+    <!-- Resolution parameter -->
+    <Window type="TaharezLook/StaticText" name="ResText" >
+      <Property name="Text" value="Resolution" />
+      <Property name="Area" value="{{0.385,0},{0.60,0},{0.965,0},{0.750,0}}" />
+    </Window>
+    <Window type="TaharezLook/ItemListbox" name="ResListbox" >
+      <Property name="Area" value="{{0.0530,0},{0.613,0},{0.341,0},{0.7904,0}}" />
+      <Window type="TaharezLook/ListboxItem" name="Item1">
+	<Property name="Text" value="1024x768"/>
+      </Window>
+      <Window type="TaharezLook/ListboxItem" name="Item2">
+	<Property name="Text" value="800x600"/>
+      </Window>
+    </Window>
+    <!-- Exit button -->
+    <Window type="TaharezLook/Button" name="ExitButton" >
+      <Property name="Text" value="Exit" />
+      <Property name="Area" value="{{0.784,0},{0.825,0},{0.968,0},{0.966,0}}" />
+    </Window>
+    <!-- Apply button -->
+    <Window type="TaharezLook/Button" name="ApplyButton" >
+      <Property name="Text" value="Apply" />
+      <Property name="Area" value="{{0.583,0},{0.825,0},{0.768,0},{0.969,0}}" />
+    </Window>
+  </Window>
+</GUILayout>

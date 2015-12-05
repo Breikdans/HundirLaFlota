@@ -3,6 +3,8 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
+#include <CEGUI.h>
+#include <RendererModules/Ogre/Renderer.h>
 
 #include "GameState.h"
 
@@ -35,6 +37,12 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
 		Ogre::SceneManager* _sceneMgr;
 		Ogre::Viewport* _viewport;
 		Ogre::Camera* _camera;
+		Ogre::OverlayManager* _overlayManager;
+		CEGUI::OgreRenderer* _cegui_renderer;
+
+		void createOverlay();
+		void loadResources();
+		void createCegui();
 
 		bool _exitGame;
 };
