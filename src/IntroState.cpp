@@ -53,7 +53,7 @@ void IntroState::createOverlay()
 void IntroState::exit()
 {
 	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
-	overlay->hide();
+	overlay->clear();
 
 	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
