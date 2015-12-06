@@ -43,6 +43,7 @@ class MenuState : public Ogre::Singleton<MenuState>, public GameState
 		Ogre::Camera* 			_camera;
 		Ogre::OverlayManager* 	_overlayManager;
 		Ogre::RaySceneQuery *	_raySceneQuery;
+		CEGUI::Window* 			_ceguiSheet;
 
 		bool _exitGame;
 
