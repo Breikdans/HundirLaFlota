@@ -6,8 +6,6 @@ template<> IntroState* Ogre::Singleton<IntroState>::msSingleton = 0;
 void IntroState::enter()
 {
 	_root 		= Ogre::Root::getSingletonPtr();
-
-
 	_sceneMgr 	= _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
 	_camera 	= _sceneMgr->createCamera("IntroCamera");
 	_viewport 	= _root->getAutoCreatedWindow()->addViewport(_camera);
@@ -16,41 +14,48 @@ void IntroState::enter()
 	_sceneMgr->addRenderQueueListener(new Ogre::OverlaySystem());	// consulta de rayos
 
 	loadResources();
-	//createScene();		// creamos la escena
 
 	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
 	createOverlay();	// creamos el overlay
-    createCegui();
+	createCegui();
+
 	_exitGame 	= false;
 }
 
+
 void IntroState::createCegui()
 {
-	  _cegui_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
-	  CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-	  CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
-	  CEGUI::Font::setDefaultResourceGroup("Fonts");
-	  CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-	  CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
+	CEGUI::OgreRenderer::bootstrapSystem();
+	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
+	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
+	CEGUI::Font::setDefaultResourceGroup("Fonts");
+	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
+	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 
-	  CEGUI::FontManager::getSingleton().createAll("*.font", "Fonts");
-	  CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
-	  CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-12");
-	  CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+	CEGUI::FontManager::getSingleton().createAll("*.font", "Fonts");
+	CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
+	CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-12");
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+
+	// igualamos posiciones de ratones
+	CEGUI::Vector2f mousePos = CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().getPosition();
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseMove(-mousePos.d_x,-mousePos.d_y);
 }
 
 
-void IntroState::createOverlay() {
-
-		Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
-		overlay->show();
+void IntroState::createOverlay()
+{
+	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
+	overlay->show();
 }
+
 
 void IntroState::exit()
 {
 	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
+
 
 void IntroState::pause() {}
 
@@ -77,9 +82,9 @@ void IntroState::keyPressed(const OIS::KeyEvent &e)
 	//{
 
 	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
-	overlay->hide();
+	overlay->clear();
 
-		changeState(MenuState::getSingletonPtr());
+	changeState(MenuState::getSingletonPtr());
 	//}
 }
 
@@ -93,7 +98,13 @@ void IntroState::keyReleased(const OIS::KeyEvent &e )
 
 void IntroState::mouseMoved(const OIS::MouseEvent &e) {}
 
-void IntroState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
+void IntroState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
+	overlay->clear();
+
+	changeState(MenuState::getSingletonPtr());
+}
 
 void IntroState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
 
@@ -108,8 +119,9 @@ IntroState& IntroState::getSingleton ()
 	return *msSingleton;
 }
 
-void IntroState::loadResources() {
-Ogre::ConfigFile cf;
+void IntroState::loadResources()
+{
+	Ogre::ConfigFile cf;
 	cf.load("resources.cfg");	// cargamos el fichero de recursos
 
 //	ejemplo de resources.cfg:

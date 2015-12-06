@@ -8,8 +8,6 @@
 #include <OgreOverlayManager.h>
 #include <OgreSingleton.h>
 #include <OIS/OIS.h>
-#include <CEGUI.h>
-#include <RendererModules/Ogre/Renderer.h>
 
 #include "InputManager.h"
 
@@ -38,8 +36,6 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		Ogre::SceneManager* _sceneManager;
 		Ogre::RenderWindow* _renderWindow;
 
-		//CEGUI::OgreRenderer* _cegui_renderer;
-
 		// Funciones de configuración.
 		void loadResources ();
 		bool configure ();
@@ -58,8 +54,6 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		bool mouseMoved (const OIS::MouseEvent &e);
 		bool mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id);
 		bool mouseReleased (const OIS::MouseEvent &e, OIS::MouseButtonID id);
-
-		//void createCegui();
 
 		// Gestor de eventos de entrada.
 		InputManager *_inputMgr;

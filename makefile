@@ -45,6 +45,8 @@ dirs:
 # Enlazado -----------------------------------------------------------
 $(EXEC): $(OBJS)
 	$(CXX) $^ $(LDFLAGS) -o $@
+	@echo
+	@echo 'Compilacion terminada!'
 
 # Compilación --------------------------------------------------------
 $(DIROBJ)main.o: $(DIRSRC)main.cpp

@@ -1,13 +1,7 @@
-
-
 #include "MenuState.h"
 #include "PlayState.h"
 
 template<> MenuState* Ogre::Singleton<MenuState>::msSingleton = 0;
-
-
-
-
 
 void MenuState::enter ()
 {
@@ -22,8 +16,6 @@ void MenuState::enter ()
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
-	//_sceneMgr->addRenderQueueListener(new Ogre::OverlaySystem());	// consulta de rayos
-
 	_camera->setPosition(Ogre::Vector3(0, 50, (MAX_ROWS_GRID*CELL_WIDTH) * 2.3));	// posicionamos...
 	_camera->lookAt(Ogre::Vector3(0, 0, (MAX_ROWS_GRID*CELL_WIDTH) / 2));			// enfocamos a 0,0,0
 	_camera->setNearClipDistance(5);		// establecemos plano cercano del frustum
@@ -35,12 +27,7 @@ void MenuState::enter ()
 	double height = _viewport->getActualHeight();	// recogemos alto del viewport actual
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
-	//loadResources();
-	//createScene();		// creamos la escena
-	//createOverlay();	// creamos el overlay
-
-	// Creamos nuestra query de rayos
-	//_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
+	showMenuCegui();
 
 	_exitGame = false;
 }
@@ -62,40 +49,32 @@ void MenuState::resume()
 
 bool MenuState::frameStarted(const Ogre::FrameEvent& evt)
 {
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(evt.timeSinceLastFrame);
+
 	return true;
 }
 
 bool MenuState::frameEnded(const Ogre::FrameEvent& evt)
 {
 	if (_exitGame)
+	{
+		exit();
 		return false;
+	}
 
 	return true;
 }
 
 void MenuState::keyPressed(const OIS::KeyEvent &e)
 {
-	// Tecla p --> PauseState.
-	/*if (e.key == OIS::KC_P)
-	{
-		pushState(PauseState::getSingletonPtr());
-	}
-
-#ifdef _DEBUG
-	// movimiento de camara luego quitar
- 	 Ogre::Vector3 vt(0,0,0);     Ogre::Real tSpeed = 20.0;
-	  if(e.key == OIS::KC_UP)    vt+=Ogre::Vector3(0,0,-1);
-	  if(e.key == OIS::KC_DOWN)  vt+=Ogre::Vector3(0,0,1);
-	  if(e.key == OIS::KC_LEFT)  vt+=Ogre::Vector3(-1,0,0);
-	  if(e.key == OIS::KC_RIGHT) vt+=Ogre::Vector3(1,0,0);
-	  _camera->moveRelative(vt * 0.1 * tSpeed);
-#endif
-*/
-
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(e.key));
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(e.text);
 }
 
 void MenuState::keyReleased(const OIS::KeyEvent &e)
 {
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyUp(static_cast<CEGUI::Key::Scan>(e.key));
+
 	if (e.key == OIS::KC_ESCAPE)
 	{
 		_exitGame = true;
@@ -104,15 +83,24 @@ void MenuState::keyReleased(const OIS::KeyEvent &e)
 
 void MenuState::mouseMoved(const OIS::MouseEvent &e)
 {
+//	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseMove(e.state.X.rel, e.state.Y.rel);
 
+	// para igualar punteros de raton en posicion 0,0
+	CEGUI::Vector2f mousePos = CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().getPosition();
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setPosition(CEGUI::Vector2f(e.state.X.abs,e.state.Y.abs));
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseMove(mousePos.d_x/float(e.state.width), mousePos.d_y/float(e.state.height));
 }
 
 void MenuState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-	std::cout << "SU PRIMA!!" << std::endl;
+	std::cout << __FILE__ << ": " << __func__ << ": " "SU PRIMA!! Boton: " << id << std::endl;
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(convertMouseButton(id));
 }
 
-void MenuState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
+void MenuState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonUp(convertMouseButton(id));
+}
 
 MenuState* MenuState::getSingletonPtr ()
 {
@@ -125,11 +113,81 @@ MenuState& MenuState::getSingleton ()
 	return *msSingleton;
 }
 
-void MenuState::createScene()
+CEGUI::MouseButton MenuState::convertMouseButton(OIS::MouseButtonID id)
 {
+	CEGUI::MouseButton ceguiId;
+	switch(id)
+	{
+		case OIS::MB_Left:
+			ceguiId = CEGUI::LeftButton;
+			break;
+		case OIS::MB_Right:
+			ceguiId = CEGUI::RightButton;
+			break;
+		case OIS::MB_Middle:
+			ceguiId = CEGUI::MiddleButton;
+			break;
+		default:
+			ceguiId = CEGUI::LeftButton;
 	}
+	return ceguiId;
+}
 
+void MenuState::showMenuCegui()
+{
+	//Sheet
+	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex2");
 
+	//Config Window
+	CEGUI::Window* configWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu_principal.layout");
 
+	// NEW GAME
+	CEGUI::Window* newGameButton = configWin->getChild("btn_new_game");
+	newGameButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+							   	   CEGUI::Event::Subscriber(&MenuState::newGame, this));
+	// RECORDS
+	CEGUI::Window* recordsButton = configWin->getChild("btn_records");
+	recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+							   	   CEGUI::Event::Subscriber(&MenuState::records, this));
+	// CREDITS
+	CEGUI::Window* creditsButton = configWin->getChild("btn_credits");
+	creditsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+							   	   CEGUI::Event::Subscriber(&MenuState::credits, this));
+	// QUIT
+	CEGUI::Window* exitButton = configWin->getChild("btn_quit");
+	exitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+							   CEGUI::Event::Subscriber(&MenuState::quit, this));
 
+	//Attaching buttons
+	sheet->addChild(configWin);
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
+
+}
+
+bool MenuState::newGame(const CEGUI::EventArgs &e)
+{
+//	changeState(PlayState::getSingletonPtr());
+	std::cout << "NEW GAME" << std::endl;
+	pushState(PlayState::getSingletonPtr());
+	return true;
+}
+
+bool MenuState::records(const CEGUI::EventArgs &e)
+{
+	std::cout << "RECORDS" << std::endl;
+	return true;
+}
+
+bool MenuState::credits(const CEGUI::EventArgs &e)
+{
+	std::cout << "CREDITS" << std::endl;
+	return true;
+}
+
+bool MenuState::quit(const CEGUI::EventArgs &e)
+{
+	std::cout << "QUIT" << std::endl;
+	_exitGame = true;
+	return true;
+}
 

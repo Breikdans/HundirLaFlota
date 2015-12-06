@@ -53,8 +53,8 @@ void InputManager::initialise(Ogre::RenderWindow *renderWindow)
 		paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
 		paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
 	#elif defined OIS_LINUX_PLATFORM
-		paramList.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
-		paramList.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+	//	paramList.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+	//	paramList.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
 		paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
 		paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
 	#endif
@@ -234,7 +234,7 @@ bool InputManager::keyReleased(const OIS::KeyEvent &e)
 	// Delega en los KeyListener añadidos.
 	for (; itKeyListener != itKeyListenerEnd; ++itKeyListener)
 	{
-		itKeyListener->second->keyReleased( e );
+		itKeyListener->second->keyReleased(e);
 	}
 
 	return true;
@@ -247,7 +247,7 @@ bool InputManager::mouseMoved(const OIS::MouseEvent &e)
 	// Delega en los MouseListener añadidos.
 	for (; itMouseListener != itMouseListenerEnd; ++itMouseListener)
 	{
-		itMouseListener->second->mouseMoved( e );
+		itMouseListener->second->mouseMoved(e);
 	}
 
 	return true;
@@ -260,7 +260,7 @@ bool InputManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 	// Delega en los MouseListener añadidos.
 	for (; itMouseListener != itMouseListenerEnd; ++itMouseListener)
 	{
-		itMouseListener->second->mousePressed( e, id );
+		itMouseListener->second->mousePressed(e, id);
 	}
 
 	return true;
@@ -273,7 +273,7 @@ bool InputManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id
 	// Delega en los MouseListener añadidos.
 	for (; itMouseListener != itMouseListenerEnd; ++itMouseListener)
 	{
-		itMouseListener->second->mouseReleased( e, id );
+		itMouseListener->second->mouseReleased(e, id);
 	}
 
 	return true;

@@ -6,6 +6,8 @@
 #include <OgreOverlaySystem.h>
 #include <OgreOverlayElement.h>
 #include <OgreOverlayManager.h>
+#include <CEGUI.h>
+#include <RendererModules/Ogre/Renderer.h>
 
 #include "GameState.h"
 
@@ -34,25 +36,24 @@ class MenuState : public Ogre::Singleton<MenuState>, public GameState
 		static MenuState* getSingletonPtr ();
 
 	protected:
-		Ogre::Root* _root;
-		Ogre::SceneManager* _sceneMgr;
-		Ogre::RenderWindow* _renderWindow;
-		Ogre::Viewport* _viewport;
-		Ogre::Camera* _camera;
-		Ogre::OverlayManager* _overlayManager;
-		Ogre::RaySceneQuery *_raySceneQuery;
-
-		void createScene();
-		//void createOverlay();
-		//void loadResources();
-
-		//void ActualizaTablero(Ogre::SceneNode*, usint16, std::string);
-		//Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
+		Ogre::Root* 			_root;
+		Ogre::SceneManager* 	_sceneMgr;
+		Ogre::RenderWindow* 	_renderWindow;
+		Ogre::Viewport* 		_viewport;
+		Ogre::Camera* 			_camera;
+		Ogre::OverlayManager* 	_overlayManager;
+		Ogre::RaySceneQuery *	_raySceneQuery;
 
 		bool _exitGame;
 
-		//Grid CPUGrid;
-		//Grid PlayerGrid;
+		CEGUI::MouseButton convertMouseButton(OIS::MouseButtonID id);
+		void showMenuCegui();
+
+		// Funciones de tratamiento de botones de CEGUI
+		bool quit(const CEGUI::EventArgs &e);
+		bool newGame(const CEGUI::EventArgs &e);
+		bool records(const CEGUI::EventArgs &e);
+		bool credits(const CEGUI::EventArgs &e);
 
 };
 
