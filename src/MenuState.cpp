@@ -34,7 +34,10 @@ void MenuState::enter ()
 
 void MenuState::exit ()
 {
-	_sceneMgr->clearScene();
+
+	 CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
+	 CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
+	  _sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
 
@@ -78,6 +81,7 @@ void MenuState::keyReleased(const OIS::KeyEvent &e)
 	{
 		_exitGame = true;
 	}
+
 }
 
 void MenuState::mouseMoved(const OIS::MouseEvent &e)
@@ -135,36 +139,39 @@ CEGUI::MouseButton MenuState::convertMouseButton(OIS::MouseButtonID id)
 void MenuState::showMenuCegui()
 {
 	//Sheet
-	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex2");
+	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","menu_principal");
+
 
 	//Config Window
-	CEGUI::Window* configWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu_principal.layout");
+	CEGUI::Window* menuWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu_principal.layout");
 
 	// NEW GAME
-	CEGUI::Window* newGameButton = configWin->getChild("btn_new_game");
+	CEGUI::Window* newGameButton = menuWin->getChild("btn_new_game");
 	newGameButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::newGame, this));
 	// RECORDS
-	CEGUI::Window* recordsButton = configWin->getChild("btn_records");
+	CEGUI::Window* recordsButton = menuWin->getChild("btn_records");
 	recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::records, this));
 	// CREDITS
-	CEGUI::Window* creditsButton = configWin->getChild("btn_credits");
+	CEGUI::Window* creditsButton = menuWin->getChild("btn_credits");
 	creditsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::credits, this));
 	// QUIT
-	CEGUI::Window* exitButton = configWin->getChild("btn_quit");
+	CEGUI::Window* exitButton = menuWin->getChild("btn_quit");
 	exitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
 							   CEGUI::Event::Subscriber(&MenuState::quit, this));
 
 	//Attaching buttons
-	_ceguiSheet->addChild(configWin);
+	_ceguiSheet->addChild(menuWin);
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
+
 
 }
 
 bool MenuState::newGame(const CEGUI::EventArgs &e)
 {
+
 //	changeState(PlayState::getSingletonPtr());
 	std::cout << "NEW GAME" << std::endl;
 	changeState(PlayState::getSingletonPtr());
