@@ -34,7 +34,6 @@ void MenuState::enter ()
 
 void MenuState::exit ()
 {
-	_sceneMgr->destroyQuery(_raySceneQuery);
 	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
@@ -136,7 +135,7 @@ CEGUI::MouseButton MenuState::convertMouseButton(OIS::MouseButtonID id)
 void MenuState::showMenuCegui()
 {
 	//Sheet
-	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex2");
+	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex2");
 
 	//Config Window
 	CEGUI::Window* configWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu_principal.layout");
@@ -159,8 +158,8 @@ void MenuState::showMenuCegui()
 							   CEGUI::Event::Subscriber(&MenuState::quit, this));
 
 	//Attaching buttons
-	sheet->addChild(configWin);
-	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
+	_ceguiSheet->addChild(configWin);
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
 
 }
 
@@ -168,7 +167,7 @@ bool MenuState::newGame(const CEGUI::EventArgs &e)
 {
 //	changeState(PlayState::getSingletonPtr());
 	std::cout << "NEW GAME" << std::endl;
-	pushState(PlayState::getSingletonPtr());
+	changeState(PlayState::getSingletonPtr());
 	return true;
 }
 

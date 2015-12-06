@@ -31,7 +31,7 @@ void PlayState::enter ()
 
 	//loadResources();
 	createScene();		// creamos la escena
-	createOverlay();	// creamos el overlay
+//	createOverlay();	// creamos el overlay
 
 	// Creamos nuestra query de rayos
 	_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
@@ -159,22 +159,22 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 	}
 
 	// Gestion del overlay -----------------------------
-	Ogre::OverlayElement *oe;
-	oe = _overlayManager->getOverlayElement("CPUSeleccion");
-	oe->setCaption(s_CellName);
-
-	oe = _overlayManager->getOverlayElement("cursor");
-	oe->setLeft(posx); oe->setTop(posy);
-
-	std::ostringstream s_posMouse;
-	s_posMouse << posx;
-	oe = _overlayManager->getOverlayElement("PosXMouse");
-	oe->setCaption(s_posMouse.str());
-
-	s_posMouse.str("");
-	s_posMouse << posy;
-	oe = _overlayManager->getOverlayElement("PosYMouse");
-	oe->setCaption(s_posMouse.str());
+//	Ogre::OverlayElement *oe;
+//	oe = _overlayManager->getOverlayElement("CPUSeleccion");
+//	oe->setCaption(s_CellName);
+//
+//	oe = _overlayManager->getOverlayElement("cursor");
+//	oe->setLeft(posx); oe->setTop(posy);
+//
+//	std::ostringstream s_posMouse;
+//	s_posMouse << posx;
+//	oe = _overlayManager->getOverlayElement("PosXMouse");
+//	oe->setCaption(s_posMouse.str());
+//
+//	s_posMouse.str("");
+//	s_posMouse << posy;
+//	oe = _overlayManager->getOverlayElement("PosYMouse");
+//	oe->setCaption(s_posMouse.str());
 }
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)

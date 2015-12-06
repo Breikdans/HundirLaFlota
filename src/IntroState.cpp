@@ -52,6 +52,9 @@ void IntroState::createOverlay()
 
 void IntroState::exit()
 {
+	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
+	overlay->hide();
+
 	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
@@ -81,9 +84,6 @@ void IntroState::keyPressed(const OIS::KeyEvent &e)
 	//if (e.key == OIS::KC_SPACE)
 	//{
 
-	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
-	overlay->hide();
-
 	changeState(MenuState::getSingletonPtr());
 	//}
 }
@@ -100,9 +100,6 @@ void IntroState::mouseMoved(const OIS::MouseEvent &e) {}
 
 void IntroState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
-	overlay->hide();
-
 	changeState(MenuState::getSingletonPtr());
 }
 
