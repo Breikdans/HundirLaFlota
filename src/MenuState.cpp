@@ -11,7 +11,11 @@ void MenuState::enter ()
 	_sceneMgr 		= _root->getSceneManager("SceneManager");
 	_camera 		= _sceneMgr->getCamera("IntroCamera");
 	_renderWindow 	= _root->getAutoCreatedWindow();
-	_viewport 		= _renderWindow->addViewport(_camera);
+	if(_renderWindow->getNumViewports() == 0)
+	{
+		_viewport 		= _renderWindow->addViewport(_camera);
+		showMenuCegui();
+	}
 
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
@@ -27,24 +31,21 @@ void MenuState::enter ()
 	double height = _viewport->getActualHeight();	// recogemos alto del viewport actual
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
-	showMenuCegui();
-
 	_exitGame = false;
 }
 
 void MenuState::exit ()
 {
+	std::cout << __FILE__ << ": " << __func__ << std::endl;
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
+	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
 	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
 
 void MenuState::pause() {}
 
-void MenuState::resume()
-{
-	// Se restaura el background colour.
-	//_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
-}
+void MenuState::resume() {}
 
 bool MenuState::frameStarted(const Ogre::FrameEvent& evt)
 {
@@ -55,6 +56,7 @@ bool MenuState::frameStarted(const Ogre::FrameEvent& evt)
 
 bool MenuState::frameEnded(const Ogre::FrameEvent& evt)
 {
+	std::cout << __FILE__ << ": " << __func__ << std::endl;
 	if (_exitGame)
 	{
 		exit();
@@ -135,37 +137,35 @@ CEGUI::MouseButton MenuState::convertMouseButton(OIS::MouseButtonID id)
 void MenuState::showMenuCegui()
 {
 	//Sheet
-	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","Ex2");
+	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","menu_principal");
 
 	//Config Window
-	CEGUI::Window* configWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu_principal.layout");
+	CEGUI::Window* menuPrincipalWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu_principal.layout");
 
 	// NEW GAME
-	CEGUI::Window* newGameButton = configWin->getChild("btn_new_game");
+	CEGUI::Window* newGameButton = menuPrincipalWin->getChild("btn_new_game");
 	newGameButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::newGame, this));
 	// RECORDS
-	CEGUI::Window* recordsButton = configWin->getChild("btn_records");
+	CEGUI::Window* recordsButton = menuPrincipalWin->getChild("btn_records");
 	recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::records, this));
 	// CREDITS
-	CEGUI::Window* creditsButton = configWin->getChild("btn_credits");
+	CEGUI::Window* creditsButton = menuPrincipalWin->getChild("btn_credits");
 	creditsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::credits, this));
 	// QUIT
-	CEGUI::Window* exitButton = configWin->getChild("btn_quit");
+	CEGUI::Window* exitButton = menuPrincipalWin->getChild("btn_quit");
 	exitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
 							   CEGUI::Event::Subscriber(&MenuState::quit, this));
 
 	//Attaching buttons
-	_ceguiSheet->addChild(configWin);
+	_ceguiSheet->addChild(menuPrincipalWin);
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
-
 }
 
 bool MenuState::newGame(const CEGUI::EventArgs &e)
 {
-//	changeState(PlayState::getSingletonPtr());
 	std::cout << "NEW GAME" << std::endl;
 	changeState(PlayState::getSingletonPtr());
 	return true;

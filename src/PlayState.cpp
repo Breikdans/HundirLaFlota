@@ -11,7 +11,7 @@ void PlayState::enter ()
 	_sceneMgr 		= _root->getSceneManager("SceneManager");
 	_camera 		= _sceneMgr->getCamera("IntroCamera");
 	_renderWindow 	= _root->getAutoCreatedWindow();
-	_viewport 		= _renderWindow->addViewport(_camera,1);
+	_viewport 		= _renderWindow->addViewport(_camera);
 
 	// Metemos una luz ambiental, una luz que no tiene fuente de origen. Ilumina a todos los objetos
 	_sceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
@@ -70,7 +70,7 @@ bool PlayState::frameEnded(const Ogre::FrameEvent& evt)
 void PlayState::keyPressed(const OIS::KeyEvent &e)
 {
 	// Tecla p --> PauseState.
-	if (e.key == OIS::KC_P)
+	if (e.key == OIS::KC_P || e.key == OIS::KC_ESCAPE)
 	{
 		pushState(PauseState::getSingletonPtr());
 	}
@@ -91,10 +91,11 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 
 void PlayState::keyReleased(const OIS::KeyEvent &e)
 {
-	if (e.key == OIS::KC_ESCAPE)
-	{
-		_exitGame = true;
-	}
+	std::cout << __FILE__ << ": " << __func__ << std::endl;
+//	if (e.key == OIS::KC_ESCAPE)
+//	{
+//		_exitGame = true;
+//	}
 }
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
