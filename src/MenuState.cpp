@@ -35,19 +35,15 @@ void MenuState::enter ()
 void MenuState::exit ()
 {
 
-	 CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
-	 CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
-	  _sceneMgr->clearScene();
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
+	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
+	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
 
 void MenuState::pause() {}
 
-void MenuState::resume()
-{
-	// Se restaura el background colour.
-	//_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
-}
+void MenuState::resume() {}
 
 bool MenuState::frameStarted(const Ogre::FrameEvent& evt)
 {

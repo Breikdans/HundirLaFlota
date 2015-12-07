@@ -29,7 +29,6 @@ void PlayState::enter ()
 	double height = _viewport->getActualHeight();	// recogemos alto del viewport actual
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
-	//loadResources();
 	createScene();		// creamos la escena
 	createOverlay();	// creamos el overlay
 
@@ -106,25 +105,14 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 	int posx = e.state.X.abs;
 	int posy = e.state.Y.abs;
 
-	// Botones del raton pulsados?
-//	bool mbleft = _mouse->getMouseState().buttonDown(OIS::MB_Left);
-//	bool mbmiddle = _mouse->getMouseState().buttonDown(OIS::MB_Middle);
-//	bool mbright = _mouse->getMouseState().buttonDown(OIS::MB_Right);
-
-	std::string s_CellName;
+	std::string s_CellName = "";
 	Ogre::SceneNode *node = NULL;
 	Ogre::Entity *pEnt = NULL;
 	std::string s_Material = "";
 
-	uint32 mask = PLAYER_CELLS | CPU_CELLS;			// mascara para la query...
-	setRayQuery(posx, posy, mask);	// establecemos query...
-	Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
-	Ogre::RaySceneQueryResult::iterator it;
-	it = result.begin();
-	if (it != result.end())
+	getSelectedNode(CPU_CELLS, posx, posy, s_CellName);
+	if (s_CellName != "")
 	{
-		s_CellName = it->movable->getParentSceneNode()->getName();	// cogemos el nombre del nodo seleccionado con el rayo
-
 		// si habia una celda seleccionada... y es distinta a la actual... la dejamos con color NORMAL
 		if(s_LastCell.size() != 0 && s_LastCell != s_CellName)
 		{
@@ -179,7 +167,15 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-	std::cout << "SU PRIMA!!" << std::endl;
+//	std::cout << "SU PRIMA!!" << std::endl;
+//	bool mbleft = _mouse->getMouseState().buttonDown(OIS::MB_Left);
+//	bool mbmiddle = _mouse->getMouseState().buttonDown(OIS::MB_Middle);
+//	bool mbright = _mouse->getMouseState().buttonDown(OIS::MB_Right);
+//
+//	if(mbleft)
+//	{
+//
+//	}
 }
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
@@ -235,10 +231,14 @@ void PlayState::createScene()
 			ent_CeldaCPU->setQueryFlags(CPU_CELLS);
 
 			node_Player = _sceneMgr->createSceneNode(s_node_player_aux.str());
+			node_Player->getUserObjectBindings().setUserAny("X",Ogre::Any(i));
+			node_Player->getUserObjectBindings().setUserAny("Y",Ogre::Any(j));
 			node_Player->attachObject(ent_CeldaPlayer);
 			node_Player->translate(j*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, i*CELL_WIDTH);
 			main_node_tablero_Player->addChild(node_Player);
 			node_CPU = _sceneMgr->createSceneNode(s_node_cpu_aux.str());
+			node_Player->getUserObjectBindings().setUserAny("X",Ogre::Any(i));
+			node_Player->getUserObjectBindings().setUserAny("Y",Ogre::Any(j));
 			node_CPU->attachObject(ent_CeldaCPU);
 			node_CPU->translate(j*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, i*CELL_WIDTH);
 			main_node_tablero_CPU->addChild(node_CPU);
@@ -334,6 +334,7 @@ void PlayState::ActualizaTablero(Ogre::SceneNode* node, usint16 valor, std::stri
 
 	 if (pintarBarco) {
 		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
+		entidad->setQueryFlags(SHIP_CELL);
 		shipNode = _sceneMgr->createSceneNode(shipNodeName.str());
 		shipNode->attachObject(entidad);
 		if (!esHorizontal) {
@@ -355,6 +356,25 @@ Ogre::Ray PlayState::setRayQuery(int posx, int posy, uint32 mask)
 	_raySceneQuery->setSortByDistance(true);
 	_raySceneQuery->setQueryMask(mask);
 	return (rayMouse);
+}
+
+void PlayState::getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName)
+{
+	setRayQuery(x, y, mask);		// establecemos query...
+	Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
+	Ogre::RaySceneQueryResult::iterator it;
+	it = result.begin();
+	if (it != result.end())
+	{
+		nodeName = it->movable->getParentSceneNode()->getName();	// cogemos el nombre del nodo seleccionado con el rayo
+//std::cout << "node: " << nodeName << std::endl;
+		Ogre::UserObjectBindings amm = it->movable->getParentSceneNode()->getUserObjectBindings()
+				//x = Ogre::any_cast<int>( it->movable->getParentSceneNode()->getUserObjectBindings().getUserAny("X"));
+//		y = Ogre::any_cast<int>(it->movable->getParentSceneNode()->getUserAny("Y"));
+		std::cout << "X: " << std::endl;
+
+		//sscanf(nodeName.c_str(),"%*[^09]%d%*[^09]_%d",&xx, &yy);
+	}
 }
 
 void PlayState::createOverlay()
