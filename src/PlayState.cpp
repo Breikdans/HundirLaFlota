@@ -314,34 +314,37 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 	Ogre::SceneNode* shipNode=NULL;
 	Ogre::SceneNode* TableroNode = _sceneMgr->getSceneNode(nodeName);
 	std::stringstream shipNodeName;
+	std::stringstream shipTocadoNodeName;
 	std::string pieza;
 	bool pintarBarco = true;
 	bool esHorizontal = false;
 
+	shipNodeName << "ship_" << nodeName;
+	shipTocadoNodeName << "shipTocado_" << nodeName;
 	switch(valor)
 	{
 		case AGUA: pintarBarco=false; break;
 		case DISPARADO: pintarBarco=false; break;
 
-		case PROA_H: pieza="proa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName; break;
-		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
-		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
-		case POPA_H: pieza="popa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
+		case PROA_H: pieza="proa.mesh";  esHorizontal=true;  break;
+		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; break;
+		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; break;
+		case POPA_H: pieza="popa.mesh";  esHorizontal=true; break;
 
-		case PROA_V: pieza="proa.mesh"; shipNodeName << "ship_" << nodeName; break;
-		case CUERPO1_V: pieza="cuerpo1.mesh"; shipNodeName << "ship_" << nodeName; break;
-		case CUERPO2_V: pieza="cuerpo2.mesh"; shipNodeName << "ship_" << nodeName;break;
-		case POPA_V :pieza="popa.mesh";  shipNodeName << "ship_" << nodeName;break;
+		case PROA_V: pieza="proa.mesh";  break;
+		case CUERPO1_V: pieza="cuerpo1.mesh";  break;
+		case CUERPO2_V: pieza="cuerpo2.mesh"; break;
+		case POPA_V :pieza="popa.mesh";  break;
 
-		case PROA_H_T :pieza="proa_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO2_H_T :pieza="cuerpo2_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
-		case POPA_H_T :pieza="popa_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case PROA_H_T :pieza="plano_fuego.mesh"; esHorizontal=true;  break;
+		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; esHorizontal=true;  break;
+		case CUERPO2_H_T :pieza="cuerpo2_t.mesh"; esHorizontal=true;  break;
+		case POPA_H_T :pieza="popa_t.mesh"; esHorizontal=true;  break;
 
-		case PROA_V_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
-		case CUERPO2_V_T :pieza="cuerpo2_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
-		case POPA_V_T :pieza="popa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case PROA_V_T :pieza="plano_fuego.mesh";  break;
+		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; break;
+		case CUERPO2_V_T :pieza="cuerpo2_t.mesh"; break;
+		case POPA_V_T :pieza="popa_t.mesh";  break;
 
 		/*case PROA_H_Q :pieza="proa_ardiendo.mesh"; esHorizontal=true; break;
 		case CUERPO1_H_Q :pieza="cuerpo1_q.mesh"; esHorizontal=true; break;
@@ -356,15 +359,17 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 
 	 if (pintarBarco) {
 
-		// if (TableroNode->numChildren()>0)
-		// { 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
-			// 	 TableroNode->
-		// }
+		 if (TableroNode->numChildren()>0)
+		 { 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
+			 	Ogre::SceneNode* nodito = static_cast<Ogre::SceneNode*>(TableroNode->getChild(0));
+			 	nodito->removeAndDestroyAllChildren();
+		}
 
 		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
 		entidad->setQueryFlags(SHIP_CELL);
 		shipNode = _sceneMgr->createSceneNode(shipNodeName.str());
 		shipNode->attachObject(entidad);
+
 		if (!esHorizontal) {
 			shipNode->yaw(Ogre::Degree(90));
 		}
