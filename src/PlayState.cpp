@@ -187,7 +187,8 @@ std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " << posy << 
 
 				ActualizaTablero(CPUGrid(posx, posy), s_CellName);	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 				CheckHundido(CPUGrid, posx, posy);
-
+std::cout << "CPU GRID: ";
+CPUGrid.DebugGrid();
 				if(CPUGrid.getCasillasVivas() == 0)
 				{
 					// FIN DE JUEGO, GANA EL PLAYER
