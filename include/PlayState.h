@@ -52,10 +52,12 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		void CalculaDisparoCPU(int &posX, int &posY);
 		void ActualizaTablero(usint16, std::string);
 		bool CompruebaDisparo(Grid&, usint16 posx, usint16 posy);
+		void CheckHundido(Grid& grid, usint16 posx, usint16 posy);
+		void CambiarTurno(EN_TURNO turno);
 
-		usint16 _CPUShotsGrid[MAX_ROWS_GRID][MAX_COLS_GRID];			// Registro de disparos que hace la CPU
-		bool _turnoPlayer;
+		EN_TURNO _turno;
 		bool _exitGame;
+		int _CPUShotsGrid[MAX_ROWS_GRID][MAX_COLS_GRID];			// Registro de disparos que hace la CPU
 
 		Grid CPUGrid;
 		Grid PlayerGrid;

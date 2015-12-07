@@ -59,6 +59,11 @@ typedef enum{
 	,POPA_V_Q
 }EN_CELDAS;
 
+typedef enum{
+	 PLAYER
+	,CPU
+}EN_TURNO;
+
 int rangeRandomNumber (int min, int max);		// retorna un numero aleatorio entre el minimo y maximo indicados
 
 class Grid
@@ -74,6 +79,9 @@ class Grid
 		usint16 operator() (usint16 F, usint16 C) const;			// para leer de posicion del grid
 		void IniciaBarcosAleatorio();								// inicia barcos en posiciones aleatorias
 		bool ActualizaDisparo(usint16 F, usint16 C);				// recibe unas coordenadas de disparo y actualiza la tabla si ha sido tocado y comprueba si es hundido para actualizarlas
+		usint16 getCasillasVivas() const;
+		void setCasillasVivas(usint16 c);
+		void restaCasillas(void);
 };
 //   1 2 3 4 5 6 7 8 9 10
 //1 |-|-|-|-|-|-|-|-|-|-|

@@ -1,0 +1,61 @@
+<scene formatVersion="1.0.1" previous_export_time="1449495522.4883199" exported_by="jose" export_time="1449495532.1473532" >
+  <nodes >
+    <node name="Point" >
+      <position z="-6.701458" y="0.569296" x="13.764176" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+    </node>
+    <node name="Sun" >
+      <position z="6.062989" y="13.792408" x="7.273982" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="-0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light name="Sun" type="directional" powerScale="1.0" >
+        <position z="6.062989" y="13.792408" x="7.273982" />
+        <lightAttenuation quadratic="0.0" range="5000" constant="1.0" linear="0.04" />
+        <direction z="0.0" y="-1.0" x="0.0" />
+        <colourDiffuse r="1.0" b="1.0" g="1.0" />
+        <colourSpecular r="1.0" b="1.0" g="1.0" />
+      </light>
+    </node>
+    <node name="cuerpo1" >
+      <position z="4.261827" y="2.511776" x="-0.209999" />
+      <rotation qw="0.707107" qx="0.000000" qy="0.707107" qz="-0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity inertia_tensor="0.4000000059604645" name="cuerpo1" lock_trans_z="False" friction_x="1.0" meshFile="cuerpo1.mesh" damping_trans="0.03999999910593033" lock_rot_y="False" lock_trans_y="False" friction_y="1.0" mass_radius="1.0" physics_type="STATIC" mass="1.0" damping_rot="0.10000000149011612" ghost="False" lock_trans_x="False" friction_z="1.0" velocity_max="0.0" velocity_min="0.0" lock_rot_z="False" actor="False" lock_rot_x="False" anisotropic_friction="False" />
+    </node>
+    <node name="Camera" >
+      <position z="-6.973087" y="8.030402" x="13.038373" />
+      <rotation qw="0.399272" qx="0.374170" qy="0.695908" qz="-0.465071" />
+      <scale z="0.687921" y="0.924643" x="0.996890" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera name="Camera" fov="0.5033799435163735" projectionType="perspective" >
+        <clipping nearPlaneDist="0.10000000149011612" near="0.10000000149011612" farPlaneDist="100.0" far="100.0" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="/home/jose/dev/workspace/HundirLaFlota/doc/blender/fuente_barcos/export/cuerpo1/cuerpo1.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourDiffuse r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+    <colourAmbient r="0.0" b="0.0" g="0.0" />
+    <colourBackground r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+  </environment>
+</scene>

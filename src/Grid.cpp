@@ -65,6 +65,21 @@ DebugGrid();
 #endif
 }
 
+usint16 Grid::getCasillasVivas() const
+{
+	return _CasillasVivas;
+}
+
+void Grid::setCasillasVivas(usint16 c)
+{
+	_CasillasVivas = c;
+}
+
+void Grid::restaCasillas(void)
+{
+	_CasillasVivas--;
+}
+
 // ========================================================================
 // =========================== METODOS PRIVADOS ===========================
 // ========================================================================
@@ -182,12 +197,12 @@ void Grid::ColocaBarco(usint16 casillas)
 
 void Grid::DebugGrid()
 {
-	std::cout << std::endl << std::endl;
-	for(int i = 0; i < MAX_ROWS_GRID; i++)
+	std::cout << std::endl;
+	for(int y = 0; y < MAX_ROWS_GRID; y++)
 	{
-		for(int j = 0; j < MAX_COLS_GRID; j++)
+		for(int x = 0; x < MAX_COLS_GRID; x++)
 		{
-			std::cout << " " << _tbl_Grid[i][j];
+			std::cout << " " << _tbl_Grid[x][y];
 		}
 		std::cout << std::endl;
 	}
