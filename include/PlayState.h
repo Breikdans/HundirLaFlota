@@ -46,10 +46,13 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		void createScene();
 		void createOverlay();
 
-		void ActualizaTablero(Ogre::SceneNode*, usint16, std::string);
 		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 		void getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName);
 
+		void ActualizaTablero(usint16, std::string);
+		bool CompruebaDisparo(usint16 posx, usint16 posy);
+
+		bool _turnoPlayer;
 		bool _exitGame;
 
 		Grid CPUGrid;
