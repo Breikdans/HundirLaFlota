@@ -59,12 +59,13 @@ typedef enum{
 	,POPA_V_Q
 }EN_CELDAS;
 
+int rangeRandomNumber (int min, int max);		// retorna un numero aleatorio entre el minimo y maximo indicados
+
 class Grid
 {
 	private:
 		usint16 _CasillasVivas;
 		usint16 _tbl_Grid[MAX_ROWS_GRID][MAX_COLS_GRID];			// Asi se inicializa el array a 0 (AGUA)
-		int rangeRandomNumber (int min, int max) const;
 		void ColocaBarco(usint16 casillas);
 		void DebugGrid();
 	public:

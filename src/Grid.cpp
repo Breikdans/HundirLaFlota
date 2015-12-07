@@ -7,6 +7,21 @@
 #include "Grid.h"
 #include "stdio.h"
 
+int rangeRandomNumber (int min, int max)
+{
+    int n = max - min + 1;
+    int remainder = RAND_MAX % n;
+    int x;
+    do
+    {
+        x = rand();
+    }while (x >= RAND_MAX - remainder);
+    return min + x % n;
+}
+
+// ========================================================================
+// =========================== METODOS PUBLICOS ===========================
+// ========================================================================
 Grid::Grid(usint16 C) : _CasillasVivas(C)
 {
 	for (int i = 0; i < MAX_ROWS_GRID ; i++ )
@@ -53,18 +68,6 @@ DebugGrid();
 // ========================================================================
 // =========================== METODOS PRIVADOS ===========================
 // ========================================================================
-int Grid::rangeRandomNumber (int min, int max) const
-{
-    int n = max - min + 1;
-    int remainder = RAND_MAX % n;
-    int x;
-    do
-    {
-        x = rand();
-    }while (x >= RAND_MAX - remainder);
-    return min + x % n;
-}
-
 void Grid::ColocaBarco(usint16 casillas)
 {
 	const int HORIZONTAL 	= 0;

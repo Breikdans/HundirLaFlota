@@ -183,7 +183,7 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 		getSelectedNode(CPU_CELLS, posx, posy, s_CellName);
 
 		// Todos los disparos producen un cambio: AGUA -> TOCADO ó DISPARADO, menos cuando disparan sobre algo ya disparado (DISPARADO, PROA_H_T, PROA_H_Q,...)
-		if (CompruebaDisparo(posx, posy))						// Si ha habido algun cambio con este disparo...
+		if (CompruebaDisparo(CPUGrid, posx, posy))						// Si ha habido algun cambio con este disparo...
 			ActualizaTablero(CPUGrid(posx, posy), s_CellName);	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 		else
 		{
@@ -364,16 +364,18 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 }
 
 /// Comprueba que hay en la casilla del disparo, cambia su estado si es necesario, decrementa casillas de vida, cambia indicador de turno
-bool PlayState::CompruebaDisparo(usint16 posx, usint16 posy)
+bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 {
 	bool sw_casillaCambiada = false;
-	usint16 celda = CPUGrid(posx, posy);
+	usint16 celda = 0;
+
+	celda = grid(posx, posy);
 
 	switch(celda)
 	{
 		case AGUA:
 			// SACAR SONIDO DE AGUA
-			CPUGrid(posx, posy) = DISPARADO;
+			grid(posx, posy) = DISPARADO;
 			break;
 		case DISPARADO:
 		case PROA_H_T:
@@ -385,29 +387,29 @@ bool PlayState::CompruebaDisparo(usint16 posx, usint16 posy)
 
 		// el barco esta "intacto"
 		case PROA_H:
-			CPUGrid(posx, posy) = PROA_H_T;
+			grid(posx, posy) = PROA_H_T;
 			break;
 		case CUERPO1_H:
-			CPUGrid(posx, posy) = CUERPO1_H_T;
+			grid(posx, posy) = CUERPO1_H_T;
 			break;
 		case CUERPO2_H:
-			CPUGrid(posx, posy) = CUERPO2_H_T;
+			grid(posx, posy) = CUERPO2_H_T;
 			break;
 		case POPA_H:
-			CPUGrid(posx, posy) = POPA_H_T;
+			grid(posx, posy) = POPA_H_T;
 			break;
 
 		case PROA_V:
-			CPUGrid(posx, posy) = PROA_V_T;
+			grid(posx, posy) = PROA_V_T;
 			break;
 		case CUERPO1_V:
-			CPUGrid(posx, posy) = CUERPO1_V_T;
+			grid(posx, posy) = CUERPO1_V_T;
 			break;
 		case CUERPO2_V:
-			CPUGrid(posx, posy) = CUERPO2_V_T;
+			grid(posx, posy) = CUERPO2_V_T;
 			break;
 		case POPA_V:
-			CPUGrid(posx, posy) = POPA_V_T;
+			grid(posx, posy) = POPA_V_T;
 			break;
 
 		// el barco esta "ardiendo"
@@ -428,7 +430,69 @@ bool PlayState::CompruebaDisparo(usint16 posx, usint16 posy)
 //		,CUERPO2_V_Q
 //		,POPA_V_Q
 	}
-	return true;
+
+	// Actualizamos grid de disparos de la CPU
+	if (_turnoPlayer == false)
+		_CPUShotsGrid[posx][posy] = grid(posx, posy);
+
+	return sw_casillaCambiada;
+}
+
+
+void PlayState::CalculaDisparoCPU(int &posX, int &posY)
+{
+	int x = 0, y = 0;
+	bool sw_disparoCalculado = false;
+
+	// Recorremos la matriz de disparos realizados por la CPU
+	for(int i = 0; i < MAX_COLS_GRID && sw_disparoCalculado == false; i++)
+	{
+		for(int j = 0; j < MAX_ROWS_GRID && sw_disparoCalculado == false; j++)
+		{
+			// si hay alguna casilla "TOCADA" intentamos seguir disparando por ahi...
+			if (_CPUShotsGrid[i][j] >= PROA_H_T || _CPUShotsGrid[i][j] <= POPA_V_T)
+			{
+				// comprobamos si podemos continuar disparando en horizontal...
+				int incr = 1;
+				while( i+incr < MAX_COLS_GRID &&
+					   (_CPUShotsGrid[i+incr][j] >= PROA_H_T || _CPUShotsGrid[i+incr][j] <= POPA_V_T) )
+				{
+					sw_disparoCalculado = true;
+					x = i+incr;
+					y = j;
+
+					incr++;
+				}
+
+				// si no podemos seguir disparando en horizontar... probamos en vertical
+				if(sw_disparoCalculado == false)
+				{
+					incr = 1;
+					while( j+incr < MAX_ROWS_GRID &&
+						   (_CPUShotsGrid[i][j+incr] >= PROA_H_T || _CPUShotsGrid[i][j+incr] <= POPA_V_T) )
+					{
+						sw_disparoCalculado = true;
+						x = i;
+						y = j+incr;
+
+						incr++;
+					}
+				}
+			}
+		}
+	}
+
+	// Si no habia ninguna casilla "TOCADA", creamos un disparo aleatorio a casilla aun no disparada (AGUA)
+	if(sw_disparoCalculado == false)
+	{
+		do{
+			x = rangeRandomNumber(0, MAX_COLS_GRID);
+			y = rangeRandomNumber(0, MAX_ROWS_GRID);
+		}while(_CPUShotsGrid[x][y] != AGUA);
+	}
+
+	posX = x;
+	posY = y;
 }
 
 Ogre::Ray PlayState::setRayQuery(int posx, int posy, uint32 mask)

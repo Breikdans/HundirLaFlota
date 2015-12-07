@@ -49,9 +49,11 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 		void getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName);
 
+		void CalculaDisparoCPU(int &posX, int &posY);
 		void ActualizaTablero(usint16, std::string);
-		bool CompruebaDisparo(usint16 posx, usint16 posy);
+		bool CompruebaDisparo(Grid&, usint16 posx, usint16 posy);
 
+		usint16 _CPUShotsGrid[MAX_ROWS_GRID][MAX_COLS_GRID];			// Registro de disparos que hace la CPU
 		bool _turnoPlayer;
 		bool _exitGame;
 
