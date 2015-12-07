@@ -15,6 +15,9 @@ const int CELL_WIDTH	= 		4;
 #define CPU_CELLS 		1 << 2		// = 4. 32 bits de mascara.
 #define SHIP_CELL		1 << 3		// = 8. 32 bits de mascara.
 
+const std::string MATERIAL_CELL 			= "celda";
+const std::string MATERIAL_CELL_SELECTED 	= "celda_light";
+
 typedef unsigned int uint32;
 typedef unsigned short int usint16;
 

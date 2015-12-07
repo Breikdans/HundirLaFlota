@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "PlayState.h"
 #include "PauseState.h"
 
@@ -35,6 +36,7 @@ void PlayState::enter ()
 	// Creamos nuestra query de rayos
 	_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
 
+	_turnoPlayer = true;
 	_exitGame = false;
 }
 
@@ -102,15 +104,16 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 	static std::string s_LastCell= "";
 
 	// posiciones del puntero del raton en pixeles
-	int posx = e.state.X.abs;
-	int posy = e.state.Y.abs;
+	int cellx = e.state.X.abs, posx = e.state.X.abs;
+	int celly = e.state.Y.abs, posy = e.state.Y.abs;
+
 
 	std::string s_CellName = "";
 	Ogre::SceneNode *node = NULL;
 	Ogre::Entity *pEnt = NULL;
 	std::string s_Material = "";
 
-	getSelectedNode(CPU_CELLS, posx, posy, s_CellName);
+	getSelectedNode(CPU_CELLS, cellx, celly, s_CellName);
 	if (s_CellName != "")
 	{
 		// si habia una celda seleccionada... y es distinta a la actual... la dejamos con color NORMAL
@@ -119,17 +122,15 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 			node = _sceneMgr->getSceneNode(s_LastCell);
 			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
 
-			s_Material = "celda";
 			// cambiamos la textura del objeto a NORMAL
 			if (pEnt)
-				pEnt->setMaterialName(s_Material);
+				pEnt->setMaterialName(MATERIAL_CELL);
 		}
 
 		node = _sceneMgr->getSceneNode(s_CellName);
 		pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_CellName));
-		s_Material = "celda_light";
 		// cambiamos la textura del objeto a SELECCIONADA
-		pEnt->setMaterialName(s_Material);
+		pEnt->setMaterialName(MATERIAL_CELL_SELECTED);
 		s_LastCell = s_CellName;
 
 	}
@@ -139,10 +140,9 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 		{
 			node = _sceneMgr->getSceneNode(s_LastCell);
 			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
-			s_Material = "celda";
 			// cambiamos la textura del objeto a oscura
 			if (pEnt)
-				pEnt->setMaterialName(s_Material);
+				pEnt->setMaterialName(MATERIAL_CELL);
 		}
 	}
 
@@ -167,15 +167,33 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-//	std::cout << "SU PRIMA!!" << std::endl;
-//	bool mbleft = _mouse->getMouseState().buttonDown(OIS::MB_Left);
-//	bool mbmiddle = _mouse->getMouseState().buttonDown(OIS::MB_Middle);
-//	bool mbright = _mouse->getMouseState().buttonDown(OIS::MB_Right);
-//
-//	if(mbleft)
-//	{
-//
-//	}
+	bool mbleft = false;
+
+	if (id == OIS::MB_Left)
+		mbleft = true;
+
+	if(mbleft)
+	{
+		// posiciones del puntero del raton en pixeles
+		int posx = e.state.X.abs;
+		int posy = e.state.Y.abs;
+
+		std::string s_CellName 	= "";
+
+		getSelectedNode(CPU_CELLS, posx, posy, s_CellName);
+		if (s_CellName != "")
+		{
+			// Todos los disparos producen un cambio: AGUA -> TOCADO ó DISPARADO, menos cuando disparan sobre algo ya disparado (DISPARADO, PROA_H_T, PROA_H_Q,...)
+			if (CompruebaDisparo(posx, posy))						// Si ha habido algun cambio con este disparo...
+				ActualizaTablero(CPUGrid(posx, posy), s_CellName);	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
+			else
+			{
+				//sonido de error y que tire otra vez
+			}
+		} else {
+			// hay pulsado el mouse fuera del area permitida, tablero usuario, o agua
+		}
+	}
 }
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
@@ -231,14 +249,11 @@ void PlayState::createScene()
 			ent_CeldaCPU->setQueryFlags(CPU_CELLS);
 
 			node_Player = _sceneMgr->createSceneNode(s_node_player_aux.str());
-			node_Player->getUserObjectBindings().setUserAny("X",Ogre::Any(i));
-			node_Player->getUserObjectBindings().setUserAny("Y",Ogre::Any(j));
 			node_Player->attachObject(ent_CeldaPlayer);
 			node_Player->translate(j*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, i*CELL_WIDTH);
 			main_node_tablero_Player->addChild(node_Player);
+
 			node_CPU = _sceneMgr->createSceneNode(s_node_cpu_aux.str());
-			node_Player->getUserObjectBindings().setUserAny("X",Ogre::Any(i));
-			node_Player->getUserObjectBindings().setUserAny("Y",Ogre::Any(j));
 			node_CPU->attachObject(ent_CeldaCPU);
 			node_CPU->translate(j*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, i*CELL_WIDTH);
 			main_node_tablero_CPU->addChild(node_CPU);
@@ -285,19 +300,20 @@ void PlayState::createScene()
 			nodeNamePlayer << "node_player_" << x << "_" << y;	// node_player_X_Y;
 			nodeNameCPU << "node_cpu_" << x << "_" << y;	// node_cpu_X_Y;
 
-			ActualizaTablero(node_Player, PlayerGrid(x, y), nodeNamePlayer.str());
-			ActualizaTablero(node_CPU, CPUGrid(x, y), nodeNameCPU.str());
+			ActualizaTablero(PlayerGrid(x, y), nodeNamePlayer.str());
+			ActualizaTablero(CPUGrid(x, y), nodeNameCPU.str());
 		}
 	}
 }
 
-void PlayState::ActualizaTablero(Ogre::SceneNode* node, usint16 valor, std::string nodeName)
+void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 {
+
+
 	Ogre::Entity* entidad=NULL;
 	Ogre::SceneNode* shipNode=NULL;
 	Ogre::SceneNode* TableroNode = _sceneMgr->getSceneNode(nodeName);
 	std::stringstream shipNodeName;
-	shipNodeName << "ship_" << nodeName;
 	std::string pieza;
 	bool pintarBarco = true;
 	bool esHorizontal = false;
@@ -306,33 +322,45 @@ void PlayState::ActualizaTablero(Ogre::SceneNode* node, usint16 valor, std::stri
 	{
 		case AGUA: pintarBarco=false; break;
 		case DISPARADO: pintarBarco=false; break;
-		case PROA_H: pieza="proa.mesh";  esHorizontal=true; break;
-		case POPA_H: pieza="popa.mesh";  esHorizontal=true; break;
-		case PROA_V: pieza="proa.mesh"; break;
-		case CUERPO1_V: pieza="cuerpo1.mesh"; break;
-		case CUERPO2_V: pieza="cuerpo2.mesh"; break;
-		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; break;
-		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; break;
-		case POPA_V :pieza="popa.mesh";  break;
-		case PROA_H_T :pieza="proa.mesh"; esHorizontal=true; break;
-		case CUERPO1_H_T :pieza="cuerpo1.mesh"; esHorizontal=true; break;
-		case CUERPO2_H_T :pieza="cuerpo2.mesh"; esHorizontal=true; break;
-		case POPA_H_T :pieza="popa.mesh"; esHorizontal=true; break;
-		case PROA_V_T :pieza="proa.mesh"; break;
-		case CUERPO1_V_T :pieza="cuerpo1.mesh"; break;
-		case CUERPO2_V_T :pieza="cuerpo2.mesh"; break;
-		case POPA_V_T :pieza="popa.mesh"; break;
-		case PROA_H_Q :pieza="proa.mesh"; esHorizontal=true; break;
-		case CUERPO1_H_Q :pieza="cuerpo1.mesh"; esHorizontal=true; break;
-		case CUERPO2_H_Q :pieza="cuerpo2.mesh"; esHorizontal=true; break;
-		case POPA_H_Q :pieza="popa.mesh"; esHorizontal=true; break;
-		case PROA_V_Q :pieza="proa.mesh"; break;
-		case CUERPO1_V_Q :pieza="cuerpo1.mesh"; break;
-		case CUERPO2_V_Q :pieza="cuerpo2.mesh"; break;
-		case POPA_V_Q :pieza="popa.mesh"; break;
+
+		case PROA_H: pieza="proa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName; break;
+		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
+		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
+		case POPA_H: pieza="popa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
+
+		case PROA_V: pieza="proa.mesh"; shipNodeName << "ship_" << nodeName; break;
+		case CUERPO1_V: pieza="cuerpo1.mesh"; shipNodeName << "ship_" << nodeName; break;
+		case CUERPO2_V: pieza="cuerpo2.mesh"; shipNodeName << "ship_" << nodeName;break;
+		case POPA_V :pieza="popa.mesh";  shipNodeName << "ship_" << nodeName;break;
+
+		case PROA_H_T :pieza="proa_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO2_H_T :pieza="cuerpo2_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case POPA_H_T :pieza="popa_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+
+		case PROA_V_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
+		case CUERPO2_V_T :pieza="cuerpo2_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
+		case POPA_V_T :pieza="popa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+
+		/*case PROA_H_Q :pieza="proa_ardiendo.mesh"; esHorizontal=true; break;
+		case CUERPO1_H_Q :pieza="cuerpo1_q.mesh"; esHorizontal=true; break;
+		case CUERPO2_H_Q :pieza="cuerpo2_q.mesh"; esHorizontal=true; break;
+		case POPA_H_Q :pieza="popa_q.mesh"; esHorizontal=true; break;
+
+		case PROA_V_Q :pieza="proa_ardiendo.mesh"; break;
+		case CUERPO1_V_Q :pieza="cuerpo1_q.mesh"; break;
+		case CUERPO2_V_Q :pieza="cuerpo2_q.mesh"; break;
+		case POPA_V_Q :pieza="popa_q.mesh"; break;*/
 	}
 
 	 if (pintarBarco) {
+
+		// if (TableroNode->numChildren()>0)
+		// { 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
+			// 	 TableroNode->
+		// }
+
 		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
 		entidad->setQueryFlags(SHIP_CELL);
 		shipNode = _sceneMgr->createSceneNode(shipNodeName.str());
@@ -341,11 +369,72 @@ void PlayState::ActualizaTablero(Ogre::SceneNode* node, usint16 valor, std::stri
 			shipNode->yaw(Ogre::Degree(90));
 		}
 		TableroNode->addChild(shipNode);
-	 } else {
+
 		 // meter lo que sea
 	 }
+}
 
+/// Comprueba que hay en la casilla del disparo, cambia su estado si es necesario, decrementa casillas de vida, cambia indicador de turno
+bool PlayState::CompruebaDisparo(usint16 posx, usint16 posy)
+{
+	bool sw_casillaCambiada = false;
+	usint16 celda = CPUGrid(posx, posy);
 
+	switch(celda)
+	{
+		case AGUA:
+			// SACAR SONIDO DE AGUA
+			CPUGrid(posx, posy) = DISPARADO; sw_casillaCambiada=true;
+			break;
+		case DISPARADO:
+		case PROA_H_T:
+		case CUERPO1_H_T:
+		case CUERPO2_H_T:
+		case POPA_H_T:
+		case PROA_V_T:
+		case CUERPO1_V_T:
+		case CUERPO2_V_T:
+		case POPA_V_T:
+			// cuando el barco esté totalmente quemado, se hundirá y se convertirán en casillas disparadas
+		case PROA_H_Q:
+		case CUERPO1_H_Q:
+		case CUERPO2_H_Q:
+		case POPA_H_Q:
+		case PROA_V_Q:
+		case CUERPO1_V_Q:
+		case CUERPO2_V_Q:
+		case POPA_V_Q:
+		  // SACAR SONIDO DE ERROR
+			break;
+
+		// el barco esta "intacto"
+		case PROA_H:
+			CPUGrid(posx, posy) = PROA_H_T; sw_casillaCambiada=true;
+			break;
+		case CUERPO1_H:
+			CPUGrid(posx, posy) = CUERPO1_H_T; sw_casillaCambiada=true;
+			break;
+		case CUERPO2_H:
+			CPUGrid(posx, posy) = CUERPO2_H_T; sw_casillaCambiada=true;
+			break;
+		case POPA_H:
+			CPUGrid(posx, posy) = POPA_H_T; sw_casillaCambiada=true;
+			break;
+
+		case PROA_V:
+			CPUGrid(posx, posy) = PROA_V_T; sw_casillaCambiada=true;
+			break;
+		case CUERPO1_V:
+			CPUGrid(posx, posy) = CUERPO1_V_T; sw_casillaCambiada=true;
+			break;
+		case CUERPO2_V:
+			CPUGrid(posx, posy) = CUERPO2_V_T; sw_casillaCambiada=true;
+			break;
+		case POPA_V:
+			CPUGrid(posx, posy) = POPA_V_T; sw_casillaCambiada=true;
+			break;
+	}
+	return sw_casillaCambiada;
 }
 
 Ogre::Ray PlayState::setRayQuery(int posx, int posy, uint32 mask)
@@ -358,22 +447,27 @@ Ogre::Ray PlayState::setRayQuery(int posx, int posy, uint32 mask)
 	return (rayMouse);
 }
 
-void PlayState::getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName)
+void PlayState::getSelectedNode(uint32 mask,			///< ENTRADA. Mascara de objetos a enviar a la query
+								int &x,					///< ENTRADA/SALIDA. E: Pixels en X del raton para el rayo. S: X del nodo en coordenadas grid
+								int &y,					///< ENTRADA/SALIDA. E: Pixels en Y del raton para el rayo. S: X del nodo en coordenadas grid
+								std::string &nodeName	///< SALIDA. Nombre del nodo seleccionado
+								)
 {
-	setRayQuery(x, y, mask);		// establecemos query...
+	setRayQuery(x, y, mask);			// establecemos query...
 	Ogre::RaySceneQueryResult &result = _raySceneQuery->execute();
 	Ogre::RaySceneQueryResult::iterator it;
 	it = result.begin();
-	if (it != result.end())
+	if (it != result.end())	// recogemos la primera ocurrencia de la query
 	{
-		nodeName = it->movable->getParentSceneNode()->getName();	// cogemos el nombre del nodo seleccionado con el rayo
-//std::cout << "node: " << nodeName << std::endl;
-		Ogre::UserObjectBindings amm = it->movable->getParentSceneNode()->getUserObjectBindings()
-				//x = Ogre::any_cast<int>( it->movable->getParentSceneNode()->getUserObjectBindings().getUserAny("X"));
-//		y = Ogre::any_cast<int>(it->movable->getParentSceneNode()->getUserAny("Y"));
-		std::cout << "X: " << std::endl;
+		int xtemp=0,ytemp=0,i_st=-1;
 
-		//sscanf(nodeName.c_str(),"%*[^09]%d%*[^09]_%d",&xx, &yy);
+		nodeName = it->movable->getParentSceneNode()->getName();	// cogemos el nombre del nodo seleccionado con el rayo
+		i_st = std::sscanf(nodeName.c_str(),"%*[^0-9]%d%*[^0-9]%d",&xtemp, &ytemp);
+		if(i_st == 2)
+		{
+			x=xtemp, y=ytemp;
+			std::cout << "X: " << x << " Y: " << y << std::endl;
+		}
 	}
 }
 
