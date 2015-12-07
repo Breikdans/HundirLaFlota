@@ -7,6 +7,21 @@
 #include "Grid.h"
 #include "stdio.h"
 
+int rangeRandomNumber (int min, int max)
+{
+    int n = max - min + 1;
+    int remainder = RAND_MAX % n;
+    int x;
+    do
+    {
+        x = rand();
+    }while (x >= RAND_MAX - remainder);
+    return min + x % n;
+}
+
+// ========================================================================
+// =========================== METODOS PUBLICOS ===========================
+// ========================================================================
 Grid::Grid(usint16 C) : _CasillasVivas(C)
 {
 	for (int i = 0; i < MAX_ROWS_GRID ; i++ )
@@ -50,21 +65,24 @@ DebugGrid();
 #endif
 }
 
+usint16 Grid::getCasillasVivas() const
+{
+	return _CasillasVivas;
+}
+
+void Grid::setCasillasVivas(usint16 c)
+{
+	_CasillasVivas = c;
+}
+
+void Grid::restaCasillas(void)
+{
+	_CasillasVivas--;
+}
+
 // ========================================================================
 // =========================== METODOS PRIVADOS ===========================
 // ========================================================================
-int Grid::rangeRandomNumber (int min, int max) const
-{
-    int n = max - min + 1;
-    int remainder = RAND_MAX % n;
-    int x;
-    do
-    {
-        x = rand();
-    }while (x >= RAND_MAX - remainder);
-    return min + x % n;
-}
-
 void Grid::ColocaBarco(usint16 casillas)
 {
 	const int HORIZONTAL 	= 0;
@@ -179,12 +197,12 @@ void Grid::ColocaBarco(usint16 casillas)
 
 void Grid::DebugGrid()
 {
-	std::cout << std::endl << std::endl;
-	for(int i = 0; i < MAX_ROWS_GRID; i++)
+	std::cout << std::endl;
+	for(int y = 0; y < MAX_ROWS_GRID; y++)
 	{
-		for(int j = 0; j < MAX_COLS_GRID; j++)
+		for(int x = 0; x < MAX_COLS_GRID; x++)
 		{
-			std::cout << " " << _tbl_Grid[i][j];
+			std::cout << " " << _tbl_Grid[x][y];
 		}
 		std::cout << std::endl;
 	}

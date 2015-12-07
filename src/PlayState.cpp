@@ -36,7 +36,9 @@ void PlayState::enter ()
 	// Creamos nuestra query de rayos
 	_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
 
-	_turnoPlayer = true;
+	// inicializamos variables de estado
+	memset(_CPUShotsGrid, AGUA, sizeof(_CPUShotsGrid));
+	CambiarTurno(PLAYER);
 	_exitGame = false;
 }
 
@@ -86,8 +88,6 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 	  _camera->moveRelative(vt * 0.1 * tSpeed);
 #endif
 
-
-
 }
 
 void PlayState::keyReleased(const OIS::KeyEvent &e)
@@ -114,6 +114,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 	std::string s_Material = "";
 
 	getSelectedNode(CPU_CELLS, cellx, celly, s_CellName);
+//std::cout << "NODE: " << s_CellName<< " X: " << cellx << " Y: " << celly << std::endl;
 	if (s_CellName != "")
 	{
 		// si habia una celda seleccionada... y es distinta a la actual... la dejamos con color NORMAL
@@ -167,12 +168,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-	bool mbleft = false;
-
-	if (id == OIS::MB_Left)
-		mbleft = true;
-
-	if(mbleft)
+	if (id == OIS::MB_Left && _turno == PLAYER)
 	{
 		// posiciones del puntero del raton en pixeles
 		int posx = e.state.X.abs;
@@ -183,13 +179,27 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 		getSelectedNode(CPU_CELLS, posx, posy, s_CellName);
 		if (s_CellName != "")
 		{
+std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " << posy << std::endl;
+
 			// Todos los disparos producen un cambio: AGUA -> TOCADO ó DISPARADO, menos cuando disparan sobre algo ya disparado (DISPARADO, PROA_H_T, PROA_H_Q,...)
-			if (CompruebaDisparo(posx, posy))						// Si ha habido algun cambio con este disparo...
+			if (CompruebaDisparo(CPUGrid, posx, posy))				// Si ha habido algun cambio con este disparo...
+			{
+
 				ActualizaTablero(CPUGrid(posx, posy), s_CellName);	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
+				CheckHundido(CPUGrid, posx, posy);
+
+				if(CPUGrid.getCasillasVivas() == 0)
+				{
+					// FIN DE JUEGO, GANA EL PLAYER
+				}
+				else
+					CambiarTurno(CPU);
+			}
 			else
 			{
 				//sonido de error y que tire otra vez
 			}
+
 		} else {
 			// hay pulsado el mouse fuera del area permitida, tablero usuario, o agua
 		}
@@ -197,6 +207,34 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 }
 
 void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
+
+void PlayState::CambiarTurno(EN_TURNO turno)
+{
+	_turno = turno;
+	int x = 0, y = 0;
+
+	if(_turno == CPU)
+	{
+//		sleep(3);
+		CalculaDisparoCPU(x, y);
+
+		if(CompruebaDisparo(PlayerGrid, x, y))
+		{
+			std::stringstream s_node_player;
+			s_node_player << "node_player_" << x << "_" << y;	// node_player_X_Y
+
+			ActualizaTablero(PlayerGrid(x, y), s_node_player.str());	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
+			CheckHundido(PlayerGrid, x, y);
+
+			if(PlayerGrid.getCasillasVivas() == 0)
+			{
+				// FIN DE JUEGO, GANA LA CPU
+			}
+			else
+				CambiarTurno(PLAYER);
+		}
+	}
+}
 
 PlayState* PlayState::getSingletonPtr ()
 {
@@ -226,9 +264,9 @@ void PlayState::createScene()
 
 	// creamos las entidades y las cargamos en las tablas de punteros
 	// enlazamos a los nodos, los objetos de cada tipo
-	for (int i = 0; i < MAX_ROWS_GRID ; i++ )
+	for (int j = 0; j < MAX_ROWS_GRID ; j++ )
 	{
-		for (int j = 0; j < MAX_COLS_GRID ; j++ )
+		for (int i = 0; i < MAX_COLS_GRID ; i++ )
 		{
 			// creamos nodos para el tablero de jugador y atachamos la entidad
 			// colgamos de main_node_tablero_Player, todos los nodos del tablero
@@ -250,12 +288,12 @@ void PlayState::createScene()
 
 			node_Player = _sceneMgr->createSceneNode(s_node_player_aux.str());
 			node_Player->attachObject(ent_CeldaPlayer);
-			node_Player->translate(j*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, i*CELL_WIDTH);
+			node_Player->translate(i*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, j*CELL_WIDTH);
 			main_node_tablero_Player->addChild(node_Player);
 
 			node_CPU = _sceneMgr->createSceneNode(s_node_cpu_aux.str());
 			node_CPU->attachObject(ent_CeldaCPU);
-			node_CPU->translate(j*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, i*CELL_WIDTH);
+			node_CPU->translate(i*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, j*CELL_WIDTH);
 			main_node_tablero_CPU->addChild(node_CPU);
 		}
 	}
@@ -286,14 +324,15 @@ void PlayState::createScene()
 	_sceneMgr->getRootSceneNode()->addChild(node_water);
 	node_water->addChild(main_node_tablero_CPU);
 	node_water->addChild(main_node_tablero_Player);
-
+std::cout << std::endl << "CPU:";
 	CPUGrid.IniciaBarcosAleatorio();
+std::cout << std::endl << "PLAYER:";
 	PlayerGrid.IniciaBarcosAleatorio();
 
 
-	for(int x = 0; x < MAX_COLS_GRID; x++)
+	for(int y = 0; y < MAX_ROWS_GRID; y++)
 	{
-		for(int y = 0; y < MAX_ROWS_GRID; y++)
+		for(int x = 0; x < MAX_COLS_GRID; x++)
 		{
 			std::stringstream nodeNamePlayer;
 			std::stringstream nodeNameCPU;
@@ -308,43 +347,38 @@ void PlayState::createScene()
 
 void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 {
-
-
 	Ogre::Entity* entidad=NULL;
 	Ogre::SceneNode* shipNode=NULL;
 	Ogre::SceneNode* TableroNode = _sceneMgr->getSceneNode(nodeName);
 	std::stringstream shipNodeName;
-	std::stringstream shipTocadoNodeName;
 	std::string pieza;
 	bool pintarBarco = true;
 	bool esHorizontal = false;
 
-	shipNodeName << "ship_" << nodeName;
-	shipTocadoNodeName << "shipTocado_" << nodeName;
 	switch(valor)
 	{
 		case AGUA: pintarBarco=false; break;
 		case DISPARADO: pintarBarco=false; break;
 
-		case PROA_H: pieza="proa.mesh";  esHorizontal=true;  break;
-		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; break;
-		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; break;
-		case POPA_H: pieza="popa.mesh";  esHorizontal=true; break;
+		case PROA_H: pieza="proa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName; break;
+		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
+		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
+		case POPA_H: pieza="popa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
 
-		case PROA_V: pieza="proa.mesh";  break;
-		case CUERPO1_V: pieza="cuerpo1.mesh";  break;
-		case CUERPO2_V: pieza="cuerpo2.mesh"; break;
-		case POPA_V :pieza="popa.mesh";  break;
+		case PROA_V: pieza="proa.mesh"; shipNodeName << "ship_" << nodeName; break;
+		case CUERPO1_V: pieza="cuerpo1.mesh"; shipNodeName << "ship_" << nodeName; break;
+		case CUERPO2_V: pieza="cuerpo2.mesh"; shipNodeName << "ship_" << nodeName;break;
+		case POPA_V :pieza="popa.mesh";  shipNodeName << "ship_" << nodeName;break;
 
-		case PROA_H_T :pieza="plano_fuego.mesh"; esHorizontal=true;  break;
-		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; esHorizontal=true;  break;
-		case CUERPO2_H_T :pieza="cuerpo2_t.mesh"; esHorizontal=true;  break;
-		case POPA_H_T :pieza="popa_t.mesh"; esHorizontal=true;  break;
+		case PROA_H_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO2_H_T :pieza="cuerpo2_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case POPA_H_T :pieza="popa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
 
-		case PROA_V_T :pieza="plano_fuego.mesh";  break;
-		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; break;
-		case CUERPO2_V_T :pieza="cuerpo2_t.mesh"; break;
-		case POPA_V_T :pieza="popa_t.mesh";  break;
+		case PROA_V_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
+		case CUERPO2_V_T :pieza="cuerpo2_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
+		case POPA_V_T :pieza="popa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
 
 		/*case PROA_H_Q :pieza="proa_ardiendo.mesh"; esHorizontal=true; break;
 		case CUERPO1_H_Q :pieza="cuerpo1_q.mesh"; esHorizontal=true; break;
@@ -360,17 +394,17 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 	 if (pintarBarco) {
 
 		 if (TableroNode->numChildren()>0)
-		 { 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
-			 	Ogre::SceneNode* nodito = static_cast<Ogre::SceneNode*>(TableroNode->getChild(0));
-			 	nodito->removeAndDestroyAllChildren();
+		{ 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
+			 	 Ogre::SceneNode* antiguo = static_cast<Ogre::SceneNode*>(TableroNode->getChild(0));
+			 	 antiguo->removeAndDestroyAllChildren();
+
 		}
 
 		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
 		entidad->setQueryFlags(SHIP_CELL);
 		shipNode = _sceneMgr->createSceneNode(shipNodeName.str());
 		shipNode->attachObject(entidad);
-
-		if (!esHorizontal) {
+		if (esHorizontal) {
 			shipNode->yaw(Ogre::Degree(90));
 		}
 		TableroNode->addChild(shipNode);
@@ -380,16 +414,16 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 }
 
 /// Comprueba que hay en la casilla del disparo, cambia su estado si es necesario, decrementa casillas de vida, cambia indicador de turno
-bool PlayState::CompruebaDisparo(usint16 posx, usint16 posy)
+bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 {
 	bool sw_casillaCambiada = false;
-	usint16 celda = CPUGrid(posx, posy);
+	usint16 celda = grid(posx, posy);
 
 	switch(celda)
 	{
 		case AGUA:
 			// SACAR SONIDO DE AGUA
-			CPUGrid(posx, posy) = DISPARADO; sw_casillaCambiada=true;
+			grid(posx, posy) = DISPARADO; sw_casillaCambiada=true;
 			break;
 		case DISPARADO:
 		case PROA_H_T:
@@ -409,37 +443,104 @@ bool PlayState::CompruebaDisparo(usint16 posx, usint16 posy)
 		case CUERPO1_V_Q:
 		case CUERPO2_V_Q:
 		case POPA_V_Q:
-		  // SACAR SONIDO DE ERROR
+		  	// SACAR SONIDO DE ERROR
 			break;
 
 		// el barco esta "intacto"
 		case PROA_H:
-			CPUGrid(posx, posy) = PROA_H_T; sw_casillaCambiada=true;
+			grid(posx, posy) = PROA_H_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 		case CUERPO1_H:
-			CPUGrid(posx, posy) = CUERPO1_H_T; sw_casillaCambiada=true;
+			grid(posx, posy) = CUERPO1_H_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 		case CUERPO2_H:
-			CPUGrid(posx, posy) = CUERPO2_H_T; sw_casillaCambiada=true;
+			grid(posx, posy) = CUERPO2_H_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 		case POPA_H:
-			CPUGrid(posx, posy) = POPA_H_T; sw_casillaCambiada=true;
+			grid(posx, posy) = POPA_H_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 
 		case PROA_V:
-			CPUGrid(posx, posy) = PROA_V_T; sw_casillaCambiada=true;
+			grid(posx, posy) = PROA_V_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 		case CUERPO1_V:
-			CPUGrid(posx, posy) = CUERPO1_V_T; sw_casillaCambiada=true;
+			grid(posx, posy) = CUERPO1_V_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 		case CUERPO2_V:
-			CPUGrid(posx, posy) = CUERPO2_V_T; sw_casillaCambiada=true;
+			grid(posx, posy) = CUERPO2_V_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 		case POPA_V:
-			CPUGrid(posx, posy) = POPA_V_T; sw_casillaCambiada=true;
+			grid(posx, posy) = POPA_V_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 	}
+
+//TODO: Comprobar si esta hundido el barco y en ese caso cambiar el estado de TOCADO a HUNDIDO de sus casillas y las de alrededor ponerlas a DISPARADO
+
+	// Actualizamos grid de disparos de la CPU
+	if (_turno == CPU)
+		_CPUShotsGrid[posx][posy] = grid(posx, posy);
+
 	return sw_casillaCambiada;
+}
+
+void PlayState::CheckHundido(Grid& grid, usint16 posx, usint16 posy)
+{
+}
+
+void PlayState::CalculaDisparoCPU(int &posX, int &posY)
+{
+	int x = 0, y = 0;
+	bool sw_disparoCalculado = false;
+
+	// Recorremos la matriz de disparos realizados por la CPU
+	for(int i = 0; i < MAX_COLS_GRID && sw_disparoCalculado == false; i++)
+	{
+		for(int j = 0; j < MAX_ROWS_GRID && sw_disparoCalculado == false; j++)
+		{
+			// si hay alguna casilla "TOCADA" intentamos seguir disparando por ahi...
+			if (_CPUShotsGrid[i][j] >= PROA_H_T || _CPUShotsGrid[i][j] <= POPA_V_T)
+			{
+				// comprobamos si podemos continuar disparando en horizontal...
+				int incr = 1;
+				while( i+incr < MAX_COLS_GRID &&
+					   (_CPUShotsGrid[i+incr][j] >= PROA_H_T || _CPUShotsGrid[i+incr][j] <= POPA_V_T) )
+				{
+					sw_disparoCalculado = true;
+					x = i+incr;
+					y = j;
+
+					incr++;
+				}
+
+				// si no podemos seguir disparando en horizontar... probamos en vertical
+				if(sw_disparoCalculado == false)
+				{
+					incr = 1;
+					while( j+incr < MAX_ROWS_GRID &&
+						   (_CPUShotsGrid[i][j+incr] >= PROA_H_T || _CPUShotsGrid[i][j+incr] <= POPA_V_T) )
+					{
+						sw_disparoCalculado = true;
+						x = i;
+						y = j+incr;
+
+						incr++;
+					}
+				}
+			}
+		}
+	}
+
+	// Si no habia ninguna casilla "TOCADA", creamos un disparo aleatorio a casilla aun no disparada (AGUA)
+	if(sw_disparoCalculado == false)
+	{
+		do{
+			x = rangeRandomNumber(0, MAX_COLS_GRID);
+			y = rangeRandomNumber(0, MAX_ROWS_GRID);
+		}while(_CPUShotsGrid[x][y] != AGUA);
+	}
+
+	posX = x;
+	posY = y;
 }
 
 Ogre::Ray PlayState::setRayQuery(int posx, int posy, uint32 mask)
@@ -471,7 +572,7 @@ void PlayState::getSelectedNode(uint32 mask,			///< ENTRADA. Mascara de objetos 
 		if(i_st == 2)
 		{
 			x=xtemp, y=ytemp;
-			std::cout << "X: " << x << " Y: " << y << std::endl;
+//			std::cout << "X: " << x << " Y: " << y << std::endl;
 		}
 	}
 }
