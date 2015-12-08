@@ -187,7 +187,8 @@ std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " << posy << 
 
 				ActualizaTablero(CPUGrid(posx, posy), s_CellName);	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 				CheckHundido(CPUGrid, posx, posy);
-
+std::cout << "CPU GRID: ";
+CPUGrid.DebugGrid();
 				if(CPUGrid.getCasillasVivas() == 0)
 				{
 					// FIN DE JUEGO, GANA EL PLAYER
@@ -230,9 +231,9 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 			{
 				// FIN DE JUEGO, GANA LA CPU
 			}
-			else
-				CambiarTurno(PLAYER);
+
 		}
+		CambiarTurno(PLAYER);
 	}
 }
 
@@ -370,10 +371,10 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		case CUERPO2_V: pieza="cuerpo2.mesh"; shipNodeName << "ship_" << nodeName;break;
 		case POPA_V :pieza="popa.mesh";  shipNodeName << "ship_" << nodeName;break;
 
-		case PROA_H_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO2_H_T :pieza="cuerpo2_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
-		case POPA_H_T :pieza="popa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case PROA_H_T :pieza="proa_t.mesh";  esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO2_H_T :pieza="cuerpo2_t.mesh";  esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
+		case POPA_H_T :pieza="popa_t.mesh";  esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
 
 		case PROA_V_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
 		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
@@ -396,9 +397,10 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		 if (TableroNode->numChildren()>0)
 		{ 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
 			 	 Ogre::SceneNode* antiguo = static_cast<Ogre::SceneNode*>(TableroNode->getChild(0));
+			 	 antiguo->setVisible(false);
 			 	 antiguo->removeAndDestroyAllChildren();
-
-		}
+			 	 _sceneMgr->destroySceneNode(antiguo);
+			}
 
 		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
 		entidad->setQueryFlags(SHIP_CELL);

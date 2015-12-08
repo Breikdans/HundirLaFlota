@@ -1,4 +1,4 @@
-<scene previous_export_time="1449495555.912159" formatVersion="1.0.1" export_time="1449565803.4929073" exported_by="jose" >
+<scene previous_export_time="1449566873.7949028" formatVersion="1.0.1" export_time="1449568063.7399166" exported_by="jose" >
   <nodes >
     <node name="Point" >
       <position x="13.764176" y="0.569296" z="-6.701458" />
@@ -25,15 +25,15 @@
         <colourSpecular b="1.0" g="1.0" r="1.0" />
       </light>
     </node>
-    <node name="proa_t" >
-      <position x="-0.152916" y="2.511775" z="-3.337021" />
+    <node name="popa_t" >
+      <position x="-0.080000" y="2.511777" z="8.559988" />
       <rotation qz="-0.000000" qx="0.000000" qy="0.707107" qw="0.707107" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <game >
         <sensors />
         <actuators />
       </game>
-      <entity lock_trans_x="False" lock_trans_z="False" name="proa_t" friction_z="1.0" actor="False" velocity_min="0.0" physics_type="STATIC" lock_trans_y="False" friction_y="1.0" ghost="False" lock_rot_y="False" meshFile="proa_t.mesh" lock_rot_z="False" inertia_tensor="0.4000000059604645" friction_x="1.0" mass="1.0" mass_radius="1.0" velocity_max="0.0" lock_rot_x="False" damping_trans="0.02539999969303608" anisotropic_friction="False" damping_rot="0.1589999943971634" />
+      <entity lock_trans_x="False" lock_trans_z="False" name="popa_t" friction_z="1.0" actor="False" velocity_min="0.0" physics_type="STATIC" lock_trans_y="False" friction_y="1.0" ghost="False" lock_rot_y="False" meshFile="popa_t.mesh" lock_rot_z="False" inertia_tensor="0.4000000059604645" friction_x="1.0" mass="1.0" mass_radius="1.0" velocity_max="0.0" lock_rot_x="False" damping_trans="0.02539999969303608" anisotropic_friction="False" damping_rot="0.1589999943971634" />
     </node>
     <node name="Camera" >
       <position x="13.038373" y="8.030402" z="-6.973087" />
@@ -50,7 +50,7 @@
   </nodes>
   <externals >
     <item type="material" >
-      <file name="/home/jose/dev/workspace/HundirLaFlota/doc/blender/fuente_barcos/barcos_t/export/proa_t/proa_t.material" />
+      <file name="/home/jose/dev/workspace/HundirLaFlota/doc/blender/fuente_barcos/barcos_t/export/popa_t/popa_t.material" />
     </item>
   </externals>
   <environment >
