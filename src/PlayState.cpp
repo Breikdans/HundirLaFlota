@@ -218,7 +218,7 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 	{
 //		sleep(3);
 		CalculaDisparoCPU(x, y);
-
+std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std::endl;
 		if(CompruebaDisparo(PlayerGrid, x, y))
 		{
 			std::stringstream s_node_player;
@@ -226,6 +226,8 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 
 			ActualizaTablero(PlayerGrid(x, y), s_node_player.str());	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 			CheckHundido(PlayerGrid, x, y);
+std::cout << "PLAYER GRID: ";
+PlayerGrid.DebugGrid();
 
 			if(PlayerGrid.getCasillasVivas() == 0)
 			{
