@@ -102,23 +102,23 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
 	// guardamos el nombre del ultimo nodo seleccionado, para devolverle al estado normal
 	static std::string s_LastCell= "";
+	static int lastcellx = 0;
+	static int lastcelly = 0;
 
 	// posiciones del puntero del raton en pixeles
 	int cellx = e.state.X.abs, posx = e.state.X.abs;
 	int celly = e.state.Y.abs, posy = e.state.Y.abs;
 
-
 	std::string s_CellName = "";
 	Ogre::SceneNode *node = NULL;
 	Ogre::Entity *pEnt = NULL;
-	std::string s_Material = "";
 
 	getSelectedNode(CPU_CELLS, cellx, celly, s_CellName);
 //std::cout << "NODE: " << s_CellName<< " X: " << cellx << " Y: " << celly << std::endl;
 	if (s_CellName != "")
 	{
-		// si habia una celda seleccionada... y es distinta a la actual... la dejamos con color NORMAL
-		if(s_LastCell.size() != 0 && s_LastCell != s_CellName)
+		// si habia una celda seleccionada... y es distinta a la actual... y no hemos DISPARADO sobre ella....la dejamos con color NORMAL
+		if(s_LastCell.size() != 0 && s_LastCell != s_CellName && CPUGrid(lastcellx,lastcelly) != DISPARADO)
 		{
 			node = _sceneMgr->getSceneNode(s_LastCell);
 			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
@@ -132,7 +132,10 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 		pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_CellName));
 		// cambiamos la textura del objeto a SELECCIONADA
 		pEnt->setMaterialName(MATERIAL_CELL_SELECTED);
+
 		s_LastCell = s_CellName;
+		lastcellx = cellx;
+		lastcelly = celly;
 
 	}
 	else	// si sacamos el cursor de las celdas, dejamos la ultima con color NORMAL
@@ -233,9 +236,9 @@ PlayerGrid.DebugGrid();
 			{
 				// FIN DE JUEGO, GANA LA CPU
 			}
-			else
-				CambiarTurno(PLAYER);
+
 		}
+		CambiarTurno(PLAYER);
 	}
 }
 
@@ -357,12 +360,22 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 	std::string pieza;
 	bool pintarBarco = true;
 	bool esHorizontal = false;
+	Ogre::SceneNode *node = NULL;
+	Ogre::Entity *pEnt = NULL;
 
 	switch(valor)
 	{
 		case AGUA: pintarBarco=false; break;
-		case DISPARADO: pintarBarco=false; break;
+		case DISPARADO:
+		{
+			node = _sceneMgr->getSceneNode(nodeName);
+			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(nodeName));
+			// cambiamos la textura del objeto a SELECCIONADA
+			pEnt->setMaterialName(MATERIAL_CELL_SELECTED);
 
+			pintarBarco=false;
+			break;
+		}
 		case PROA_H: pieza="proa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName; break;
 		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
 		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
@@ -373,10 +386,10 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		case CUERPO2_V: pieza="cuerpo2.mesh"; shipNodeName << "ship_" << nodeName;break;
 		case POPA_V :pieza="popa.mesh";  shipNodeName << "ship_" << nodeName;break;
 
-		case PROA_H_T :pieza="proa_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case PROA_H_T :pieza="proa_t.mesh";  esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
 		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO2_H_T :pieza="cuerpo2_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
-		case POPA_H_T :pieza="popa_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO2_H_T :pieza="cuerpo2_t.mesh";  esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
+		case POPA_H_T :pieza="popa_t.mesh";  esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
 
 		case PROA_V_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
 		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
@@ -394,12 +407,16 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		case POPA_V_Q :pieza="popa_q.mesh"; break;*/
 	}
 
-	 if (pintarBarco) {
+	if (pintarBarco) {
 
-		// if (TableroNode->numChildren()>0)
-		// { 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
-			// 	 TableroNode->
-		// }
+		// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
+		if (TableroNode->numChildren()>0)
+		{
+			Ogre::SceneNode* antiguo = static_cast<Ogre::SceneNode*>(TableroNode->getChild(0));
+			antiguo->setVisible(false);
+			antiguo->removeAndDestroyAllChildren();
+			_sceneMgr->destroySceneNode(antiguo);
+		}
 
 		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
 		entidad->setQueryFlags(SHIP_CELL);
@@ -411,7 +428,7 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		TableroNode->addChild(shipNode);
 
 		 // meter lo que sea
-	 }
+	}
 }
 
 /// Comprueba que hay en la casilla del disparo, cambia su estado si es necesario, decrementa casillas de vida, cambia indicador de turno
@@ -494,37 +511,43 @@ void PlayState::CalculaDisparoCPU(int &posX, int &posY)
 	bool sw_disparoCalculado = false;
 
 	// Recorremos la matriz de disparos realizados por la CPU
-	for(int i = 0; i < MAX_COLS_GRID && sw_disparoCalculado == false; i++)
+	for(int j = 0; j < MAX_ROWS_GRID && sw_disparoCalculado == false; j++)
 	{
-		for(int j = 0; j < MAX_ROWS_GRID && sw_disparoCalculado == false; j++)
+		for(int i = 0; i < MAX_COLS_GRID && sw_disparoCalculado == false; i++)
 		{
 			// si hay alguna casilla "TOCADA" intentamos seguir disparando por ahi...
-			if (_CPUShotsGrid[i][j] >= PROA_H_T || _CPUShotsGrid[i][j] <= POPA_V_T)
+			if (_CPUShotsGrid[i][j] >= PROA_H_T && _CPUShotsGrid[i][j] <= POPA_V_T)
 			{
 				// comprobamos si podemos continuar disparando en horizontal...
 				int incr = 1;
 				while( i+incr < MAX_COLS_GRID &&
-					   (_CPUShotsGrid[i+incr][j] >= PROA_H_T || _CPUShotsGrid[i+incr][j] <= POPA_V_T) )
+					   (_CPUShotsGrid[i+incr][j] >= PROA_H_T && _CPUShotsGrid[i+incr][j] <= POPA_V_T) )
+				{
+					incr++;
+				}
+
+				if(_CPUShotsGrid[i+incr][j] == AGUA)
 				{
 					sw_disparoCalculado = true;
 					x = i+incr;
 					y = j;
-
-					incr++;
 				}
 
-				// si no podemos seguir disparando en horizontar... probamos en vertical
+				// si no podemos seguir disparando en horizontal... probamos en vertical
 				if(sw_disparoCalculado == false)
 				{
 					incr = 1;
 					while( j+incr < MAX_ROWS_GRID &&
-						   (_CPUShotsGrid[i][j+incr] >= PROA_H_T || _CPUShotsGrid[i][j+incr] <= POPA_V_T) )
+						   (_CPUShotsGrid[i][j+incr] >= PROA_H_T && _CPUShotsGrid[i][j+incr] <= POPA_V_T) )
+					{
+						incr++;
+					}
+
+					if(_CPUShotsGrid[i][j+incr] == AGUA)
 					{
 						sw_disparoCalculado = true;
 						x = i;
 						y = j+incr;
-
-						incr++;
 					}
 				}
 			}
@@ -535,8 +558,8 @@ void PlayState::CalculaDisparoCPU(int &posX, int &posY)
 	if(sw_disparoCalculado == false)
 	{
 		do{
-			x = rangeRandomNumber(0, MAX_COLS_GRID);
-			y = rangeRandomNumber(0, MAX_ROWS_GRID);
+			x = rangeRandomNumber(0, MAX_COLS_GRID-1);
+			y = rangeRandomNumber(0, MAX_ROWS_GRID-1);
 		}while(_CPUShotsGrid[x][y] != AGUA);
 	}
 
