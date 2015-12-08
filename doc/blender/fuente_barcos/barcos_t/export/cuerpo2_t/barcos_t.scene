@@ -1,50 +1,50 @@
-<scene previous_export_time="1449565803.4929073" formatVersion="1.0.1" export_time="1449566873.7949028" exported_by="jose" >
+<scene previous_export_time="1449568093.3471973" formatVersion="1.0.1" export_time="1449572216.5895631" exported_by="jose" >
   <nodes >
     <node name="Point" >
-      <position x="13.764176" y="0.569296" z="-6.701458" />
-      <rotation qz="-0.000000" qx="0.000000" qy="0.000000" qw="1.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <position y="0.569296" x="13.764176" z="-6.701458" />
+      <rotation qw="1.000000" qx="0.000000" qz="-0.000000" qy="0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
       <game >
         <sensors />
         <actuators />
       </game>
     </node>
     <node name="Sun" >
-      <position x="7.273982" y="13.792408" z="6.062989" />
-      <rotation qz="-0.000000" qx="0.000000" qy="0.000000" qw="1.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <position y="13.792408" x="7.273982" z="6.062989" />
+      <rotation qw="1.000000" qx="0.000000" qz="-0.000000" qy="0.000000" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
       <game >
         <sensors />
         <actuators />
       </game>
       <light name="Sun" type="directional" powerScale="1.0" >
-        <position x="7.273982" y="13.792408" z="6.062989" />
-        <lightAttenuation quadratic="0.0" constant="1.0" range="5000" linear="0.04" />
-        <direction x="0.0" y="-1.0" z="0.0" />
-        <colourDiffuse b="1.0" g="1.0" r="1.0" />
-        <colourSpecular b="1.0" g="1.0" r="1.0" />
+        <position y="13.792408" x="7.273982" z="6.062989" />
+        <lightAttenuation constant="1.0" range="5000" linear="0.04" quadratic="0.0" />
+        <direction y="-1.0" x="0.0" z="0.0" />
+        <colourDiffuse g="1.0" r="1.0" b="1.0" />
+        <colourSpecular g="1.0" r="1.0" b="1.0" />
       </light>
     </node>
     <node name="cuerpo2_t" >
-      <position x="-0.107578" y="2.511776" z="-0.000001" />
-      <rotation qz="-0.000000" qx="0.000000" qy="0.707107" qw="0.707107" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <position y="2.511776" x="-0.107578" z="-0.000001" />
+      <rotation qw="0.707107" qx="0.000000" qz="-0.000000" qy="0.707107" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
       <game >
         <sensors />
         <actuators />
       </game>
-      <entity lock_trans_x="False" lock_trans_z="False" name="cuerpo2_t" friction_z="1.0" actor="False" velocity_min="0.0" physics_type="STATIC" lock_trans_y="False" friction_y="1.0" ghost="False" lock_rot_y="False" meshFile="cuerpo2_t.mesh" lock_rot_z="False" inertia_tensor="0.4000000059604645" friction_x="1.0" mass="1.0" mass_radius="1.0" velocity_max="0.0" lock_rot_x="False" damping_trans="0.03999999910593033" anisotropic_friction="False" damping_rot="0.10000000149011612" />
+      <entity actor="False" velocity_max="0.0" meshFile="cuerpo2_t.mesh" anisotropic_friction="False" physics_type="STATIC" damping_rot="0.10000000149011612" lock_rot_z="False" lock_trans_y="False" velocity_min="0.0" inertia_tensor="0.4000000059604645" lock_rot_y="False" friction_y="1.0" friction_x="1.0" ghost="False" friction_z="1.0" name="cuerpo2_t" lock_trans_x="False" mass_radius="1.0" mass="1.0" lock_rot_x="False" lock_trans_z="False" damping_trans="0.03999999910593033" />
     </node>
     <node name="Camera" >
-      <position x="13.038373" y="8.030402" z="-6.973087" />
-      <rotation qz="-0.465071" qx="0.374170" qy="0.695908" qw="0.399272" />
-      <scale x="0.996890" y="0.924643" z="0.687921" />
+      <position y="8.030402" x="13.038373" z="-6.973087" />
+      <rotation qw="0.399272" qx="0.374170" qz="-0.465071" qy="0.695908" />
+      <scale y="0.924643" x="0.996890" z="0.687921" />
       <game >
         <sensors />
         <actuators />
       </game>
-      <camera fov="0.5033799435163735" name="Camera" projectionType="perspective" >
-        <clipping nearPlaneDist="0.10000000149011612" far="100.0" farPlaneDist="100.0" near="0.10000000149011612" />
+      <camera name="Camera" fov="0.5033799435163735" projectionType="perspective" >
+        <clipping nearPlaneDist="0.10000000149011612" near="0.10000000149011612" farPlaneDist="100.0" far="100.0" />
       </camera>
     </node>
   </nodes>
@@ -54,8 +54,8 @@
     </item>
   </externals>
   <environment >
-    <colourBackground b="0.05087608844041824" g="0.05087608844041824" r="0.05087608844041824" />
-    <colourAmbient b="0.0" g="0.0" r="0.0" />
-    <colourDiffuse b="0.05087608844041824" g="0.05087608844041824" r="0.05087608844041824" />
+    <colourBackground g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
+    <colourAmbient g="0.0" r="0.0" b="0.0" />
+    <colourDiffuse g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
   </environment>
 </scene>
