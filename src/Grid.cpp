@@ -85,9 +85,6 @@ void Grid::restaCasillas(void)
 // ========================================================================
 void Grid::ColocaBarco(usint16 casillas)
 {
-	const int HORIZONTAL 	= 0;
-	const int VERTICAL		= 1;
-
 	// por claridad...
 	const int MAX_X			= MAX_COLS_GRID - 1;
 	const int MAX_Y			= MAX_ROWS_GRID - 1;

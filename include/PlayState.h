@@ -52,7 +52,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		void CalculaDisparoCPU(int &posX, int &posY);
 		void ActualizaTablero(usint16, std::string);
 		bool CompruebaDisparo(Grid&, usint16 posx, usint16 posy);
-		void CheckHundido(Grid& grid, usint16 posx, usint16 posy);
+		bool CheckHundido(Grid& grid, usint16 posx, usint16 posy);
 		void CambiarTurno(EN_TURNO turno);
 
 		EN_TURNO _turno;
