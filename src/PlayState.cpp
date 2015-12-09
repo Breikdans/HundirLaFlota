@@ -355,6 +355,7 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 	std::string pieza;
 	bool pintarBarco = true;
 	bool esHorizontal = false;
+	bool pintarFuego = false;
 
 	switch(valor)
 	{
@@ -371,15 +372,15 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		case CUERPO2_V: pieza="cuerpo2.mesh"; shipNodeName << "ship_" << nodeName;break;
 		case POPA_V :pieza="popa.mesh";  shipNodeName << "ship_" << nodeName;break;
 
-		case PROA_H_T :pieza="proa_t.mesh";  esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO1_H_T :pieza="cuerpo1_t.mesh"; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO2_H_T :pieza="cuerpo2_t.mesh";  esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
-		case POPA_H_T :pieza="popa_t.mesh";  esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
+		case PROA_H_T :pieza="proa_t.mesh";  pintarFuego=true; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO1_H_T :pieza="cuerpo1_t.mesh";  pintarFuego=true; esHorizontal=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO2_H_T :pieza="cuerpo2_t.mesh";   pintarFuego=true; esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
+		case POPA_H_T :pieza="popa_t.mesh";   pintarFuego=true; esHorizontal=true;shipNodeName << "shipTocado_" << nodeName; break;
 
-		case PROA_V_T :pieza="proa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
-		case CUERPO1_V_T :pieza="cuerpo1_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
-		case CUERPO2_V_T :pieza="cuerpo2_t.mesh"; shipNodeName << "shipTocado_" << nodeName;break;
-		case POPA_V_T :pieza="popa_t.mesh"; shipNodeName << "shipTocado_" << nodeName; break;
+		case PROA_V_T :pieza="proa_t.mesh"; pintarFuego=true; shipNodeName << "shipTocado_" << nodeName; break;
+		case CUERPO1_V_T :pieza="cuerpo1_t.mesh";  pintarFuego=true; shipNodeName << "shipTocado_" << nodeName;break;
+		case CUERPO2_V_T :pieza="cuerpo2_t.mesh";  pintarFuego=true; shipNodeName << "shipTocado_" << nodeName;break;
+		case POPA_V_T :pieza="popa_t.mesh";  pintarFuego=true; shipNodeName << "shipTocado_" << nodeName; break;
 
 		/*case PROA_H_Q :pieza="proa_ardiendo.mesh"; esHorizontal=true; break;
 		case CUERPO1_H_Q :pieza="cuerpo1_q.mesh"; esHorizontal=true; break;
@@ -409,6 +410,13 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		if (esHorizontal) {
 			shipNode->yaw(Ogre::Degree(90));
 		}
+
+		if (pintarFuego) {
+			shipNodeName << "_Smoke";
+			Ogre::ParticleSystem* partSystem = _sceneMgr->createParticleSystem(shipNodeName.str(),"Smoke");
+			shipNode->attachObject(partSystem);
+		}
+
 		TableroNode->addChild(shipNode);
 
 		 // meter lo que sea
