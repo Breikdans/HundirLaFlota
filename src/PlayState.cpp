@@ -102,23 +102,23 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
 	// guardamos el nombre del ultimo nodo seleccionado, para devolverle al estado normal
 	static std::string s_LastCell= "";
+	static int lastcellx = 0;
+	static int lastcelly = 0;
 
 	// posiciones del puntero del raton en pixeles
 	int cellx = e.state.X.abs, posx = e.state.X.abs;
 	int celly = e.state.Y.abs, posy = e.state.Y.abs;
 
-
 	std::string s_CellName = "";
 	Ogre::SceneNode *node = NULL;
 	Ogre::Entity *pEnt = NULL;
-	std::string s_Material = "";
 
 	getSelectedNode(CPU_CELLS, cellx, celly, s_CellName);
 //std::cout << "NODE: " << s_CellName<< " X: " << cellx << " Y: " << celly << std::endl;
 	if (s_CellName != "")
 	{
-		// si habia una celda seleccionada... y es distinta a la actual... la dejamos con color NORMAL
-		if(s_LastCell.size() != 0 && s_LastCell != s_CellName)
+		// si habia una celda seleccionada... y es distinta a la actual... y no hemos DISPARADO sobre ella....la dejamos con color NORMAL
+		if(s_LastCell.size() != 0 && s_LastCell != s_CellName && CPUGrid(lastcellx,lastcelly) != DISPARADO)
 		{
 			node = _sceneMgr->getSceneNode(s_LastCell);
 			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_LastCell));
@@ -132,7 +132,10 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 		pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(s_CellName));
 		// cambiamos la textura del objeto a SELECCIONADA
 		pEnt->setMaterialName(MATERIAL_CELL_SELECTED);
+
 		s_LastCell = s_CellName;
+		lastcellx = cellx;
+		lastcelly = celly;
 
 	}
 	else	// si sacamos el cursor de las celdas, dejamos la ultima con color NORMAL
@@ -218,7 +221,7 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 	{
 //		sleep(3);
 		CalculaDisparoCPU(x, y);
-
+std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std::endl;
 		if(CompruebaDisparo(PlayerGrid, x, y))
 		{
 			std::stringstream s_node_player;
@@ -226,6 +229,8 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 
 			ActualizaTablero(PlayerGrid(x, y), s_node_player.str());	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 			CheckHundido(PlayerGrid, x, y);
+std::cout << "PLAYER GRID: ";
+PlayerGrid.DebugGrid();
 
 			if(PlayerGrid.getCasillasVivas() == 0)
 			{
@@ -341,7 +346,7 @@ std::cout << std::endl << "PLAYER:";
 			nodeNameCPU << "node_cpu_" << x << "_" << y;	// node_cpu_X_Y;
 
 			ActualizaTablero(PlayerGrid(x, y), nodeNamePlayer.str());
-			ActualizaTablero(CPUGrid(x, y), nodeNameCPU.str());
+//			ActualizaTablero(CPUGrid(x, y), nodeNameCPU.str());
 		}
 	}
 }
@@ -355,13 +360,23 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 	std::string pieza;
 	bool pintarBarco = true;
 	bool esHorizontal = false;
+	Ogre::SceneNode *node = NULL;
+	Ogre::Entity *pEnt = NULL;
 	bool pintarFuego = false;
 
 	switch(valor)
 	{
 		case AGUA: pintarBarco=false; break;
-		case DISPARADO: pintarBarco=false; break;
+		case DISPARADO:
+		{
+			node = _sceneMgr->getSceneNode(nodeName);
+			pEnt = static_cast <Ogre::Entity *> (node->getAttachedObject(nodeName));
+			// cambiamos la textura del objeto a SELECCIONADA
+			pEnt->setMaterialName(MATERIAL_CELL_SELECTED);
 
+			pintarBarco=false;
+			break;
+		}
 		case PROA_H: pieza="proa.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName; break;
 		case CUERPO1_H: pieza="cuerpo1.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
 		case CUERPO2_H: pieza="cuerpo2.mesh";  esHorizontal=true; shipNodeName << "ship_" << nodeName;break;
@@ -393,15 +408,16 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		case POPA_V_Q :pieza="popa_q.mesh"; break;*/
 	}
 
-	 if (pintarBarco) {
+	if (pintarBarco) {
 
-		 if (TableroNode->numChildren()>0)
-		{ 	// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
-			 	 Ogre::SceneNode* antiguo = static_cast<Ogre::SceneNode*>(TableroNode->getChild(0));
-			 	 antiguo->setVisible(false);
-			 	 antiguo->removeAndDestroyAllChildren();
-			 	 _sceneMgr->destroySceneNode(antiguo);
-			}
+		// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
+		if (TableroNode->numChildren()>0)
+		{
+			Ogre::SceneNode* antiguo = static_cast<Ogre::SceneNode*>(TableroNode->getChild(0));
+			antiguo->setVisible(false);
+			antiguo->removeAndDestroyAllChildren();
+			_sceneMgr->destroySceneNode(antiguo);
+		}
 
 		entidad = _sceneMgr->createEntity(shipNodeName.str(), pieza);
 		entidad->setQueryFlags(SHIP_CELL);
@@ -420,7 +436,7 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		TableroNode->addChild(shipNode);
 
 		 // meter lo que sea
-	 }
+	}
 }
 
 /// Comprueba que hay en la casilla del disparo, cambia su estado si es necesario, decrementa casillas de vida, cambia indicador de turno
@@ -493,47 +509,318 @@ bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 	return sw_casillaCambiada;
 }
 
-void PlayState::CheckHundido(Grid& grid, usint16 posx, usint16 posy)
+bool PlayState::CheckHundido(Grid& grid, usint16 posx, usint16 posy)
 {
+	bool sw_hundido = false;
+	bool sw_orientacion;
+	int i = 0;
+
+	int x_ini = 0;
+	int y_ini = 0;
+	int x_fin = 0;
+	int y_fin = 0;
+
+	int x = posx, y = posy;
+	usint16 celda = grid(posx, posy);
+
+	switch(celda)
+	{
+		// si la celda que nos llega es la PROA, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
+		case PROA_H_T:
+			while( x+i < MAX_COLS_GRID &&
+				  (grid(x+i,y) >= PROA_H_T && grid(x+i,y) <= POPA_H_T) &&
+				  (grid(x+i,y) != AGUA) &&
+				  sw_hundido == false )
+			{
+				if(grid(x+i, y) == POPA_H_T)
+				{
+					x_ini = x;
+					y_ini = y;
+
+					x_fin = x+i;
+					y_fin = y;
+
+					sw_hundido = true;
+					sw_orientacion = HORIZONTAL;
+				}
+				else
+					i++;
+			}
+			break;
+		case CUERPO1_H_T:
+		case CUERPO2_H_T:
+			// buscamos hacia atras la PROA
+			// despues, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
+			while( x-i >= 0 &&
+				  (grid(x-i,y) >= PROA_H_T && grid(x-i,y) <= POPA_H_T) &&
+				  (grid(x-i,y) != AGUA) &&
+				  sw_hundido == false )
+			{
+				// si la hemos encontrado... partimos de ella para buscar hacia adelante la POPA
+				if(grid(x-i, y) == PROA_H_T)
+				{
+					x_ini = x-i;
+					y_ini = y;
+					i = 0;
+					while( x_ini+i < MAX_COLS_GRID &&
+						  (grid(x_ini+i,y_ini) >= PROA_H_T && grid(x_ini+i,y_ini) <= POPA_H_T) &&
+						  (grid(x_ini+i,y_ini) != AGUA) &&
+						  sw_hundido == false )
+					{
+						if(grid(x_ini+i, y_ini) == POPA_H_T)
+						{
+							x_fin = x_ini+i;
+							y_fin = y_ini;
+
+							sw_hundido = true;
+							sw_orientacion = HORIZONTAL;
+						}
+						else
+							i++;
+					}
+				}
+				else
+					i++;
+			}
+			break;
+		case POPA_H_T:
+			// si la celda que nos llega es la POPA, retrocedemos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una PROA TOCADA es que esta hundido
+			while( x-i >= 0 &&
+				  (grid(x-i,y) >= PROA_H_T && grid(x-i,y) <= POPA_H_T) &&
+				  (grid(x-i,y) != AGUA) &&
+				  sw_hundido == false )
+			{
+				if(grid(x-i, y) == PROA_H_T)
+				{
+					x_ini = x-i;
+					y_ini = y;
+
+					x_fin = x;
+					y_fin = y;
+
+					sw_hundido = true;
+					sw_orientacion = HORIZONTAL;
+				}
+				else
+					i++;
+			}
+			break;
+		// si la celda que nos llega es la PROA, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
+		case PROA_V_T:
+			while( y+i < MAX_COLS_GRID &&
+				  (grid(x,y+i) >= PROA_V_T && grid(x,y+i) <= POPA_V_T) &&
+				  (grid(x,y+i) != AGUA) &&
+				  sw_hundido == false )
+			{
+				if(grid(x, y+i) == POPA_V_T)
+				{
+					x_ini = x;
+					y_ini = y;
+
+					x_fin = x;
+					y_fin = y+i;
+
+					sw_hundido = true;
+					sw_orientacion = VERTICAL;
+				}
+				else
+					i++;
+			}
+			break;
+		case CUERPO1_V_T:
+		case CUERPO2_V_T:
+			// buscamos hacia atras la PROA
+			// despues, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
+			while( y-i >= 0 &&
+				  (grid(x,y-i) >= PROA_V_T && grid(x,y-i) <= POPA_V_T) &&
+				  (grid(x,y-i) != AGUA) &&
+				  sw_hundido == false )
+			{
+				// si la hemos encontrado... partimos de ella para buscar hacia adelante la POPA
+				if(grid(x, y-i) == PROA_V_T)
+				{
+					x_ini = x;
+					y_ini = y-i;
+					i = 0;
+					while( y_ini+i < MAX_ROWS_GRID &&
+						  (grid(x_ini,y_ini+i) >= PROA_V_T && grid(x_ini,y_ini+i) <= POPA_V_T) &&
+						  (grid(x_ini,y_ini+i) != AGUA) &&
+						  sw_hundido == false )
+					{
+						if(grid(x_ini, y_ini+i) == POPA_V_T)
+						{
+							x_fin = x_ini;
+							y_fin = y_ini+i;
+
+							sw_hundido = true;
+							sw_orientacion = VERTICAL;
+						}
+						else
+							i++;
+					}
+				}
+				else
+					i++;
+			}
+			break;
+		case POPA_V_T:
+			// si la celda que nos llega es la POPA, retrocedemos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una PROA TOCADA es que esta hundido
+			while( y-i >= 0 &&
+				  (grid(x,y-i) >= PROA_V_T && grid(x,y-i) <= POPA_V_T) &&
+				  (grid(x,y-i) != AGUA) &&
+				  sw_hundido == false )
+			{
+				if(grid(x, y-i) == PROA_V_T)
+				{
+					x_ini = x;
+					y_ini = y-i;
+
+					x_fin = x;
+					y_fin = y;
+
+					sw_hundido = true;
+					sw_orientacion = VERTICAL;
+				}
+				else
+					i++;
+			}
+	}
+
+	if (sw_hundido)
+	{
+		if(sw_orientacion == HORIZONTAL)
+		{
+			if (x_ini - 1 > 0)	// Comprobamos si no estamos pegados al BORDE IZQUIERDO para marcar a DISPARADO las casillas de antes del barco
+			{
+				grid(x_ini-1,y_ini) = DISPARADO;
+
+				// comprobamos si hay casillas por arriba y marcamos como DISPARADO
+				if(y_ini - 1 > 0)
+					grid(x_ini-1, y_ini-1) = DISPARADO;
+
+				// comprobamos si hay casillas por abajo y marcamos como DISPARADO
+				if(y_ini + 1 < MAX_ROWS_GRID)
+					grid(x_ini-1, y_ini+1) = DISPARADO;
+			}
+
+			if (x_fin + 1 < MAX_COLS_GRID)	// Comprobamos si no estamos pegados al BORDE DERECHO para marcar a DISPARADO las casillas de despues del barco
+			{
+				grid(x_fin+1,y_ini) = DISPARADO;
+
+				// comprobamos si hay casillas por arriba y marcamos como DISPARADO
+				if(y_ini - 1 > 0)
+					grid(x_fin-1, y_ini-1) = DISPARADO;
+
+				// comprobamos si hay casillas por abajo y marcamos como DISPARADO
+				if(y_ini + 1 < MAX_ROWS_GRID)
+					grid(x_fin-1, y_ini+1) = DISPARADO;
+			}
+
+
+			for(int i = x_ini; i <= x_fin; i++)
+			{
+				if (grid(i, y_ini) == PROA_H_T)
+					grid(i, y_ini) = PROA_H_Q;
+				if (grid(i, y_ini) == CUERPO1_H_T)
+					grid(i, y_ini) = CUERPO1_H_Q;
+				if (grid(i, y_ini) == CUERPO2_H_T)
+					grid(i, y_ini) = CUERPO2_H_Q;
+				if (grid(i, y_ini) == POPA_H_T)
+					grid(i, y_ini) = POPA_H_Q;
+
+				if(y_ini - 1 > 0)
+					grid(i, y_ini-1) = DISPARADO;
+
+				if(y_ini + 1 < MAX_ROWS_GRID)
+					grid(i, y_ini+1) = DISPARADO;
+			}
+
+			if (x_fin + 1 < MAX_COLS_GRID)	// marcamos la casilla posterior de las hundidas a DISPARADO si esta dentro del tablero
+			{
+				grid(x_fin+1,y_ini) = DISPARADO;
+				// comprobamos si hay casillas por arriba y marcamos la misma pero arriba como DISPARADO
+				if(y_ini + 1 > 0)
+					grid(x_ini-1,y_ini-1) = DISPARADO;
+			}
+
+		}
+		else if (sw_orientacion == VERTICAL)
+		{
+
+		}
+	}
+
+	return sw_hundido;
 }
 
 void PlayState::CalculaDisparoCPU(int &posX, int &posY)
 {
 	int x = 0, y = 0;
 	bool sw_disparoCalculado = false;
+	int incr = 1;
 
 	// Recorremos la matriz de disparos realizados por la CPU
-	for(int i = 0; i < MAX_COLS_GRID && sw_disparoCalculado == false; i++)
+	for(int j = 0; j < MAX_ROWS_GRID && sw_disparoCalculado == false; j++)
 	{
-		for(int j = 0; j < MAX_ROWS_GRID && sw_disparoCalculado == false; j++)
+		for(int i = 0; i < MAX_COLS_GRID && sw_disparoCalculado == false; i++)
 		{
-			// si hay alguna casilla "TOCADA" intentamos seguir disparando por ahi...
-			if (_CPUShotsGrid[i][j] >= PROA_H_T || _CPUShotsGrid[i][j] <= POPA_V_T)
+			// si hay alguna casilla "TOCADA" HORIZONTAL intentamos seguir disparando por ahi...
+			if (_CPUShotsGrid[i][j] >= PROA_H_T && _CPUShotsGrid[i][j] <= POPA_H_T)
 			{
-				// comprobamos si podemos continuar disparando en horizontal...
-				int incr = 1;
-				while( i+incr < MAX_COLS_GRID &&
-					   (_CPUShotsGrid[i+incr][j] >= PROA_H_T || _CPUShotsGrid[i+incr][j] <= POPA_V_T) )
+				while( i+incr < MAX_COLS_GRID && _CPUShotsGrid[i+incr][j] != POPA_H_T && _CPUShotsGrid[i+incr][j] != AGUA )
+					incr++;
+
+				// si hemos encontrado un agua, es nuestra casilla
+				if (_CPUShotsGrid[i+incr][j] == AGUA)
 				{
 					sw_disparoCalculado = true;
 					x = i+incr;
 					y = j;
+				}
+				// si es una popa, tenemos que buscar hacia atras
+				else
+				{
+					incr = 1;
+					while( i-incr >= 0 && _CPUShotsGrid[i-incr][j] != PROA_H_T && _CPUShotsGrid[i-incr][j] != AGUA )
+						incr++;
 
-					incr++;
+					// si hemos encontrado un agua, es nuestra casilla
+					if (_CPUShotsGrid[i-incr][j] == AGUA)
+					{
+						sw_disparoCalculado = true;
+						x = i-incr;
+						y = j;
+					}
 				}
 
-				// si no podemos seguir disparando en horizontar... probamos en vertical
+				// si no podemos seguir disparando en horizontal... probamos en vertical
 				if(sw_disparoCalculado == false)
 				{
 					incr = 1;
-					while( j+incr < MAX_ROWS_GRID &&
-						   (_CPUShotsGrid[i][j+incr] >= PROA_H_T || _CPUShotsGrid[i][j+incr] <= POPA_V_T) )
+					while( j+incr < MAX_ROWS_GRID && _CPUShotsGrid[i][j+incr] != POPA_V_T && _CPUShotsGrid[i][j+incr] != AGUA )
+						incr++;
+
+					// si hemos encontrado un agua, es nuestra casilla
+					if (_CPUShotsGrid[i][j+incr] == AGUA)
 					{
 						sw_disparoCalculado = true;
 						x = i;
 						y = j+incr;
+					}
+					// si es una popa, tenemos que buscar hacia atras
+					else
+					{
+						incr = 1;
+						while( j-incr >= 0 && _CPUShotsGrid[i][j-incr] != PROA_V_T && _CPUShotsGrid[i][j-incr] != AGUA )
+							incr++;
 
-						incr++;
+						// si hemos encontrado un agua, es nuestra casilla
+						if (_CPUShotsGrid[i][j-incr] == AGUA)
+						{
+							sw_disparoCalculado = true;
+							x = i;
+							y = j-incr;
+						}
 					}
 				}
 			}
@@ -544,8 +831,8 @@ void PlayState::CalculaDisparoCPU(int &posX, int &posY)
 	if(sw_disparoCalculado == false)
 	{
 		do{
-			x = rangeRandomNumber(0, MAX_COLS_GRID);
-			y = rangeRandomNumber(0, MAX_ROWS_GRID);
+			x = rangeRandomNumber(0, MAX_COLS_GRID-1);
+			y = rangeRandomNumber(0, MAX_ROWS_GRID-1);
 		}while(_CPUShotsGrid[x][y] != AGUA);
 	}
 

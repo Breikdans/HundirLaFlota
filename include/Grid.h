@@ -5,10 +5,13 @@
 #ifndef GRID_H_
 #define GRID_H_
 
-const int MAX_ROWS_GRID	=		9;
-const int MAX_COLS_GRID	=		9;
+const int MAX_ROWS_GRID	=		10;
+const int MAX_COLS_GRID	=		10;
 
 const int CELL_WIDTH	= 		4;
+
+const int HORIZONTAL 	= 0;
+const int VERTICAL		= 1;
 
 #define SEA_BACKGROUND	1 << 0		// = 1. 32 bits de mascara.
 #define PLAYER_CELLS 	1 << 1		// = 2. 32 bits de mascara.
