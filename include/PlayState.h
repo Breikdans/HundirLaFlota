@@ -49,11 +49,30 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 		void getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName);
 
-		void CalculaDisparoCPU(int &posX, int &posY);
 		void ActualizaTablero(usint16, std::string);
 		bool CompruebaDisparo(Grid&, usint16 posx, usint16 posy);
 		bool CheckHundido(Grid& grid, usint16 posx, usint16 posy);
 		void CambiarTurno(EN_TURNO turno);
+
+		void CalculaDisparoCPU(int &posX, int &posY);
+		bool BuscarCasillaLibreDerecha(int &posX, int &posY) const;
+		bool BuscarCasillaLibreIzquierda(int &posX, int &posY) const;
+		bool BuscarCasillaLibreArriba(int &posX, int &posY) const;
+		bool BuscarCasillaLibreAbajo(int &posX, int &posY) const;
+		bool esCasillaTocada(int posX, int posY) const;
+		bool hayCasillaTocada(int &posX, int &posY) const;
+		void ObtenerSiguienteCasilla(int &posX, int &posY) const;
+		void ObtenerCasillaAleatoria(int &posX, int &posY) const;
+
+		bool obtenerPopaH(Grid& grid, int posXProa, int posYProa, int &posXPopa, int &posYPopa) const;
+		bool obtenerProaH(Grid& grid, int posXPopa, int posYPopa, int &posXProa, int &posYProa) const;
+		bool obtenerPopaV(Grid& grid, int posXProa, int posYProa, int &posXPopa, int &posYPopa) const;
+		bool obtenerProaV(Grid& grid, int posXPopa, int posYPopa, int &posXProa, int &posYProa) const;
+		bool checkHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa) const;
+		bool checkHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa) const;
+
+		void marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
+		void marcarHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
 
 		EN_TURNO _turno;
 		bool _exitGame;
@@ -61,7 +80,6 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 
 		Grid CPUGrid;
 		Grid PlayerGrid;
-
 };
 
 #endif
