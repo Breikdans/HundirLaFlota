@@ -187,7 +187,6 @@ std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " << posy << 
 			// Todos los disparos producen un cambio: AGUA -> TOCADO ó DISPARADO, menos cuando disparan sobre algo ya disparado (DISPARADO, PROA_H_T, PROA_H_Q,...)
 			if (CompruebaDisparo(CPUGrid, posx, posy))				// Si ha habido algun cambio con este disparo...
 			{
-
 				ActualizaTablero(CPUGrid(posx, posy), s_CellName);	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 				CheckHundido(CPUGrid, posx, posy);
 std::cout << "CPU GRID: ";
@@ -509,335 +508,422 @@ bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 	return sw_casillaCambiada;
 }
 
-bool PlayState::CheckHundido(Grid& grid, usint16 posx, usint16 posy)
+bool PlayState::obtenerPopaH(Grid& grid, int posXProa, int posYProa, int &posXPopa, int &posYPopa) const
 {
-	bool sw_hundido = false;
-	bool sw_orientacion;
-	int i = 0;
+	bool sw_result = false;
 
-	int x_ini = 0;
-	int y_ini = 0;
-	int x_fin = 0;
-	int y_fin = 0;
-
-	int x = posx, y = posy;
-	usint16 celda = grid(posx, posy);
-
-	switch(celda)
+	for(int x = posXProa; x < MAX_COLS_GRID && sw_result == false; x++)
 	{
-		// si la celda que nos llega es la PROA, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
-		case PROA_H_T:
-			while( x+i < MAX_COLS_GRID &&
-				  (grid(x+i,y) >= PROA_H_T && grid(x+i,y) <= POPA_H_T) &&
-				  (grid(x+i,y) != AGUA) &&
-				  sw_hundido == false )
-			{
-				if(grid(x+i, y) == POPA_H_T)
-				{
-					x_ini = x;
-					y_ini = y;
-
-					x_fin = x+i;
-					y_fin = y;
-
-					sw_hundido = true;
-					sw_orientacion = HORIZONTAL;
-				}
-				else
-					i++;
-			}
-			break;
-		case CUERPO1_H_T:
-		case CUERPO2_H_T:
-			// buscamos hacia atras la PROA
-			// despues, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
-			while( x-i >= 0 &&
-				  (grid(x-i,y) >= PROA_H_T && grid(x-i,y) <= POPA_H_T) &&
-				  (grid(x-i,y) != AGUA) &&
-				  sw_hundido == false )
-			{
-				// si la hemos encontrado... partimos de ella para buscar hacia adelante la POPA
-				if(grid(x-i, y) == PROA_H_T)
-				{
-					x_ini = x-i;
-					y_ini = y;
-					i = 0;
-					while( x_ini+i < MAX_COLS_GRID &&
-						  (grid(x_ini+i,y_ini) >= PROA_H_T && grid(x_ini+i,y_ini) <= POPA_H_T) &&
-						  (grid(x_ini+i,y_ini) != AGUA) &&
-						  sw_hundido == false )
-					{
-						if(grid(x_ini+i, y_ini) == POPA_H_T)
-						{
-							x_fin = x_ini+i;
-							y_fin = y_ini;
-
-							sw_hundido = true;
-							sw_orientacion = HORIZONTAL;
-						}
-						else
-							i++;
-					}
-				}
-				else
-					i++;
-			}
-			break;
-		case POPA_H_T:
-			// si la celda que nos llega es la POPA, retrocedemos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una PROA TOCADA es que esta hundido
-			while( x-i >= 0 &&
-				  (grid(x-i,y) >= PROA_H_T && grid(x-i,y) <= POPA_H_T) &&
-				  (grid(x-i,y) != AGUA) &&
-				  sw_hundido == false )
-			{
-				if(grid(x-i, y) == PROA_H_T)
-				{
-					x_ini = x-i;
-					y_ini = y;
-
-					x_fin = x;
-					y_fin = y;
-
-					sw_hundido = true;
-					sw_orientacion = HORIZONTAL;
-				}
-				else
-					i++;
-			}
-			break;
-		// si la celda que nos llega es la PROA, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
-		case PROA_V_T:
-			while( y+i < MAX_COLS_GRID &&
-				  (grid(x,y+i) >= PROA_V_T && grid(x,y+i) <= POPA_V_T) &&
-				  (grid(x,y+i) != AGUA) &&
-				  sw_hundido == false )
-			{
-				if(grid(x, y+i) == POPA_V_T)
-				{
-					x_ini = x;
-					y_ini = y;
-
-					x_fin = x;
-					y_fin = y+i;
-
-					sw_hundido = true;
-					sw_orientacion = VERTICAL;
-				}
-				else
-					i++;
-			}
-			break;
-		case CUERPO1_V_T:
-		case CUERPO2_V_T:
-			// buscamos hacia atras la PROA
-			// despues, avanzamos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una POPA TOCADA es que esta hundido
-			while( y-i >= 0 &&
-				  (grid(x,y-i) >= PROA_V_T && grid(x,y-i) <= POPA_V_T) &&
-				  (grid(x,y-i) != AGUA) &&
-				  sw_hundido == false )
-			{
-				// si la hemos encontrado... partimos de ella para buscar hacia adelante la POPA
-				if(grid(x, y-i) == PROA_V_T)
-				{
-					x_ini = x;
-					y_ini = y-i;
-					i = 0;
-					while( y_ini+i < MAX_ROWS_GRID &&
-						  (grid(x_ini,y_ini+i) >= PROA_V_T && grid(x_ini,y_ini+i) <= POPA_V_T) &&
-						  (grid(x_ini,y_ini+i) != AGUA) &&
-						  sw_hundido == false )
-					{
-						if(grid(x_ini, y_ini+i) == POPA_V_T)
-						{
-							x_fin = x_ini;
-							y_fin = y_ini+i;
-
-							sw_hundido = true;
-							sw_orientacion = VERTICAL;
-						}
-						else
-							i++;
-					}
-				}
-				else
-					i++;
-			}
-			break;
-		case POPA_V_T:
-			// si la celda que nos llega es la POPA, retrocedemos mientras haya piezas de barco TOCADAS y no sea AGUA. Si llegamos a una PROA TOCADA es que esta hundido
-			while( y-i >= 0 &&
-				  (grid(x,y-i) >= PROA_V_T && grid(x,y-i) <= POPA_V_T) &&
-				  (grid(x,y-i) != AGUA) &&
-				  sw_hundido == false )
-			{
-				if(grid(x, y-i) == PROA_V_T)
-				{
-					x_ini = x;
-					y_ini = y-i;
-
-					x_fin = x;
-					y_fin = y;
-
-					sw_hundido = true;
-					sw_orientacion = VERTICAL;
-				}
-				else
-					i++;
-			}
-	}
-
-	if (sw_hundido)
-	{
-		if(sw_orientacion == HORIZONTAL)
+		if( grid(x, posYProa) == POPA_H_T)
 		{
-			if (x_ini - 1 > 0)	// Comprobamos si no estamos pegados al BORDE IZQUIERDO para marcar a DISPARADO las casillas de antes del barco
-			{
-				grid(x_ini-1,y_ini) = DISPARADO;
-
-				// comprobamos si hay casillas por arriba y marcamos como DISPARADO
-				if(y_ini - 1 > 0)
-					grid(x_ini-1, y_ini-1) = DISPARADO;
-
-				// comprobamos si hay casillas por abajo y marcamos como DISPARADO
-				if(y_ini + 1 < MAX_ROWS_GRID)
-					grid(x_ini-1, y_ini+1) = DISPARADO;
-			}
-
-			if (x_fin + 1 < MAX_COLS_GRID)	// Comprobamos si no estamos pegados al BORDE DERECHO para marcar a DISPARADO las casillas de despues del barco
-			{
-				grid(x_fin+1,y_ini) = DISPARADO;
-
-				// comprobamos si hay casillas por arriba y marcamos como DISPARADO
-				if(y_ini - 1 > 0)
-					grid(x_fin-1, y_ini-1) = DISPARADO;
-
-				// comprobamos si hay casillas por abajo y marcamos como DISPARADO
-				if(y_ini + 1 < MAX_ROWS_GRID)
-					grid(x_fin-1, y_ini+1) = DISPARADO;
-			}
-
-
-			for(int i = x_ini; i <= x_fin; i++)
-			{
-				if (grid(i, y_ini) == PROA_H_T)
-					grid(i, y_ini) = PROA_H_Q;
-				if (grid(i, y_ini) == CUERPO1_H_T)
-					grid(i, y_ini) = CUERPO1_H_Q;
-				if (grid(i, y_ini) == CUERPO2_H_T)
-					grid(i, y_ini) = CUERPO2_H_Q;
-				if (grid(i, y_ini) == POPA_H_T)
-					grid(i, y_ini) = POPA_H_Q;
-
-				if(y_ini - 1 > 0)
-					grid(i, y_ini-1) = DISPARADO;
-
-				if(y_ini + 1 < MAX_ROWS_GRID)
-					grid(i, y_ini+1) = DISPARADO;
-			}
-
-			if (x_fin + 1 < MAX_COLS_GRID)	// marcamos la casilla posterior de las hundidas a DISPARADO si esta dentro del tablero
-			{
-				grid(x_fin+1,y_ini) = DISPARADO;
-				// comprobamos si hay casillas por arriba y marcamos la misma pero arriba como DISPARADO
-				if(y_ini + 1 > 0)
-					grid(x_ini-1,y_ini-1) = DISPARADO;
-			}
-
-		}
-		else if (sw_orientacion == VERTICAL)
-		{
-
+			posXPopa = x;
+			posYPopa = posYProa;
+			sw_result = true;
 		}
 	}
 
-	return sw_hundido;
+std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+	return sw_result;
 }
 
+bool PlayState::obtenerProaH(Grid& grid, int posXPopa, int posYPopa, int &posXProa, int &posYProa) const
+{
+	bool sw_result = false;
+
+	for(int x = posXPopa; x >= 0 && sw_result == false; x--)
+	{
+		if( grid(x, posYPopa) == PROA_H_T)
+		{
+			posXProa = x;
+			posYProa = posYPopa;
+			sw_result = true;
+		}
+	}
+
+std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+	return sw_result;
+}
+
+bool PlayState::obtenerPopaV(Grid& grid, int posXProa, int posYProa, int &posXPopa, int &posYPopa) const
+{
+	bool sw_result = false;
+
+	for(int y = posYProa; y < MAX_ROWS_GRID && sw_result == false; y++)
+	{
+		if( grid(posXProa, y) == POPA_V_T)
+		{
+			posXPopa = posXProa;
+			posYPopa = y;
+			sw_result = true;
+		}
+	}
+
+std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+	return sw_result;
+}
+
+bool PlayState::obtenerProaV(Grid& grid, int posXPopa, int posYPopa, int &posXProa, int &posYProa) const
+{
+	bool sw_result = false;
+
+	for(int y = posYPopa; y >= 0 && sw_result == false; y--)
+	{
+		if( grid(posXPopa, y) == PROA_V_T)
+		{
+			posXProa = posXPopa;
+			posYProa = y;
+			sw_result = true;
+		}
+	}
+
+std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+	return sw_result;
+}
+
+bool PlayState::checkHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa) const
+{
+	bool sw_result = true;
+
+	for(int x = posXProa; x <= posXPopa && sw_result == true; x++)
+	{
+		if(!esCasillaTocada(x,posYPopa))
+			sw_result = false;
+	}
+
+std::cout << __func__ << " result: " << sw_result << std::endl;
+	return sw_result;
+}
+
+bool PlayState::checkHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa) const
+{
+	bool sw_result = true;
+
+	for(int y = posYProa; y <= posYPopa && sw_result == true; y++)
+	{
+		if(!esCasillaTocada(posXProa,y))
+			sw_result = false;
+	}
+
+std::cout << __func__ << " result: " << sw_result << std::endl;
+	return sw_result;
+}
+
+void PlayState::marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
+{
+
+		// recorrer las columnas, y cambiar posiciones
+		for(int x = posXProa; x <= posXPopa; x++)
+		{
+			if (grid(x,posYProa) == PROA_H_T) 	grid(x,posYProa) = PROA_H_Q;
+			if (grid(x,posYProa) == CUERPO1_H_T) 	grid(x,posYProa) = CUERPO1_H_Q;
+			if (grid(x,posYProa) == CUERPO2_H_T) 	grid(x,posYProa) = CUERPO2_H_Q;
+			if (grid(x,posYProa) == POPA_H_T) 	grid(x,posYProa) = POPA_H_Q;
+
+		}
+
+		// AHORA AQUI PONER LAS CASIILAS QUE RODEAN AL BARCO
+
+	/*// comprobamos si hay que pintar el borde izquierdo
+	if(posXProa > 0)
+	{
+		// centro
+		grid(posXProa-1, posYProa) = DISPARADO;
+
+		// arriba
+		if(posYProa-1 > 0)
+			grid(posXProa-1, posYProa-1) = DISPARADO;
+
+		// abajo
+		if(posYProa+1 <= MAX_ROWS_GRID)
+			grid(posXProa-1, posYProa+1) = DISPARADO;
+	}
+
+	// comprobamos si hay que pintar el borde izquierdo
+	if(posXPopa < MAX_COLS_GRID - 1)
+	{
+		// centro
+		grid(posXPopa-1, posYPopa) = DISPARADO;
+
+		// arriba
+		if(posYPopa-1 > 0)
+			grid(posXPopa-1, posYPopa-1) = DISPARADO;
+
+		// abajo
+		if(posYPopa+1 <= MAX_ROWS_GRID)
+			grid(posXPopa-1, posYPopa+1) = DISPARADO;
+	}*/
+
+}
+
+void PlayState::marcarHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
+{
+	// recorrer las columnas, y cambiar posiciones
+			for(int y = posYProa; y <= posYPopa; y++)
+			{
+				if (grid(posXProa,y) == PROA_V_T) 	grid(posXProa,y) = PROA_V_Q;
+				if (grid(posXProa,y) == CUERPO1_V_T) 	grid(posXProa,y) = CUERPO1_V_Q;
+				if (grid(posXProa,y) == CUERPO2_V_T) grid(posXProa,y)= CUERPO2_V_Q;
+				if (grid(posXProa,y) == POPA_V_T) 	grid(posXProa,y)= POPA_V_Q;
+
+			}
+
+			// AHORA AQUI PONER LAS CASIILAS QUE RODEAN AL BARCO
+}
+
+bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
+{
+	bool sw_hundido = false;
+
+	int posXProa = 0;
+	int posYProa = 0;
+
+	int posXPopa = 0;
+	int posYPopa = 0;
+
+	if (grid(posX, posY) == PROA_H_T)
+	{
+		posXProa = posX; posYProa = posY;
+		if(obtenerPopaH(grid, posXProa, posYProa, posXPopa, posYPopa))
+		{
+			if(checkHundidoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa))
+			{
+				marcarHundidoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa);
+				sw_hundido = true;
+			}
+		}
+	}
+
+	else if (grid(posX, posY) == POPA_H_T)
+	{
+		posXPopa = posX; posYPopa = posY;
+		if(obtenerProaH(grid, posXPopa, posYPopa, posXProa, posYProa))
+		{
+			if(checkHundidoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa))
+			{
+				marcarHundidoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa);
+				sw_hundido = true;
+			}
+		}
+	}
+
+	else if (grid(posX, posY) == CUERPO1_H_T || grid(posX, posY) == CUERPO2_H_T)
+	{
+		if(obtenerProaH(grid, posX, posY, posXProa, posYProa))
+		{
+			if(obtenerPopaH(grid, posXProa, posYProa, posXPopa, posYPopa))
+			{
+				if(checkHundidoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa))
+				{
+					marcarHundidoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa);
+					sw_hundido = true;
+				}
+			}
+		}
+	}
+
+	else if (grid(posX, posY) == PROA_V_T)
+	{
+		posXProa = posX; posYProa = posY;
+		if(obtenerPopaV(grid, posXProa, posYProa, posXPopa, posYPopa))
+		{
+			if(checkHundidoVertical(grid, posXProa, posYProa, posXPopa, posYPopa))
+			{
+				marcarHundidoVertical(grid, posXProa, posYProa, posXPopa, posYPopa);
+				sw_hundido = true;
+			}
+		}
+	}
+
+	else if (grid(posX, posY) == POPA_V_T)
+	{
+		posXPopa = posX; posYPopa = posY;
+		if(obtenerProaV(grid, posXPopa, posYPopa, posXProa, posYProa))
+		{
+			if(checkHundidoVertical(grid, posXProa, posYProa, posXPopa, posYPopa))
+			{
+				marcarHundidoVertical(grid, posXProa, posYProa, posXPopa, posYPopa);
+				sw_hundido = true;
+			}
+		}
+	}
+
+	else if (grid(posX, posY) == CUERPO1_V_T || grid(posX, posY) == CUERPO2_V_T)
+	{
+		if(obtenerProaV(grid, posX, posY, posXProa, posYProa))
+		{
+			if(obtenerPopaV(grid, posXProa, posYProa, posXPopa, posYPopa))
+			{
+				if(checkHundidoVertical(grid, posXProa, posYProa, posXPopa, posYPopa))
+				{
+					marcarHundidoVertical(grid, posXProa, posYProa, posXPopa, posYPopa);
+					sw_hundido = true;
+				}
+			}
+		}
+	}
+}
+
+
+///< Devuelve TRUE si hay casilla tocada y las posiciones, devuelve FALSE en caso contrario
+bool PlayState::hayCasillaTocada(int &posX, int &posY) const
+{
+	bool sw_result = false;
+
+	for(int x = 0; x < MAX_COLS_GRID && sw_result == false; x++)
+	{
+		for(int y = 0; y < MAX_ROWS_GRID && sw_result == false; y++)
+		{
+			if(esCasillaTocada(x,y))
+			{
+				posX = x; posY = y;
+				sw_result = true;
+			}
+		}
+	}
+
+std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+	return sw_result;
+}
+
+bool PlayState::esCasillaTocada(int posX, int posY) const
+{
+	bool sw_result = false;
+
+	if (PlayerGrid(posX, posY) >= PROA_H_T && PlayerGrid(posX, posY) <= POPA_V_T)
+		sw_result = true;
+
+std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+	return sw_result;
+}
+
+bool PlayState::BuscarCasillaLibreDerecha(int &posX, int &posY) const
+{
+	int y = posY;
+	bool sw_result = false;
+
+	for(int x = posX; x < MAX_COLS_GRID && sw_result == false; x++)
+	{
+		if (!esCasillaTocada(x,y))
+		{
+			posX = x; posY = y;
+			sw_result = true;
+		}
+	}
+std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+
+	return sw_result;
+}
+
+bool PlayState::BuscarCasillaLibreIzquierda(int &posX, int &posY) const
+{
+	int y = posY;
+	bool sw_result = false;
+
+	for(int x = posX; x >= 0 && sw_result == false; x--)
+	{
+		if (!esCasillaTocada(x,y))
+		{
+			posX = x; posY = y;
+			sw_result = true;
+		}
+	}
+std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+
+	return sw_result;
+}
+
+bool PlayState::BuscarCasillaLibreArriba(int &posX, int &posY) const
+{
+	int x = posX;
+	bool sw_result = false;
+
+	for(int y = posY; y >= 0 && sw_result == false; y--)
+	{
+		if (!esCasillaTocada(x,y))
+		{
+			posX = x; posY = y;
+			sw_result = true;
+		}
+	}
+std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+
+	return sw_result;
+}
+
+bool PlayState::BuscarCasillaLibreAbajo(int &posX, int &posY) const
+{
+	int x = posX;
+	bool sw_result = false;
+
+	for(int y = posY; y < MAX_ROWS_GRID && sw_result == false; y++)
+	{
+		if (!esCasillaTocada(x,y))
+		{
+			posX = x; posY = y;
+			sw_result = true;
+		}
+	}
+std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+
+	return sw_result;
+}
+
+///< ENTRADA/SALIDA:
+void PlayState::ObtenerSiguienteCasilla(int &posX, int &posY) const
+{
+	if(PlayerGrid(posX, posY) == PROA_H_T)
+		BuscarCasillaLibreDerecha(posX, posY);
+
+	else if(PlayerGrid(posX, posY) == POPA_H_T)
+		BuscarCasillaLibreIzquierda(posX, posY);
+
+	else if(PlayerGrid(posX, posY) == POPA_V_T)
+		BuscarCasillaLibreArriba(posX, posY);
+
+	else if(PlayerGrid(posX, posY) == PROA_V_T)
+		BuscarCasillaLibreAbajo(posX, posY);
+
+	else if(PlayerGrid(posX, posY) == CUERPO1_H_T || PlayerGrid(posX, posY) == CUERPO2_H_T)
+	{
+		if (!BuscarCasillaLibreDerecha(posX, posY))
+			BuscarCasillaLibreIzquierda(posX, posY);
+	}
+
+	else if(PlayerGrid(posX, posY) == CUERPO1_V_T || PlayerGrid(posX, posY) == CUERPO2_V_T)
+	{
+		if (!BuscarCasillaLibreArriba(posX, posY))
+			BuscarCasillaLibreAbajo(posX,posY);
+	}
+
+}
+
+void PlayState::ObtenerCasillaAleatoria(int &posX, int &posY) const
+{
+	do{
+		posX = rangeRandomNumber(0, MAX_COLS_GRID-1);
+		posY = rangeRandomNumber(0, MAX_ROWS_GRID-1);
+	}while(
+			PlayerGrid(posX,posY) != DISPARADO &&
+			PlayerGrid(posX,posY) >= PROA_H_T && PlayerGrid(posX,posY) <= POPA_V_Q); // no quieo quemados
+
+std::cout << __func__ << " X: " << posX << " Y: " << posY << std::endl;
+}
+
+///< Calculara un disparo y lo retornara en los parametros (SALIDA)
 void PlayState::CalculaDisparoCPU(int &posX, int &posY)
 {
 	int x = 0, y = 0;
-	bool sw_disparoCalculado = false;
-	int incr = 1;
 
-	// Recorremos la matriz de disparos realizados por la CPU
-	for(int j = 0; j < MAX_ROWS_GRID && sw_disparoCalculado == false; j++)
+	if (hayCasillaTocada(x,y))
 	{
-		for(int i = 0; i < MAX_COLS_GRID && sw_disparoCalculado == false; i++)
-		{
-			// si hay alguna casilla "TOCADA" HORIZONTAL intentamos seguir disparando por ahi...
-			if (_CPUShotsGrid[i][j] >= PROA_H_T && _CPUShotsGrid[i][j] <= POPA_H_T)
-			{
-				while( i+incr < MAX_COLS_GRID && _CPUShotsGrid[i+incr][j] != POPA_H_T && _CPUShotsGrid[i+incr][j] != AGUA )
-					incr++;
-
-				// si hemos encontrado un agua, es nuestra casilla
-				if (_CPUShotsGrid[i+incr][j] == AGUA)
-				{
-					sw_disparoCalculado = true;
-					x = i+incr;
-					y = j;
-				}
-				// si es una popa, tenemos que buscar hacia atras
-				else
-				{
-					incr = 1;
-					while( i-incr >= 0 && _CPUShotsGrid[i-incr][j] != PROA_H_T && _CPUShotsGrid[i-incr][j] != AGUA )
-						incr++;
-
-					// si hemos encontrado un agua, es nuestra casilla
-					if (_CPUShotsGrid[i-incr][j] == AGUA)
-					{
-						sw_disparoCalculado = true;
-						x = i-incr;
-						y = j;
-					}
-				}
-
-				// si no podemos seguir disparando en horizontal... probamos en vertical
-				if(sw_disparoCalculado == false)
-				{
-					incr = 1;
-					while( j+incr < MAX_ROWS_GRID && _CPUShotsGrid[i][j+incr] != POPA_V_T && _CPUShotsGrid[i][j+incr] != AGUA )
-						incr++;
-
-					// si hemos encontrado un agua, es nuestra casilla
-					if (_CPUShotsGrid[i][j+incr] == AGUA)
-					{
-						sw_disparoCalculado = true;
-						x = i;
-						y = j+incr;
-					}
-					// si es una popa, tenemos que buscar hacia atras
-					else
-					{
-						incr = 1;
-						while( j-incr >= 0 && _CPUShotsGrid[i][j-incr] != PROA_V_T && _CPUShotsGrid[i][j-incr] != AGUA )
-							incr++;
-
-						// si hemos encontrado un agua, es nuestra casilla
-						if (_CPUShotsGrid[i][j-incr] == AGUA)
-						{
-							sw_disparoCalculado = true;
-							x = i;
-							y = j-incr;
-						}
-					}
-				}
-			}
-		}
+		ObtenerSiguienteCasilla(x,y);
+	}
+	else
+	{
+		ObtenerCasillaAleatoria(x,y);
 	}
 
-	// Si no habia ninguna casilla "TOCADA", creamos un disparo aleatorio a casilla aun no disparada (AGUA)
-	if(sw_disparoCalculado == false)
-	{
-		do{
-			x = rangeRandomNumber(0, MAX_COLS_GRID-1);
-			y = rangeRandomNumber(0, MAX_ROWS_GRID-1);
-		}while(_CPUShotsGrid[x][y] != AGUA);
-	}
-
-	posX = x;
-	posY = y;
+	posX = x; posY = y;
 }
 
 Ogre::Ray PlayState::setRayQuery(int posx, int posy, uint32 mask)
