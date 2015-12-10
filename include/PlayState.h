@@ -52,7 +52,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 		void getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName);
 
-		void ActualizaTablero(usint16, std::string);
+		void ActualizaTablero(usint16, usint16);
 		bool CompruebaDisparo(Grid&, usint16 posx, usint16 posy);
 		bool CheckHundido(Grid& grid, usint16 posx, usint16 posy);
 		void CambiarTurno(EN_TURNO turno);
@@ -62,8 +62,8 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		bool BuscarCasillaLibreIzquierda(int &posX, int &posY) const;
 		bool BuscarCasillaLibreArriba(int &posX, int &posY) const;
 		bool BuscarCasillaLibreAbajo(int &posX, int &posY) const;
-		bool esCasillaTocada(int posX, int posY) const;
-		bool hayCasillaTocada(int &posX, int &posY) const;
+		bool esCasillaTocada(const Grid& grid, int posX, int posY) const;
+		bool hayCasillaTocada(const Grid& grid, int &posX, int &posY) const;
 		void ObtenerSiguienteCasilla(int &posX, int &posY) const;
 		void ObtenerCasillaAleatoria(int &posX, int &posY) const;
 

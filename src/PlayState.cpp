@@ -37,7 +37,6 @@ void PlayState::enter ()
 	_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
 
 	// inicializamos variables de estado
-	memset(_CPUShotsGrid, AGUA, sizeof(_CPUShotsGrid));
 	CambiarTurno(PLAYER);
 	_exitGame = false;
 }
@@ -80,12 +79,12 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 
 #ifdef _DEBUG
 	// movimiento de camara luego quitar
- 	 Ogre::Vector3 vt(0,0,0);     Ogre::Real tSpeed = 20.0;
-	  if(e.key == OIS::KC_UP)    vt+=Ogre::Vector3(0,0,-1);
-	  if(e.key == OIS::KC_DOWN)  vt+=Ogre::Vector3(0,0,1);
-	  if(e.key == OIS::KC_LEFT)  vt+=Ogre::Vector3(-1,0,0);
-	  if(e.key == OIS::KC_RIGHT) vt+=Ogre::Vector3(1,0,0);
-	  _camera->moveRelative(vt * 0.1 * tSpeed);
+	Ogre::Vector3 vt(0,0,0);	Ogre::Real tSpeed = 20.0;
+	if(e.key == OIS::KC_UP)		vt+=Ogre::Vector3(0,0,-1);
+	if(e.key == OIS::KC_DOWN)	vt+=Ogre::Vector3(0,0,1);
+	if(e.key == OIS::KC_LEFT)	vt+=Ogre::Vector3(-1,0,0);
+	if(e.key == OIS::KC_RIGHT)	vt+=Ogre::Vector3(1,0,0);
+	_camera->moveRelative(vt * 0.1 * tSpeed);
 #endif
 
 }
@@ -114,7 +113,7 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 	Ogre::Entity *pEnt = NULL;
 
 	getSelectedNode(CPU_CELLS, cellx, celly, s_CellName);
-//std::cout << "NODE: " << s_CellName<< " X: " << cellx << " Y: " << celly << std::endl;
+
 	if (s_CellName != "")
 	{
 		// si habia una celda seleccionada... y es distinta a la actual... y no hemos DISPARADO sobre ella....la dejamos con color NORMAL
@@ -182,15 +181,15 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 		getSelectedNode(CPU_CELLS, posx, posy, s_CellName);
 		if (s_CellName != "")
 		{
-std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " << posy << std::endl;
+DEBUG_TRZ(std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " << posy << std::endl;)
 
 			// Todos los disparos producen un cambio: AGUA -> TOCADO ó DISPARADO, menos cuando disparan sobre algo ya disparado (DISPARADO, PROA_H_T, PROA_H_Q,...)
-			if (CompruebaDisparo(CPUGrid, posx, posy))				// Si ha habido algun cambio con este disparo...
+			if (CompruebaDisparo(CPUGrid, posx, posy))	// Si ha habido algun cambio con este disparo...
 			{
-				ActualizaTablero(CPUGrid(posx, posy), s_CellName);	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
+				ActualizaTablero(posx, posy);			// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 				CheckHundido(CPUGrid, posx, posy);
-std::cout << "CPU GRID: ";
-CPUGrid.DebugGrid();
+DEBUG_TRZ(std::cout << "CPU GRID: ";)
+DEBUG_TRZ(CPUGrid.DebugGrid();)
 				if(CPUGrid.getCasillasVivas() == 0)
 				{
 					// FIN DE JUEGO, GANA EL PLAYER
@@ -220,16 +219,16 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 	{
 //		sleep(3);
 		CalculaDisparoCPU(x, y);
-std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std::endl;
+DEBUG_TRZ(std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std::endl;)
 		if(CompruebaDisparo(PlayerGrid, x, y))
 		{
 			std::stringstream s_node_player;
 			s_node_player << STRING_NODE_PLAYER_ << x << "_" << y;	// node_player_X_Y
 
-			ActualizaTablero(PlayerGrid(x, y), s_node_player.str());	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
+			ActualizaTablero(x, y);			// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 			CheckHundido(PlayerGrid, x, y);
-std::cout << "PLAYER GRID: ";
-PlayerGrid.DebugGrid();
+DEBUG_TRZ(std::cout << "PLAYER GRID: ";)
+DEBUG_TRZ(PlayerGrid.DebugGrid();)
 
 			if(PlayerGrid.getCasillasVivas() == 0)
 			{
@@ -329,9 +328,9 @@ void PlayState::createScene()
 	_sceneMgr->getRootSceneNode()->addChild(node_water);
 	node_water->addChild(main_node_tablero_CPU);
 	node_water->addChild(main_node_tablero_Player);
-std::cout << std::endl << "CPU:";
+DEBUG_TRZ(std::cout << std::endl << "CPU:";)
 	CPUGrid.IniciaBarcosAleatorio();
-std::cout << std::endl << "PLAYER:";
+DEBUG_TRZ(std::cout << std::endl << "PLAYER:";)
 	PlayerGrid.IniciaBarcosAleatorio();
 
 
@@ -344,24 +343,49 @@ std::cout << std::endl << "PLAYER:";
 			nodeNamePlayer << STRING_NODE_PLAYER_ << x << "_" << y;	// node_player_X_Y;
 			nodeNameCPU << STRING_NODE_CPU_ << x << "_" << y;	// node_cpu_X_Y;
 
-			ActualizaTablero(PlayerGrid(x, y), nodeNamePlayer.str());
-//			ActualizaTablero(CPUGrid(x, y), nodeNameCPU.str());
+
+			// Actualizamos tablero PLAYER (se actualiza el contrario al TURNO)
+			_turno = CPU; ActualizaTablero(x, y);
+// Actualizamos tablero CPU (se actualiza el contrario al TURNO)
+//DEBUG_TRZ(_turno = PLAYER; ActualizaTablero(CPUGrid(x, y), nodeNameCPU.str());)
 		}
 	}
 }
 
-void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
+void PlayState::ActualizaTablero(usint16 x, usint16 y)
 {
-	Ogre::Entity* entidad=NULL;
-	Ogre::SceneNode* shipNode=NULL;
-	Ogre::SceneNode* TableroNode = _sceneMgr->getSceneNode(nodeName);
-	std::stringstream shipNodeName;
-	std::string pieza;
-	bool pintarBarco = true;
-	bool esHorizontal = false;
-	Ogre::SceneNode *node = NULL;
-	Ogre::Entity *pEnt = NULL;
-	bool pintarFuego = false;
+	Ogre::Entity* 		entidad	= NULL;
+	Ogre::SceneNode* 	shipNode = NULL;
+	Ogre::SceneNode* 	TableroNode = NULL;
+	std::stringstream 	shipNodeName;
+	std::string 		pieza;
+	bool 				pintarBarco = true;
+	bool 				esHorizontal = false;
+	Ogre::SceneNode *	node = NULL;
+	Ogre::Entity *		pEnt = NULL;
+	bool 				pintarFuego = false;
+
+	usint16 			valor;
+	std::string 		nodeName;
+
+	if(_turno == PLAYER)	// tablero CPU
+	{
+		std::stringstream s_node_stream;
+		s_node_stream << STRING_NODE_CPU_ << x << "_" << y;
+
+		valor = CPUGrid(x, y);
+		nodeName = s_node_stream.str();
+	}
+	else if(_turno == CPU)	// tablero PLAYER
+	{
+		std::stringstream s_node_stream;
+		s_node_stream << STRING_NODE_PLAYER_ << x << "_" << y;
+
+		valor = PlayerGrid(x, y);
+		nodeName = s_node_stream.str();
+	}
+
+	TableroNode = _sceneMgr->getSceneNode(nodeName);
 
 	switch(valor)
 	{
@@ -395,8 +419,8 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		case CUERPO1_V_T :pieza="cuerpo1_t.mesh";  pintarFuego=true; shipNodeName << "shipTocado_" << nodeName;break;
 		case CUERPO2_V_T :pieza="cuerpo2_t.mesh";  pintarFuego=true; shipNodeName << "shipTocado_" << nodeName;break;
 		case POPA_V_T :pieza="popa_t.mesh";  pintarFuego=true; shipNodeName << "shipTocado_" << nodeName; break;
-
-		/*case PROA_H_Q :pieza="proa_ardiendo.mesh"; esHorizontal=true; break;
+/*
+		case PROA_H_Q :pieza="proa_ardiendo.mesh"; esHorizontal=true; break;
 		case CUERPO1_H_Q :pieza="cuerpo1_q.mesh"; esHorizontal=true; break;
 		case CUERPO2_H_Q :pieza="cuerpo2_q.mesh"; esHorizontal=true; break;
 		case POPA_H_Q :pieza="popa_q.mesh"; esHorizontal=true; break;
@@ -404,7 +428,10 @@ void PlayState::ActualizaTablero(usint16 valor, std::string nodeName)
 		case PROA_V_Q :pieza="proa_ardiendo.mesh"; break;
 		case CUERPO1_V_Q :pieza="cuerpo1_q.mesh"; break;
 		case CUERPO2_V_Q :pieza="cuerpo2_q.mesh"; break;
-		case POPA_V_Q :pieza="popa_q.mesh"; break;*/
+		case POPA_V_Q :pieza="popa_q.mesh"; break;
+*/
+		default:
+			pintarBarco = false;
 	}
 
 	if (pintarBarco) {
@@ -498,13 +525,6 @@ bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 			grid(posx, posy) = POPA_V_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 	}
-
-//TODO: Comprobar si esta hundido el barco y en ese caso cambiar el estado de TOCADO a HUNDIDO de sus casillas y las de alrededor ponerlas a DISPARADO
-
-	// Actualizamos grid de disparos de la CPU
-	if (_turno == CPU)
-		_CPUShotsGrid[posx][posy] = grid(posx, posy);
-
 	return sw_casillaCambiada;
 }
 
@@ -522,7 +542,7 @@ bool PlayState::obtenerPopaH(Grid& grid, int posXProa, int posYProa, int &posXPo
 		}
 	}
 
-std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;)
 	return sw_result;
 }
 
@@ -540,7 +560,7 @@ bool PlayState::obtenerProaH(Grid& grid, int posXPopa, int posYPopa, int &posXPr
 		}
 	}
 
-std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;)
 	return sw_result;
 }
 
@@ -558,7 +578,7 @@ bool PlayState::obtenerPopaV(Grid& grid, int posXProa, int posYProa, int &posXPo
 		}
 	}
 
-std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;)
 	return sw_result;
 }
 
@@ -576,7 +596,7 @@ bool PlayState::obtenerProaV(Grid& grid, int posXPopa, int posYPopa, int &posXPr
 		}
 	}
 
-std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << " PopaY: " << posYPopa << std::endl;)
 	return sw_result;
 }
 
@@ -588,11 +608,11 @@ bool PlayState::checkHundidoHorizontal(Grid& grid, int posXProa, int posYProa, i
 
 	for(int x = posXProa; x <= posXPopa && sw_result == true; x++)
 	{
-		if(!esCasillaTocada(x,posYPopa))
+		if(!esCasillaTocada(grid,x,posYPopa))
 			sw_result = false;
 	}
 
-std::cout << __func__ << " result: " << sw_result << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << std::endl;)
 	return sw_result;
 }
 
@@ -602,11 +622,11 @@ bool PlayState::checkHundidoVertical(Grid& grid, int posXProa, int posYProa, int
 
 	for(int y = posYProa; y <= posYPopa && sw_result == true; y++)
 	{
-		if(!esCasillaTocada(posXProa,y))
+		if(!esCasillaTocada(grid,posXProa,y))
 			sw_result = false;
 	}
 
-std::cout << __func__ << " result: " << sw_result << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << std::endl;)
 	return sw_result;
 }
 
@@ -617,14 +637,21 @@ void PlayState::rodearDisparadoHorizontal(Grid& grid, int posXProa, int posYProa
 	{
 		// centro
 		grid(posXProa-1, posYProa) = DISPARADO;
+		ActualizaTablero(posXProa-1, posYProa);
 
 		// Hay espacio arriba?
 		if(posYProa > 0)
+		{
 			grid(posXProa-1, posYProa-1) = DISPARADO;
+			ActualizaTablero(posXProa-1, posYProa-1);
+		}
 
 		// Hay espacio abajo?
 		if(posYProa+1 < MAX_ROWS_GRID)
+		{
 			grid(posXProa-1, posYProa+1) = DISPARADO;
+			ActualizaTablero(posXProa-1, posYProa+1);
+		}
 	}
 
 	// comprobamos si hay que pintar el borde derecho
@@ -632,22 +659,37 @@ void PlayState::rodearDisparadoHorizontal(Grid& grid, int posXProa, int posYProa
 	{
 		// centro
 		grid(posXPopa+1, posYPopa) = DISPARADO;
+		ActualizaTablero(posXPopa+1, posYPopa);
 
 		// Hay espacio arriba?
 		if(posYPopa > 0)
+		{
 			grid(posXPopa+1, posYPopa-1) = DISPARADO;
+			ActualizaTablero(posXPopa+1, posYPopa-1);
+		}
 
 		// Hay espacio abajo?
 		if(posYPopa+1 < MAX_ROWS_GRID)
+		{
 			grid(posXPopa+1, posYPopa+1) = DISPARADO;
+			ActualizaTablero(posXPopa+1, posYPopa+1);
+		}
 	}
 
 	for(int x = posXProa; x <= posXPopa; x++)
 	{
 		// Hay espacio por arriba?
-		if(posYProa > 0) grid(x,posYProa-1) = DISPARADO;
+		if(posYProa > 0)
+		{
+			grid(x,posYProa-1) = DISPARADO;
+			ActualizaTablero(x,posYProa-1);
+		}
 		// Hay espacio por abajo?
-		if(posYProa+1 < MAX_ROWS_GRID) grid(x,posYProa+1) = DISPARADO;
+		if(posYProa+1 < MAX_ROWS_GRID)
+		{
+			grid(x,posYProa+1) = DISPARADO;
+			ActualizaTablero(x,posYProa+1);
+		}
 	}
 }
 
@@ -658,14 +700,21 @@ void PlayState::rodearDisparadoVertical(Grid& grid, int posXProa, int posYProa, 
 	{
 		// centro
 		grid(posXProa, posYProa-1) = DISPARADO;
+		ActualizaTablero(posXProa, posYProa-1);
 
 		// Hay espacio a la izquierda?
 		if(posXProa > 0)
+		{
 			grid(posXProa-1, posYProa-1) = DISPARADO;
+			ActualizaTablero(posXProa-1, posYProa-1);
+		}
 
 		// Hay espacio a la derecha?
 		if(posXProa+1 < MAX_COLS_GRID)
+		{
 			grid(posXProa+1, posYProa-1) = DISPARADO;
+			ActualizaTablero(posXProa+1, posYProa-1);
+		}
 	}
 
 	// comprobamos si hay que pintar el borde inferior
@@ -673,24 +722,38 @@ void PlayState::rodearDisparadoVertical(Grid& grid, int posXProa, int posYProa, 
 	{
 		// centro
 		grid(posXPopa, posYPopa+1) = DISPARADO;
+		ActualizaTablero(posXPopa, posYPopa+1);
 
 		// Hay espacio a la izquierda?
 		if(posXPopa > 0)
+		{
 			grid(posXPopa-1, posYPopa+1) = DISPARADO;
+			ActualizaTablero(posXPopa-1, posYPopa+1);
+		}
 
 		// Hay espacio a la derecha?
 		if(posXPopa+1 < MAX_COLS_GRID)
+		{
 			grid(posXPopa+1, posYPopa+1) = DISPARADO;
+			ActualizaTablero(posXPopa+1, posYPopa+1);
+		}
 	}
 
 	for(int y = posYProa; y <= posYPopa; y++)
 	{
 		// Hay espacio por la izquierda?
-		if(posXProa > 0) grid(posXProa-1,y) = DISPARADO;
+		if(posXProa > 0)
+		{
+			grid(posXProa-1,y) = DISPARADO;
+			ActualizaTablero(posXProa-1,y);
+		}
 		// Hay espacio por abajo?
-		if(posXProa+1 < MAX_COLS_GRID) grid(posXProa+1,y) = DISPARADO;
+		if(posXProa+1 < MAX_COLS_GRID)
+		{
+			grid(posXProa+1,y) = DISPARADO;
+			ActualizaTablero(posXProa+1,y);
+		}
 	}
-
 }
 
 void PlayState::marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
@@ -705,10 +768,7 @@ void PlayState::marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, 
 		if (grid(x,posYProa) == CUERPO2_H_T) 	grid(x,posYProa) = CUERPO2_H_Q;
 		if (grid(x,posYProa) == POPA_H_T) 		grid(x,posYProa) = POPA_H_Q;
 
-		s_node.str("");
-		s_node << STRING_NODE_CPU_ << x << "_" << posYProa;
-
-		ActualizaTablero(CPUGrid(x,posYProa), s_node.str());
+		ActualizaTablero(x,posYProa);
 	}
 
 	rodearDisparadoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa);
@@ -726,10 +786,7 @@ void PlayState::marcarHundidoVertical(Grid& grid, int posXProa, int posYProa, in
 		if (grid(posXProa,y) == CUERPO2_V_T) 	grid(posXProa,y) = CUERPO2_V_Q;
 		if (grid(posXProa,y) == POPA_V_T) 		grid(posXProa,y) = POPA_V_Q;
 
-		s_node.str("");
-		s_node << STRING_NODE_CPU_ << posXProa << "_" << y;
-
-		ActualizaTablero(CPUGrid(posXProa,y), s_node.str());
+		ActualizaTablero(posXProa,y);
 
 	}
 
@@ -832,7 +889,7 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 
 
 ///< Devuelve TRUE si hay casilla tocada y las posiciones, devuelve FALSE en caso contrario
-bool PlayState::hayCasillaTocada(int &posX, int &posY) const
+bool PlayState::hayCasillaTocada(const Grid& grid, int &posX, int &posY) const
 {
 	bool sw_result = false;
 
@@ -840,7 +897,7 @@ bool PlayState::hayCasillaTocada(int &posX, int &posY) const
 	{
 		for(int y = 0; y < MAX_ROWS_GRID && sw_result == false; y++)
 		{
-			if(esCasillaTocada(x,y))
+			if(esCasillaTocada(grid,x,y))
 			{
 				posX = x; posY = y;
 				sw_result = true;
@@ -848,19 +905,19 @@ bool PlayState::hayCasillaTocada(int &posX, int &posY) const
 		}
 	}
 
-std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 	return sw_result;
 }
 
-bool PlayState::esCasillaTocada(int posX, int posY) const
+bool PlayState::esCasillaTocada(const Grid& grid, int posX, int posY) const
 {
 	bool sw_result = false;
 
-	if (PlayerGrid(posX, posY) >= PROA_H_T && PlayerGrid(posX, posY) <= POPA_V_T)
+	if (grid(posX, posY) >= PROA_H_T && grid(posX, posY) <= POPA_V_T)
 		sw_result = true;
 
-if(sw_result)
-std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+DEBUG_TRZ(if(sw_result))
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 	return sw_result;
 }
 
@@ -871,13 +928,13 @@ bool PlayState::BuscarCasillaLibreDerecha(int &posX, int &posY) const
 
 	for(int x = posX; x < MAX_COLS_GRID && PlayerGrid(x, y) != POPA_H_T && sw_result == false; x++)
 	{
-		if (!esCasillaTocada(x,y))
+		if (!esCasillaTocada(PlayerGrid,x,y))
 		{
 			posX = x; posY = y;
 			sw_result = true;
 		}
 	}
-std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 
 	return sw_result;
 }
@@ -889,13 +946,13 @@ bool PlayState::BuscarCasillaLibreIzquierda(int &posX, int &posY) const
 
 	for(int x = posX; x >= 0 && PlayerGrid(x, y) != PROA_H_T && sw_result == false; x--)
 	{
-		if (!esCasillaTocada(x,y))
+		if (!esCasillaTocada(PlayerGrid,x,y))
 		{
 			posX = x; posY = y;
 			sw_result = true;
 		}
 	}
-std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 
 	return sw_result;
 }
@@ -907,13 +964,13 @@ bool PlayState::BuscarCasillaLibreArriba(int &posX, int &posY) const
 
 	for(int y = posY; y >= 0 && PlayerGrid(x, y) != PROA_V_T && sw_result == false; y--)
 	{
-		if (!esCasillaTocada(x,y))
+		if (!esCasillaTocada(PlayerGrid,x,y))
 		{
 			posX = x; posY = y;
 			sw_result = true;
 		}
 	}
-std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 
 	return sw_result;
 }
@@ -925,13 +982,13 @@ bool PlayState::BuscarCasillaLibreAbajo(int &posX, int &posY) const
 
 	for(int y = posY; y < MAX_ROWS_GRID && PlayerGrid(x, y) != POPA_V_T && sw_result == false; y++)
 	{
-		if (!esCasillaTocada(x,y))
+		if (!esCasillaTocada(PlayerGrid,x,y))
 		{
 			posX = x; posY = y;
 			sw_result = true;
 		}
 	}
-std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 
 	return sw_result;
 }
@@ -967,14 +1024,24 @@ void PlayState::ObtenerSiguienteCasilla(int &posX, int &posY) const
 
 void PlayState::ObtenerCasillaAleatoria(int &posX, int &posY) const
 {
-	do{
+	bool sw_valido = false;
+	while( sw_valido == false )
+	{
 		posX = rangeRandomNumber(0, MAX_COLS_GRID-1);
 		posY = rangeRandomNumber(0, MAX_ROWS_GRID-1);
-	}while(
-			PlayerGrid(posX,posY) != DISPARADO &&
-			PlayerGrid(posX,posY) >= PROA_H_T && PlayerGrid(posX,posY) <= POPA_V_Q); // no quiero quemados
 
-std::cout << __func__ << " X: " << posX << " Y: " << posY << std::endl;
+		if (PlayerGrid(posX,posY) == AGUA)
+		{
+			sw_valido = true;
+		}
+
+		if (PlayerGrid(posX,posY) >= PROA_H && PlayerGrid(posX,posY) <= POPA_V)
+		{
+			sw_valido = true;
+		}
+	}
+
+DEBUG_TRZ(std::cout << __func__ << " CASILLA: " << PlayerGrid(posX,posY) << "       X: " << posX << " Y: " << posY << std::endl;)
 }
 
 ///< Calculara un disparo y lo retornara en los parametros (SALIDA)
@@ -982,7 +1049,7 @@ void PlayState::CalculaDisparoCPU(int &posX, int &posY)
 {
 	int x = 0, y = 0;
 
-	if (hayCasillaTocada(x,y))
+	if (hayCasillaTocada(PlayerGrid,x,y))
 	{
 		ObtenerSiguienteCasilla(x,y);
 	}
@@ -1023,7 +1090,6 @@ void PlayState::getSelectedNode(uint32 mask,			///< ENTRADA. Mascara de objetos 
 		if(i_st == 2)
 		{
 			x=xtemp, y=ytemp;
-//			std::cout << "X: " << x << " Y: " << y << std::endl;
 		}
 	}
 }
