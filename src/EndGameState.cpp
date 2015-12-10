@@ -1,4 +1,6 @@
 #include "EndGameState.h"
+#include "PlayState.h"
+#include "MenuState.h"
 
 template<> EndGameState* Ogre::Singleton<EndGameState>::msSingleton = 0;
 
@@ -10,10 +12,9 @@ void EndGameState::enter ()
 	_sceneMgr 	= _root->getSceneManager("SceneManager");
 	_camera 	= _sceneMgr->getCamera("IntroCamera");
 	_viewport 	= _root->getAutoCreatedWindow()->getViewport(0);
-	// Nuevo background colour.
-	_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 1.0, 0.0));
 
 	_exitGame = false;
+
 	showEndMsgCegui();
 }
 
@@ -67,34 +68,32 @@ EndGameState& EndGameState::getSingleton ()
 void EndGameState::showEndMsgCegui()
 {
 	//Sheet
-	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","menu_principal");
-
+	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","endgame");
 
 	//Config Window
-	CEGUI::Window* menuWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("menu_principal.layout");
+	CEGUI::Window* endMsgWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("endgame.layout");
 
-menuWin->getChild("Text1")->setText("Este color es [colour='FFFF0000'] AZUL, mientras que [colour='FF00FF00'] este es ROJO [colour='FF0000FF'] y este VERDE!");
+	endMsgWin->getChild("Text2")->setText("[font='Batang-26']VENCEDOR:  [colour='FFFF0000'] SU PRIMA");
+	endMsgWin->getChild("Text3")->setText("[font='DejaVuSans-12'][colour='FFFF0000']Puntos CPU: [colour='FF000000'] ");
+	endMsgWin->getChild("Text4")->setText("[font='DejaVuSans-12'][colour='FF0000FF']Puntos PLAYER: [colour='FF000000'] ");
 
-	// NEW GAME
-	CEGUI::Window* newGameButton = menuWin->getChild("btn_new_game");
-	newGameButton->subscribeEvent( CEGUI::PushButton::EventClicked,
-							   	   CEGUI::Event::Subscriber(&MenuState::newGame, this));
-	// RECORDS
-	CEGUI::Window* recordsButton = menuWin->getChild("btn_records");
-	recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
-							   	   CEGUI::Event::Subscriber(&MenuState::records, this));
-	// CREDITS
-	CEGUI::Window* creditsButton = menuWin->getChild("btn_credits");
-	creditsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
-							   	   CEGUI::Event::Subscriber(&MenuState::credits, this));
-	// QUIT
-	CEGUI::Window* exitButton = menuWin->getChild("btn_quit");
-	exitButton->subscribeEvent(CEGUI::PushButton::EventClicked,
-							   CEGUI::Event::Subscriber(&MenuState::quit, this));
+	// OK
+	CEGUI::Window* okButton = endMsgWin->getChild("btn_ok");
+	okButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+							  CEGUI::Event::Subscriber(&EndGameState::BotonOk, this));
 
 	//Attaching buttons
-	_ceguiSheet->addChild(menuWin);
+	_ceguiSheet->addChild(endMsgWin);
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
 
-
 }
+
+bool EndGameState::BotonOk(const CEGUI::EventArgs &e)
+{
+	std::cout << __func__ << "----OK----" << std::endl;
+	changeState(MenuState::getSingletonPtr());
+	return true;
+}
+
+
+

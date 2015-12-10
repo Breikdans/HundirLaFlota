@@ -3,6 +3,7 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
+#include <CEGUI.h>
 
 #include "GameState.h"
 
@@ -39,6 +40,7 @@ class EndGameState : public Ogre::Singleton<EndGameState>, public GameState
 		bool _exitGame;
 
 		void showEndMsgCegui();
+		bool BotonOk(const CEGUI::EventArgs &e);
 };
 
 #endif
