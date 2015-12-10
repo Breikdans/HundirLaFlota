@@ -580,6 +580,8 @@ std::cout << __func__ << " result: " << sw_result << " PopaX: " << posXPopa << "
 	return sw_result;
 }
 
+
+
 bool PlayState::checkHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa) const
 {
 	bool sw_result = true;
@@ -600,7 +602,7 @@ bool PlayState::checkHundidoVertical(Grid& grid, int posXProa, int posYProa, int
 
 	for(int y = posYProa; y <= posYPopa && sw_result == true; y++)
 	{
-		if(!esCasillaTocada(x,posYPopa))
+		if(!esCasillaTocada(posXProa,y))
 			sw_result = false;
 	}
 
@@ -608,9 +610,21 @@ std::cout << __func__ << " result: " << sw_result << std::endl;
 	return sw_result;
 }
 
-void marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
+void PlayState::marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
 {
-	// comprobamos si hay que pintar el borde izquierdo
+
+	// recorrer las columnas, y cambiar posiciones
+	for(int x = posXProa; x <= posXPopa; x++)
+	{
+		if (grid(x,posYProa) == PROA_H_T) 		grid(x,posYProa) = PROA_H_Q;
+		if (grid(x,posYProa) == CUERPO1_H_T) 	grid(x,posYProa) = CUERPO1_H_Q;
+		if (grid(x,posYProa) == CUERPO2_H_T) 	grid(x,posYProa) = CUERPO2_H_Q;
+		if (grid(x,posYProa) == POPA_H_T) 		grid(x,posYProa) = POPA_H_Q;
+	}
+
+		// AHORA AQUI PONER LAS CASILLAS QUE RODEAN AL BARCO
+
+	/*// comprobamos si hay que pintar el borde izquierdo
 	if(posXProa > 0)
 	{
 		// centro
@@ -625,7 +639,7 @@ void marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPop
 			grid(posXProa-1, posYProa+1) = DISPARADO;
 	}
 
-	// comprobamos si hay que pintar el borde izquierdo
+	// comprobamos si hay que pintar el borde derecho
 	if(posXPopa < MAX_COLS_GRID - 1)
 	{
 		// centro
@@ -638,13 +652,22 @@ void marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPop
 		// abajo
 		if(posYPopa+1 <= MAX_ROWS_GRID)
 			grid(posXPopa-1, posYPopa+1) = DISPARADO;
-	}
+	}*/
 
 }
 
-void marcarHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
+void PlayState::marcarHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
 {
+	// recorrer las columnas, y cambiar posiciones
+	for(int y = posYProa; y <= posYPopa; y++)
+	{
+		if (grid(posXProa,y) == PROA_V_T) 	grid(posXProa,y) = PROA_V_Q;
+		if (grid(posXProa,y) == CUERPO1_V_T) 	grid(posXProa,y) = CUERPO1_V_Q;
+		if (grid(posXProa,y) == CUERPO2_V_T) grid(posXProa,y)= CUERPO2_V_Q;
+		if (grid(posXProa,y) == POPA_V_T) 	grid(posXProa,y)= POPA_V_Q;
+	}
 
+			// AHORA AQUI PONER LAS CASIILAS QUE RODEAN AL BARCO
 }
 
 bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
@@ -670,7 +693,7 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 		}
 	}
 
-	if (grid(posX, posY) == POPA_H_T)
+	else if (grid(posX, posY) == POPA_H_T)
 	{
 		posXPopa = posX; posYPopa = posY;
 		if(obtenerProaH(grid, posXPopa, posYPopa, posXProa, posYProa))
@@ -683,7 +706,7 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 		}
 	}
 
-	if (grid(posX, posY) == CUERPO1_H_T || grid(posX, posY) == CUERPO2_H_T)
+	else if (grid(posX, posY) == CUERPO1_H_T || grid(posX, posY) == CUERPO2_H_T)
 	{
 		if(obtenerProaH(grid, posX, posY, posXProa, posYProa))
 		{
@@ -698,7 +721,7 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 		}
 	}
 
-	if (grid(posX, posY) == PROA_V_T)
+	else if (grid(posX, posY) == PROA_V_T)
 	{
 		posXProa = posX; posYProa = posY;
 		if(obtenerPopaV(grid, posXProa, posYProa, posXPopa, posYPopa))
@@ -711,7 +734,7 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 		}
 	}
 
-	if (grid(posX, posY) == POPA_V_T)
+	else if (grid(posX, posY) == POPA_V_T)
 	{
 		posXPopa = posX; posYPopa = posY;
 		if(obtenerProaV(grid, posXPopa, posYPopa, posXProa, posYProa))
@@ -724,7 +747,7 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 		}
 	}
 
-	if (grid(posX, posY) == CUERPO1_V_T || grid(posX, posY) == CUERPO2_V_T)
+	else if (grid(posX, posY) == CUERPO1_V_T || grid(posX, posY) == CUERPO2_V_T)
 	{
 		if(obtenerProaV(grid, posX, posY, posXProa, posYProa))
 		{
@@ -769,6 +792,7 @@ bool PlayState::esCasillaTocada(int posX, int posY) const
 	if (PlayerGrid(posX, posY) >= PROA_H_T && PlayerGrid(posX, posY) <= POPA_V_T)
 		sw_result = true;
 
+if(sw_result)
 std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;
 	return sw_result;
 }
@@ -778,7 +802,7 @@ bool PlayState::BuscarCasillaLibreDerecha(int &posX, int &posY) const
 	int y = posY;
 	bool sw_result = false;
 
-	for(int x = posX; x < MAX_COLS_GRID && sw_result == false; x++)
+	for(int x = posX; x < MAX_COLS_GRID && PlayerGrid(x, y) != POPA_H_T && sw_result == false; x++)
 	{
 		if (!esCasillaTocada(x,y))
 		{
@@ -796,7 +820,7 @@ bool PlayState::BuscarCasillaLibreIzquierda(int &posX, int &posY) const
 	int y = posY;
 	bool sw_result = false;
 
-	for(int x = posX; x >= 0 && sw_result == false; x--)
+	for(int x = posX; x >= 0 && PlayerGrid(x, y) != PROA_H_T && sw_result == false; x--)
 	{
 		if (!esCasillaTocada(x,y))
 		{
@@ -814,7 +838,7 @@ bool PlayState::BuscarCasillaLibreArriba(int &posX, int &posY) const
 	int x = posX;
 	bool sw_result = false;
 
-	for(int y = posY; y >= 0 && sw_result == false; y--)
+	for(int y = posY; y >= 0 && PlayerGrid(x, y) != PROA_V_T && sw_result == false; y--)
 	{
 		if (!esCasillaTocada(x,y))
 		{
@@ -832,7 +856,7 @@ bool PlayState::BuscarCasillaLibreAbajo(int &posX, int &posY) const
 	int x = posX;
 	bool sw_result = false;
 
-	for(int y = posY; y < MAX_ROWS_GRID && sw_result == false; y++)
+	for(int y = posY; y < MAX_ROWS_GRID && PlayerGrid(x, y) != POPA_V_T && sw_result == false; y++)
 	{
 		if (!esCasillaTocada(x,y))
 		{
@@ -851,25 +875,25 @@ void PlayState::ObtenerSiguienteCasilla(int &posX, int &posY) const
 	if(PlayerGrid(posX, posY) == PROA_H_T)
 		BuscarCasillaLibreDerecha(posX, posY);
 
-	if(PlayerGrid(posX, posY) == POPA_H_T)
+	else if(PlayerGrid(posX, posY) == POPA_H_T)
 		BuscarCasillaLibreIzquierda(posX, posY);
 
-	if(PlayerGrid(posX, posY) == POPA_V_T)
+	else if(PlayerGrid(posX, posY) == POPA_V_T)
 		BuscarCasillaLibreArriba(posX, posY);
 
-	if(PlayerGrid(posX, posY) == PROA_V_T)
+	else if(PlayerGrid(posX, posY) == PROA_V_T)
 		BuscarCasillaLibreAbajo(posX, posY);
 
-	if(PlayerGrid(posX, posY) == CUERPO1_H_T || PlayerGrid(posX, posY) == CUERPO2_H_T)
+	else if(PlayerGrid(posX, posY) == CUERPO1_H_T || PlayerGrid(posX, posY) == CUERPO2_H_T)
 	{
 		if (!BuscarCasillaLibreDerecha(posX, posY))
 			BuscarCasillaLibreIzquierda(posX, posY);
 	}
 
-	if(PlayerGrid(posX, posY) == CUERPO1_V_T || PlayerGrid(posX, posY) == CUERPO2_V_T)
+	else if(PlayerGrid(posX, posY) == CUERPO1_V_T || PlayerGrid(posX, posY) == CUERPO2_V_T)
 	{
 		if (!BuscarCasillaLibreArriba(posX, posY))
-			BuscarCasillaLibreAbajo(posX, posY);
+			BuscarCasillaLibreAbajo(posX,posY);
 	}
 
 }
@@ -879,7 +903,9 @@ void PlayState::ObtenerCasillaAleatoria(int &posX, int &posY) const
 	do{
 		posX = rangeRandomNumber(0, MAX_COLS_GRID-1);
 		posY = rangeRandomNumber(0, MAX_ROWS_GRID-1);
-	}while(PlayerGrid(posX,posY) != DISPARADO && PlayerGrid(posX,posY) >= PROA_H_T && PlayerGrid(posX,posY) <= POPA_V_T);
+	}while(
+			PlayerGrid(posX,posY) != DISPARADO &&
+			PlayerGrid(posX,posY) >= PROA_H_T && PlayerGrid(posX,posY) <= POPA_V_Q); // no quiero quemados
 
 std::cout << __func__ << " X: " << posX << " Y: " << posY << std::endl;
 }
