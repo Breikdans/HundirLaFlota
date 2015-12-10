@@ -13,11 +13,10 @@ DIRHEA := include/
 CXX := g++
 
 # Flags de compilación -----------------------------------------------
-CXXFLAGS := -I $(DIRHEA) -Wall -I/usr/local/include/cegui-0/CEGUI -I/usr/local/include/cegui-0 `pkg-config --cflags OGRE OGRE-Overlay` 
+CXXFLAGS := -I $(DIRHEA) -Wall -I/usr/local/include/cegui-0/CEGUI -I/usr/local/include/cegui-0 `pkg-config --cflags OGRE OGRE-Overlay` `pkg-config --cflags OIS`
 
 # Flags del linker ---------------------------------------------------
-LDFLAGS := `pkg-config --libs-only-L OGRE` -lCEGUIBase-0 -lCEGUIOgreRenderer-0
-LDLIBS := `pkg-config --libs-only-l OGRE OGRE-Overlay` -lboost_system -lOIS -lGL -lstdc++
+LDFLAGS :=  `pkg-config --libs OGRE OGRE-Overlay` -lOIS -lGL -lstdc++ -lboost_system  -lCEGUIBase-0 -lCEGUIOgreRenderer-0
 
 # Modo de compilación (-mode=release -mode=debug) --------------------
 ifeq ($(mode), release) 
@@ -33,7 +32,7 @@ OBJS := $(subst $(DIRSRC), $(DIROBJ), \
 
 .PHONY: all clean
 
-all: info $(EXEC)
+all: dirs info $(EXEC)
 
 info:
 	@echo '------------------------------------------------------'
@@ -41,19 +40,23 @@ info:
 	@echo '    (Please, call "make" with [mode=debug|release])  '
 	@echo '------------------------------------------------------'
 
+dirs:
+	mkdir -p $(DIROBJ)
 # Enlazado -----------------------------------------------------------
 $(EXEC): $(OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(CXX) $^ $(LDFLAGS) -o $@
 	@echo
 	@echo 'Compilacion terminada!'
 
 # Compilación --------------------------------------------------------
-$(DIROBJ)%.o: $(DIRSRC)%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDLIBS)
+$(DIROBJ)main.o: $(DIRSRC)main.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDFLAGS)
+$(DIROBJ)%.o: $(DIRSRC)%.cpp $(DIRHEA)%.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDFLAGS)
 
 # Limpieza de temporales ---------------------------------------------
 clean:
 	rm -f *.log $(EXEC) *~ $(DIROBJ)* $(DIRSRC)*~ $(DIRHEA)*~ 
 
-edit:
-	emacs $(wildcard $(DIRSRC)*.cpp) $(wildcard $(DIRHEA)*.h) &
+
+

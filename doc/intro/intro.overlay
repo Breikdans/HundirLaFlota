@@ -1,0 +1,17 @@
+Intro
+{
+	zorder 500
+	
+	container Panel(panelIntro)
+	{
+		metrics_mode pixels
+	    left 0
+	    top 0
+	    width 1024
+	    height 768
+	    vert_align top
+	    material panelIntroM
+	
+	}
+	
+}

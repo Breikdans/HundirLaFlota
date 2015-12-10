@@ -7,6 +7,21 @@
 #include "Grid.h"
 #include "stdio.h"
 
+int rangeRandomNumber (int min, int max)
+{
+    int n = max - min + 1;
+    int remainder = RAND_MAX % n;
+    int x;
+    do
+    {
+        x = rand();
+    }while (x >= RAND_MAX - remainder);
+    return min + x % n;
+}
+
+// ========================================================================
+// =========================== METODOS PUBLICOS ===========================
+// ========================================================================
 Grid::Grid(usint16 C) : _CasillasVivas(C)
 {
 	for (int i = 0; i < MAX_ROWS_GRID ; i++ )
@@ -20,7 +35,7 @@ Grid::Grid(usint16 C) : _CasillasVivas(C)
 usint16& Grid::operator() (usint16 F, usint16 C)
 {
 	//	LANZAMOS EXCEPCION
-	if (F == 0 || C == 0 || F >= MAX_ROWS_GRID || C >= MAX_COLS_GRID)
+	if (F >= MAX_ROWS_GRID || C >= MAX_COLS_GRID)
 		throw std::out_of_range("Indice fuera de limites");
 
 	return _tbl_Grid[F][C];
@@ -30,7 +45,7 @@ usint16& Grid::operator() (usint16 F, usint16 C)
 usint16 Grid::operator() (usint16 F, usint16 C) const
 {
 	//	LANZAMOS EXCEPCION
-	if (F == 0 || C == 0 || F >= MAX_ROWS_GRID || C >= MAX_COLS_GRID)
+	if (F >= MAX_ROWS_GRID || C >= MAX_COLS_GRID)
 		throw std::out_of_range("Indice fuera de limites");
 
 	return _tbl_Grid[F][C];
@@ -45,29 +60,31 @@ void Grid::IniciaBarcosAleatorio()
 	{
 		ColocaBarco(barcos[i]);
 	}
-//DebugGrid();
+#ifdef _DEBUG
+DebugGrid();
+#endif
+}
+
+usint16 Grid::getCasillasVivas() const
+{
+	return _CasillasVivas;
+}
+
+void Grid::setCasillasVivas(usint16 c)
+{
+	_CasillasVivas = c;
+}
+
+void Grid::restaCasillas(void)
+{
+	_CasillasVivas--;
 }
 
 // ========================================================================
 // =========================== METODOS PRIVADOS ===========================
 // ========================================================================
-int Grid::rangeRandomNumber (int min, int max) const
-{
-    int n = max - min + 1;
-    int remainder = RAND_MAX % n;
-    int x;
-    do
-    {
-        x = rand();
-    }while (x >= RAND_MAX - remainder);
-    return min + x % n;
-}
-
 void Grid::ColocaBarco(usint16 casillas)
 {
-	const int HORIZONTAL 	= 0;
-	const int VERTICAL		= 1;
-
 	// por claridad...
 	const int MAX_X			= MAX_COLS_GRID - 1;
 	const int MAX_Y			= MAX_ROWS_GRID - 1;
@@ -153,84 +170,36 @@ void Grid::ColocaBarco(usint16 casillas)
 	{
 		for (int i = 0; i < casillas; i++)
 		{
-			switch(i)
-			{
-				case 0:
-					_tbl_Grid[PosXInicial+i][PosYInicial] = PROA_H;
-					break;
-				case 1:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					else
-						_tbl_Grid[PosXInicial+i][PosYInicial] = CUERPO1_H;
-					break;
-				case 2:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					else
-						_tbl_Grid[PosXInicial+i][PosYInicial] = CUERPO2_H;
-					break;
-				case 3:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					else
-					{
-						if (casillas == 5)
-							_tbl_Grid[PosXInicial+i][PosYInicial] = CUERPO1_H;
-					}
-					break;
-				case 4:
-					_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
-					break;
-			}
+			if(i == 0)
+				_tbl_Grid[PosXInicial+i][PosYInicial] = PROA_H;
+			else if(i == casillas-1)
+				_tbl_Grid[PosXInicial+i][PosYInicial] = POPA_H;
+			else
+				_tbl_Grid[PosXInicial+i][PosYInicial] = static_cast<usint16>(rangeRandomNumber(CUERPO1_H,CUERPO2_H));
 		}
 	}
 	else if(sw_orientacion == VERTICAL)
 	{
 		for (int i = 0; i < casillas; i++)
 		{
-			switch(i)
-			{
-				case 0:
-					_tbl_Grid[PosXInicial][PosYInicial+i] = PROA_V;
-					break;
-				case 1:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					else
-						_tbl_Grid[PosXInicial][PosYInicial+i] = CUERPO1_V;
-					break;
-				case 2:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					else
-						_tbl_Grid[PosXInicial][PosYInicial+i] = CUERPO2_V;
-					break;
-				case 3:
-					if (i == casillas - 1)
-						_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					else
-					{
-						if (casillas == 5)
-							_tbl_Grid[PosXInicial][PosYInicial+i] = CUERPO1_V;
-					}
-					break;
-				case 4:
-					_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
-					break;
-			}
+			if(i == 0)
+				_tbl_Grid[PosXInicial][PosYInicial+i] = PROA_V;
+			else if(i == casillas-1)
+				_tbl_Grid[PosXInicial][PosYInicial+i] = POPA_V;
+			else
+				_tbl_Grid[PosXInicial][PosYInicial+i] = static_cast<usint16>(rangeRandomNumber(CUERPO1_V,CUERPO2_V));
 		}
 	}
 }
 
 void Grid::DebugGrid()
 {
-	std::cout << std::endl << std::endl;
-	for(int i = 0; i < MAX_ROWS_GRID; i++)
+	std::cout << std::endl;
+	for(int y = 0; y < MAX_ROWS_GRID; y++)
 	{
-		for(int j = 0; j < MAX_COLS_GRID; j++)
+		for(int x = 0; x < MAX_COLS_GRID; x++)
 		{
-			std::cout << " " << _tbl_Grid[i][j];
+			std::cout << " " << _tbl_Grid[x][y];
 		}
 		std::cout << std::endl;
 	}
