@@ -5,6 +5,13 @@
 #ifndef GRID_H_
 #define GRID_H_
 
+#ifdef _DEBUG
+	#define DEBUG_TRZ(x) x
+#else
+	#define DEBUG_TRZ(x)
+#endif
+
+
 const int MAX_ROWS_GRID	=		10;
 const int MAX_COLS_GRID	=		10;
 

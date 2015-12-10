@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project CEGUIDefaultResolution="800x600" CEGUIVersion="0.8" baseDirectory="." fontsPath="fonts" imagesetsPath="imagesets" layoutsPath="layouts" looknfeelsPath="looknfeel" schemesPath="schemes" version="CEED Project 1" xmlSchemasPath="xml_schemas">
+    <Items>
+        <Item name="imagesets" type="folder">
+            <Item path="imagesets/TaharezLook.imageset" type="file" />
+        </Item>
+        <Item name="layouts" type="folder">
+            <Item path="layouts/configWin.layout" type="file" />
+            <Item path="layouts/menu_principal.layout" type="file" />
+        </Item>
+    </Items>
+</Project>

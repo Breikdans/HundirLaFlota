@@ -50,21 +50,13 @@ void PauseState::keyPressed(const OIS::KeyEvent &e)
 	}
 }
 
-void PauseState::keyReleased(const OIS::KeyEvent &e)
-{
-}
+void PauseState::keyReleased(const OIS::KeyEvent &e) {}
 
-void PauseState::mouseMoved(const OIS::MouseEvent &e)
-{
-}
+void PauseState::mouseMoved(const OIS::MouseEvent &e) {}
 
-void PauseState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{
-}
+void PauseState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
 
-void PauseState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{
-}
+void PauseState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
 
 PauseState* PauseState::getSingletonPtr ()
 {
