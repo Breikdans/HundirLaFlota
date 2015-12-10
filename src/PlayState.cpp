@@ -1,6 +1,7 @@
 #include <cstdio>
 #include "PlayState.h"
 #include "PauseState.h"
+#include "EndGameState.h"
 
 template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 
@@ -137,7 +138,6 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 		s_LastCell = s_CellName;
 		lastcellx = cellx;
 		lastcelly = celly;
-
 	}
 	else	// si sacamos el cursor de las celdas, dejamos la ultima con color NORMAL
 	{
@@ -197,7 +197,7 @@ DEBUG_TRZ(CPUGrid.DebugGrid();)
 					puntosPlayer += (PlayerGrid.getCasillasVida() * 5);
 					// FIN DE JUEGO, GANA EL PLAYER
 DEBUG_TRZ(std::cout << "PLAYER WIN!!!!!!" << " Puntos: " << puntosPlayer << std::endl;)
-//					changeState(WinState::getSingletonPtr());
+					pushState(EndGameState::getSingletonPtr());
 					_exitGame = true;
 				}
 				else
@@ -241,7 +241,7 @@ DEBUG_TRZ(PlayerGrid.DebugGrid();)
 				puntosCPU += (CPUGrid.getCasillasVida() * 5);
 				// FIN DE JUEGO, GANA LA CPU
 DEBUG_TRZ(std::cout << "CPU WIN!!!!!!" << " Puntos: " << puntosCPU << std::endl;)
-//				changeState(LoseState::getSingletonPtr());
+				pushState(EndGameState::getSingletonPtr());
 DEBUG_TRZ(_exitGame = true;)
 			}
 			else
