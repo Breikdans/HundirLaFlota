@@ -224,7 +224,7 @@ std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std::endl;
 		if(CompruebaDisparo(PlayerGrid, x, y))
 		{
 			std::stringstream s_node_player;
-			s_node_player << "node_player_" << x << "_" << y;	// node_player_X_Y
+			s_node_player << STRING_NODE_PLAYER_ << x << "_" << y;	// node_player_X_Y
 
 			ActualizaTablero(PlayerGrid(x, y), s_node_player.str());	// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 			CheckHundido(PlayerGrid, x, y);
@@ -276,12 +276,12 @@ void PlayState::createScene()
 			// creamos nodos para el tablero de jugador y atachamos la entidad
 			// colgamos de main_node_tablero_Player, todos los nodos del tablero
 			std::stringstream s_node_player_aux;
-			s_node_player_aux << "node_player_" << i << "_" << j;	// node_player_X_Y
+			s_node_player_aux << STRING_NODE_PLAYER_ << i << "_" << j;	// node_player_X_Y
 
 			// creamos nodos para el tablero de CPU y atachamos la entidad
 			// colgamos de main_node_tablero_CPU, todos los nodos del tablero
 			std::stringstream s_node_cpu_aux;
-			s_node_cpu_aux << "node_cpu_" << i << "_" << j;	// node_cpu_X_Y
+			s_node_cpu_aux << STRING_NODE_CPU_ << i << "_" << j;	// node_cpu_X_Y
 
 			// crea entidades 3d
 			ent_CeldaPlayer = _sceneMgr->createEntity(s_node_player_aux.str(), "celda.mesh");
@@ -341,8 +341,8 @@ std::cout << std::endl << "PLAYER:";
 		{
 			std::stringstream nodeNamePlayer;
 			std::stringstream nodeNameCPU;
-			nodeNamePlayer << "node_player_" << x << "_" << y;	// node_player_X_Y;
-			nodeNameCPU << "node_cpu_" << x << "_" << y;	// node_cpu_X_Y;
+			nodeNamePlayer << STRING_NODE_PLAYER_ << x << "_" << y;	// node_player_X_Y;
+			nodeNameCPU << STRING_NODE_CPU_ << x << "_" << y;	// node_cpu_X_Y;
 
 			ActualizaTablero(PlayerGrid(x, y), nodeNamePlayer.str());
 //			ActualizaTablero(CPUGrid(x, y), nodeNameCPU.str());
@@ -610,64 +610,130 @@ std::cout << __func__ << " result: " << sw_result << std::endl;
 	return sw_result;
 }
 
+void PlayState::rodearDisparadoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
+{
+	// comprobamos si hay que pintar el borde izquierdo
+	if(posXProa > 0)
+	{
+		// centro
+		grid(posXProa-1, posYProa) = DISPARADO;
+
+		// Hay espacio arriba?
+		if(posYProa > 0)
+			grid(posXProa-1, posYProa-1) = DISPARADO;
+
+		// Hay espacio abajo?
+		if(posYProa+1 < MAX_ROWS_GRID)
+			grid(posXProa-1, posYProa+1) = DISPARADO;
+	}
+
+	// comprobamos si hay que pintar el borde derecho
+	if(posXPopa+1 < MAX_COLS_GRID)
+	{
+		// centro
+		grid(posXPopa+1, posYPopa) = DISPARADO;
+
+		// Hay espacio arriba?
+		if(posYPopa > 0)
+			grid(posXPopa+1, posYPopa-1) = DISPARADO;
+
+		// Hay espacio abajo?
+		if(posYPopa+1 < MAX_ROWS_GRID)
+			grid(posXPopa+1, posYPopa+1) = DISPARADO;
+	}
+
+	for(int x = posXProa; x <= posXPopa; x++)
+	{
+		// Hay espacio por arriba?
+		if(posYProa > 0) grid(x,posYProa-1) = DISPARADO;
+		// Hay espacio por abajo?
+		if(posYProa+1 < MAX_ROWS_GRID) grid(x,posYProa+1) = DISPARADO;
+	}
+}
+
+void PlayState::rodearDisparadoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
+{
+	// comprobamos si hay que pintar el borde superior
+	if(posYProa > 0)
+	{
+		// centro
+		grid(posXProa, posYProa-1) = DISPARADO;
+
+		// Hay espacio a la izquierda?
+		if(posXProa > 0)
+			grid(posXProa-1, posYProa-1) = DISPARADO;
+
+		// Hay espacio a la derecha?
+		if(posXProa+1 < MAX_COLS_GRID)
+			grid(posXProa+1, posYProa-1) = DISPARADO;
+	}
+
+	// comprobamos si hay que pintar el borde inferior
+	if(posYPopa+1 < MAX_ROWS_GRID)
+	{
+		// centro
+		grid(posXPopa, posYPopa+1) = DISPARADO;
+
+		// Hay espacio a la izquierda?
+		if(posXPopa > 0)
+			grid(posXPopa-1, posYPopa+1) = DISPARADO;
+
+		// Hay espacio a la derecha?
+		if(posXPopa+1 < MAX_COLS_GRID)
+			grid(posXPopa+1, posYPopa+1) = DISPARADO;
+	}
+
+	for(int y = posYProa; y <= posYPopa; y++)
+	{
+		// Hay espacio por la izquierda?
+		if(posXProa > 0) grid(posXProa-1,y) = DISPARADO;
+		// Hay espacio por abajo?
+		if(posXProa+1 < MAX_COLS_GRID) grid(posXProa+1,y) = DISPARADO;
+	}
+
+}
+
 void PlayState::marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
 {
+	std::stringstream s_node;
 
-	// recorrer las columnas, y cambiar posiciones
+	// recorrer las columnas, y cambiar estados
 	for(int x = posXProa; x <= posXPopa; x++)
 	{
 		if (grid(x,posYProa) == PROA_H_T) 		grid(x,posYProa) = PROA_H_Q;
 		if (grid(x,posYProa) == CUERPO1_H_T) 	grid(x,posYProa) = CUERPO1_H_Q;
 		if (grid(x,posYProa) == CUERPO2_H_T) 	grid(x,posYProa) = CUERPO2_H_Q;
 		if (grid(x,posYProa) == POPA_H_T) 		grid(x,posYProa) = POPA_H_Q;
+
+		s_node.str("");
+		s_node << STRING_NODE_CPU_ << x << "_" << posYProa;
+
+		ActualizaTablero(CPUGrid(x,posYProa), s_node.str());
 	}
 
-		// AHORA AQUI PONER LAS CASILLAS QUE RODEAN AL BARCO
-
-	/*// comprobamos si hay que pintar el borde izquierdo
-	if(posXProa > 0)
-	{
-		// centro
-		grid(posXProa-1, posYProa) = DISPARADO;
-
-		// arriba
-		if(posYProa-1 > 0)
-			grid(posXProa-1, posYProa-1) = DISPARADO;
-
-		// abajo
-		if(posYProa+1 <= MAX_ROWS_GRID)
-			grid(posXProa-1, posYProa+1) = DISPARADO;
-	}
-
-	// comprobamos si hay que pintar el borde derecho
-	if(posXPopa < MAX_COLS_GRID - 1)
-	{
-		// centro
-		grid(posXPopa-1, posYPopa) = DISPARADO;
-
-		// arriba
-		if(posYPopa-1 > 0)
-			grid(posXPopa-1, posYPopa-1) = DISPARADO;
-
-		// abajo
-		if(posYPopa+1 <= MAX_ROWS_GRID)
-			grid(posXPopa-1, posYPopa+1) = DISPARADO;
-	}*/
-
+	rodearDisparadoHorizontal(grid, posXProa, posYProa, posXPopa, posYPopa);
 }
 
 void PlayState::marcarHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa)
 {
-	// recorrer las columnas, y cambiar posiciones
+	std::stringstream s_node;
+
+	// recorrer las filas, y cambiar estados
 	for(int y = posYProa; y <= posYPopa; y++)
 	{
-		if (grid(posXProa,y) == PROA_V_T) 	grid(posXProa,y) = PROA_V_Q;
+		if (grid(posXProa,y) == PROA_V_T) 		grid(posXProa,y) = PROA_V_Q;
 		if (grid(posXProa,y) == CUERPO1_V_T) 	grid(posXProa,y) = CUERPO1_V_Q;
-		if (grid(posXProa,y) == CUERPO2_V_T) grid(posXProa,y)= CUERPO2_V_Q;
-		if (grid(posXProa,y) == POPA_V_T) 	grid(posXProa,y)= POPA_V_Q;
+		if (grid(posXProa,y) == CUERPO2_V_T) 	grid(posXProa,y) = CUERPO2_V_Q;
+		if (grid(posXProa,y) == POPA_V_T) 		grid(posXProa,y) = POPA_V_Q;
+
+		s_node.str("");
+		s_node << STRING_NODE_CPU_ << posXProa << "_" << y;
+
+		ActualizaTablero(CPUGrid(posXProa,y), s_node.str());
+
 	}
 
-			// AHORA AQUI PONER LAS CASIILAS QUE RODEAN AL BARCO
+	rodearDisparadoVertical(grid, posXProa, posYProa, posXPopa, posYPopa);
 }
 
 bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
@@ -761,6 +827,7 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 			}
 		}
 	}
+	return sw_hundido;
 }
 
 

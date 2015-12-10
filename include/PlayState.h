@@ -10,6 +10,9 @@
 #include "GameState.h"
 #include "Grid.h"
 
+const std::string STRING_NODE_PLAYER_ = "node_player_";
+const std::string STRING_NODE_CPU_ = "node_cpu_";
+
 class PlayState : public Ogre::Singleton<PlayState>, public GameState
 {
 	public:
@@ -73,6 +76,8 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 
 		void marcarHundidoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
 		void marcarHundidoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
+		void rodearDisparadoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
+		void rodearDisparadoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
 
 		EN_TURNO _turno;
 		bool _exitGame;
