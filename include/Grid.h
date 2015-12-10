@@ -5,13 +5,6 @@
 #ifndef GRID_H_
 #define GRID_H_
 
-#ifdef _DEBUG
-	#define DEBUG_TRZ(x) x
-#else
-	#define DEBUG_TRZ(x)
-#endif
-
-
 const int MAX_ROWS_GRID	=		10;
 const int MAX_COLS_GRID	=		10;
 
@@ -79,7 +72,7 @@ int rangeRandomNumber (int min, int max);		// retorna un numero aleatorio entre 
 class Grid
 {
 	private:
-		usint16 _CasillasVivas;
+		usint16 _CasillasVida;
 		usint16 _tbl_Grid[MAX_ROWS_GRID][MAX_COLS_GRID];			// Asi se inicializa el array a 0 (AGUA)
 		void ColocaBarco(usint16 casillas);
 	public:
@@ -88,8 +81,8 @@ class Grid
 		usint16 operator() (usint16 F, usint16 C) const;			// para leer de posicion del grid
 		void IniciaBarcosAleatorio();								// inicia barcos en posiciones aleatorias
 		bool ActualizaDisparo(usint16 F, usint16 C);				// recibe unas coordenadas de disparo y actualiza la tabla si ha sido tocado y comprueba si es hundido para actualizarlas
-		usint16 getCasillasVivas() const;
-		void setCasillasVivas(usint16 c);
+		usint16 getCasillasVida() const;
+		void setCasillasVida(usint16 c);
 		void restaCasillas(void);
 		void DebugGrid();
 };

@@ -22,7 +22,7 @@ int rangeRandomNumber (int min, int max)
 // ========================================================================
 // =========================== METODOS PUBLICOS ===========================
 // ========================================================================
-Grid::Grid(usint16 C) : _CasillasVivas(C)
+Grid::Grid(usint16 C) : _CasillasVida(C)
 {
 	for (int i = 0; i < MAX_ROWS_GRID ; i++ )
 	{
@@ -65,19 +65,19 @@ DebugGrid();
 #endif
 }
 
-usint16 Grid::getCasillasVivas() const
+usint16 Grid::getCasillasVida() const
 {
-	return _CasillasVivas;
+	return _CasillasVida;
 }
 
-void Grid::setCasillasVivas(usint16 c)
+void Grid::setCasillasVida(usint16 c)
 {
-	_CasillasVivas = c;
+	_CasillasVida = c;
 }
 
 void Grid::restaCasillas(void)
 {
-	_CasillasVivas--;
+	_CasillasVida--;
 }
 
 // ========================================================================
