@@ -34,7 +34,6 @@ void MenuState::enter ()
 
 void MenuState::exit ()
 {
-
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
 	_sceneMgr->clearScene();

@@ -153,21 +153,21 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 
 	// Gestion del overlay -----------------------------
 	Ogre::OverlayElement *oe;
-	oe = _overlayManager->getOverlayElement("CPUSeleccion");
-	oe->setCaption(s_CellName);
+	oe = _overlayManager->getOverlayElement("cpu_puntos");
+	//oe->setCaption(s_CellName);
 
 	oe = _overlayManager->getOverlayElement("cursor");
 	oe->setLeft(posx); oe->setTop(posy);
 
-	std::ostringstream s_posMouse;
-	s_posMouse << posx;
-	oe = _overlayManager->getOverlayElement("PosXMouse");
-	oe->setCaption(s_posMouse.str());
+	//std::ostringstream s_posMouse;
+	//s_posMouse << posx;
+	//oe = _overlayManager->getOverlayElement("PosXMouse");
+	//oe->setCaption(s_posMouse.str());
 
-	s_posMouse.str("");
-	s_posMouse << posy;
-	oe = _overlayManager->getOverlayElement("PosYMouse");
-	oe->setCaption(s_posMouse.str());
+//	s_posMouse.str("");
+//	s_posMouse << posy;
+//	oe = _overlayManager->getOverlayElement("PosYMouse");
+	//oe->setCaption(s_posMouse.str());*/
 }
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
@@ -197,6 +197,7 @@ DEBUG_TRZ(CPUGrid.DebugGrid();)
 					puntosPlayer += (PlayerGrid.getCasillasVida() * 5);
 					// FIN DE JUEGO, GANA EL PLAYER
 DEBUG_TRZ(std::cout << "PLAYER WIN!!!!!!" << " Puntos: " << puntosPlayer << std::endl;)
+					hideOverlay();
 					pushState(EndGameState::getSingletonPtr());
 					_exitGame = true;
 				}
@@ -241,6 +242,7 @@ DEBUG_TRZ(PlayerGrid.DebugGrid();)
 				puntosCPU += (CPUGrid.getCasillasVida() * 5);
 				// FIN DE JUEGO, GANA LA CPU
 DEBUG_TRZ(std::cout << "CPU WIN!!!!!!" << " Puntos: " << puntosCPU << std::endl;)
+				hideOverlay();
 				pushState(EndGameState::getSingletonPtr());
 DEBUG_TRZ(_exitGame = true;)
 			}
@@ -1120,8 +1122,19 @@ void PlayState::getSelectedNode(uint32 mask,			///< ENTRADA. Mascara de objetos 
 void PlayState::createOverlay()
 {
 	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
-	Ogre::Overlay *overlay = _overlayManager->getByName("Info");
-	overlay->show();
+	Ogre::Overlay *overlay_cpu = _overlayManager->getByName("panel_cpu");
+	overlay_cpu->show();
+	Ogre::Overlay *overlay_player = _overlayManager->getByName("panel_player");
+	overlay_player->show();
+}
+
+void PlayState::hideOverlay()
+{
+	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
+	Ogre::Overlay *overlay_cpu = _overlayManager->getByName("panel_cpu");
+	overlay_cpu->hide();
+	Ogre::Overlay *overlay_player = _overlayManager->getByName("panel_player");
+	overlay_player->hide();
 }
 
 

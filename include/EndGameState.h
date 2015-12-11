@@ -39,6 +39,7 @@ class EndGameState : public Ogre::Singleton<EndGameState>, public GameState
 
 		bool _exitGame;
 
+		CEGUI::MouseButton convertMouseButton(OIS::MouseButtonID id);
 		void showEndMsgCegui();
 		bool BotonOk(const CEGUI::EventArgs &e);
 };

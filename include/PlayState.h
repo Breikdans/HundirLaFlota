@@ -43,6 +43,10 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		static PlayState& getSingleton ();
 		static PlayState* getSingletonPtr ();
 
+		int getPuntosPlayer(void) const {return puntosPlayer;}
+		int getPuntosCPU(void) const {return puntosCPU;}
+
+
 	protected:
 		Ogre::Root* _root;
 		Ogre::SceneManager* _sceneMgr;
@@ -54,6 +58,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 
 		void createScene();
 		void createOverlay();
+		void hideOverlay();
 
 		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 		void getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName);
