@@ -5,6 +5,7 @@
 #include "MenuState.h"
 #include "PlayState.h"
 #include "PauseState.h"
+#include "EndGameState.h"
 
 #include <iostream>
 
@@ -17,11 +18,13 @@ int main ()
 	MenuState* menuState 	= new MenuState();
 	PlayState* playState	= new PlayState();
 	PauseState* pauseState 	= new PauseState();
+	EndGameState* endState	= new EndGameState();
 
 	UNUSED_VARIABLE(introState);
 	UNUSED_VARIABLE(menuState);
 	UNUSED_VARIABLE(playState);
 	UNUSED_VARIABLE(pauseState);
+	UNUSED_VARIABLE(endState);
 
 	try
 	{

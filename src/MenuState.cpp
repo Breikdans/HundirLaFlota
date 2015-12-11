@@ -167,8 +167,6 @@ void MenuState::showMenuCegui()
 
 bool MenuState::newGame(const CEGUI::EventArgs &e)
 {
-
-//	changeState(PlayState::getSingletonPtr());
 	std::cout << "NEW GAME" << std::endl;
 	changeState(PlayState::getSingletonPtr());
 	return true;

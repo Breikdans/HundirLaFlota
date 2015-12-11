@@ -13,6 +13,12 @@
 const std::string STRING_NODE_PLAYER_ = "node_player_";
 const std::string STRING_NODE_CPU_ = "node_cpu_";
 
+#ifdef _DEBUG
+	#define DEBUG_TRZ(x) x
+#else
+	#define DEBUG_TRZ(x)
+#endif
+
 class PlayState : public Ogre::Singleton<PlayState>, public GameState
 {
 	public:
@@ -79,9 +85,13 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		void rodearDisparadoHorizontal(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
 		void rodearDisparadoVertical(Grid& grid, int posXProa, int posYProa, int posXPopa, int posYPopa);
 
+		void sumaPuntos();
+
+		int puntosPlayer;
+		int puntosCPU;
+
 		EN_TURNO _turno;
 		bool _exitGame;
-		int _CPUShotsGrid[MAX_ROWS_GRID][MAX_COLS_GRID];			// Registro de disparos que hace la CPU
 
 		Grid CPUGrid;
 		Grid PlayerGrid;

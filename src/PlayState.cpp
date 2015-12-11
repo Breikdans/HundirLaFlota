@@ -1,6 +1,7 @@
 #include <cstdio>
 #include "PlayState.h"
 #include "PauseState.h"
+#include "EndGameState.h"
 
 template<> PlayState* Ogre::Singleton<PlayState>::msSingleton = 0;
 
@@ -37,8 +38,10 @@ void PlayState::enter ()
 	_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
 
 	// inicializamos variables de estado
+	puntosPlayer	= 0;
+	puntosCPU		= 0;
 	CambiarTurno(PLAYER);
-	_exitGame = false;
+	_exitGame 		= false;
 }
 
 void PlayState::exit ()
@@ -135,7 +138,6 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 		s_LastCell = s_CellName;
 		lastcellx = cellx;
 		lastcelly = celly;
-
 	}
 	else	// si sacamos el cursor de las celdas, dejamos la ultima con color NORMAL
 	{
@@ -190,9 +192,13 @@ DEBUG_TRZ(std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " <
 				CheckHundido(CPUGrid, posx, posy);
 DEBUG_TRZ(std::cout << "CPU GRID: ";)
 DEBUG_TRZ(CPUGrid.DebugGrid();)
-				if(CPUGrid.getCasillasVivas() == 0)
+				if(CPUGrid.getCasillasVida() == 0)
 				{
+					puntosPlayer += (PlayerGrid.getCasillasVida() * 5);
 					// FIN DE JUEGO, GANA EL PLAYER
+DEBUG_TRZ(std::cout << "PLAYER WIN!!!!!!" << " Puntos: " << puntosPlayer << std::endl;)
+					pushState(EndGameState::getSingletonPtr());
+					_exitGame = true;
 				}
 				else
 					CambiarTurno(CPU);
@@ -230,13 +236,17 @@ DEBUG_TRZ(std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std:
 DEBUG_TRZ(std::cout << "PLAYER GRID: ";)
 DEBUG_TRZ(PlayerGrid.DebugGrid();)
 
-			if(PlayerGrid.getCasillasVivas() == 0)
+			if(PlayerGrid.getCasillasVida() == 0)
 			{
+				puntosCPU += (CPUGrid.getCasillasVida() * 5);
 				// FIN DE JUEGO, GANA LA CPU
+DEBUG_TRZ(std::cout << "CPU WIN!!!!!!" << " Puntos: " << puntosCPU << std::endl;)
+				pushState(EndGameState::getSingletonPtr());
+DEBUG_TRZ(_exitGame = true;)
 			}
-
+			else
+				CambiarTurno(PLAYER);
 		}
-		CambiarTurno(PLAYER);
 	}
 }
 
@@ -465,6 +475,14 @@ void PlayState::ActualizaTablero(usint16 x, usint16 y)
 	}
 }
 
+void PlayState::sumaPuntos()
+{
+	if(_turno == CPU)
+		puntosCPU+=5;
+	else if(_turno == PLAYER)
+		puntosPlayer+=5;
+}
+
 /// Comprueba que hay en la casilla del disparo, cambia su estado si es necesario, decrementa casillas de vida, cambia indicador de turno
 bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 {
@@ -525,6 +543,11 @@ bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 			grid(posx, posy) = POPA_V_T; sw_casillaCambiada=true; grid.restaCasillas();
 			break;
 	}
+
+	// si han tocado alguna pieza.... (el AGUA no lo queremos)
+	if(sw_casillaCambiada == true && celda != AGUA)
+		sumaPuntos();
+
 	return sw_casillaCambiada;
 }
 

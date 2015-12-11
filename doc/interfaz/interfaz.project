@@ -7,6 +7,7 @@
         <Item name="layouts" type="folder">
             <Item path="layouts/configWin.layout" type="file" />
             <Item path="layouts/menu_principal.layout" type="file" />
+            <Item path="layouts/endgame.layout" type="file" />
         </Item>
     </Items>
 </Project>
