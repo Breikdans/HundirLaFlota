@@ -59,6 +59,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		void createScene();
 		void createOverlay();
 		void hideOverlay();
+		void updateInfoOverlay();
 
 		Ogre::Ray setRayQuery(int posx, int posy, uint32 mask);
 		void getSelectedNode(uint32 mask, int &x, int &y, std::string &nodeName);

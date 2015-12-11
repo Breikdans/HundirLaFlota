@@ -40,6 +40,7 @@ void PlayState::enter ()
 	// inicializamos variables de estado
 	puntosPlayer	= 0;
 	puntosCPU		= 0;
+	updateInfoOverlay();
 	CambiarTurno(PLAYER);
 	_exitGame 		= false;
 }
@@ -151,23 +152,10 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 		}
 	}
 
-	// Gestion del overlay -----------------------------
+	// Gestion del overlay (CURSOR)-----------------------------
 	Ogre::OverlayElement *oe;
-	oe = _overlayManager->getOverlayElement("cpu_puntos");
-	//oe->setCaption(s_CellName);
-
 	oe = _overlayManager->getOverlayElement("cursor");
 	oe->setLeft(posx); oe->setTop(posy);
-
-	//std::ostringstream s_posMouse;
-	//s_posMouse << posx;
-	//oe = _overlayManager->getOverlayElement("PosXMouse");
-	//oe->setCaption(s_posMouse.str());
-
-//	s_posMouse.str("");
-//	s_posMouse << posy;
-//	oe = _overlayManager->getOverlayElement("PosYMouse");
-	//oe->setCaption(s_posMouse.str());*/
 }
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
@@ -190,6 +178,7 @@ DEBUG_TRZ(std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " <
 			{
 				ActualizaTablero(posx, posy);			// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 				CheckHundido(CPUGrid, posx, posy);
+				updateInfoOverlay();
 DEBUG_TRZ(std::cout << "CPU GRID: ";)
 DEBUG_TRZ(CPUGrid.DebugGrid();)
 				if(CPUGrid.getCasillasVida() == 0)
@@ -234,6 +223,7 @@ DEBUG_TRZ(std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std:
 
 			ActualizaTablero(x, y);			// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
 			CheckHundido(PlayerGrid, x, y);
+			updateInfoOverlay();
 DEBUG_TRZ(std::cout << "PLAYER GRID: ";)
 DEBUG_TRZ(PlayerGrid.DebugGrid();)
 
@@ -1137,5 +1127,20 @@ void PlayState::hideOverlay()
 	overlay_player->hide();
 }
 
+void PlayState::updateInfoOverlay()
+{
+	Ogre::OverlayElement *oe;
+	oe = _overlayManager->getOverlayElement("player_puntos");
+	oe->setCaption(Ogre::StringConverter::toString(puntosPlayer));
 
+	oe = _overlayManager->getOverlayElement("player_efectivos");
+	oe->setCaption(Ogre::StringConverter::toString(PlayerGrid.getCasillasVida()));
+
+	oe = _overlayManager->getOverlayElement("cpu_puntos");
+	oe->setCaption(Ogre::StringConverter::toString(puntosCPU));
+
+	oe = _overlayManager->getOverlayElement("cpu_efectivos");
+	oe->setCaption(Ogre::StringConverter::toString(CPUGrid.getCasillasVida()));
+
+}
 

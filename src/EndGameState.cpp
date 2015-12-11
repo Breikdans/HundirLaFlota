@@ -87,7 +87,10 @@ EndGameState& EndGameState::getSingleton ()
 
 void EndGameState::showEndMsgCegui()
 {
-//PlayState::getSingleton().getPuntosCPU();
+	int iPuntosCpu = PlayState::getSingleton().getPuntosCPU();
+	int iPuntosPlayer = PlayState::getSingleton().getPuntosPlayer();
+
+	std::stringstream sCadena;
 
 	//Sheet
 	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","endgame");
@@ -95,9 +98,20 @@ void EndGameState::showEndMsgCegui()
 	//Config Window
 	CEGUI::Window* endMsgWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("endgame.layout");
 
-	endMsgWin->getChild("Text2")->setText("[font='Batang-26']VENCEDOR:  [colour='FFFF0000'] SU PRIMA");
-	endMsgWin->getChild("Text3")->setText("[font='DejaVuSans-12'][colour='FFFF0000']Puntos CPU: [colour='FF000000'] ");
-	endMsgWin->getChild("Text4")->setText("[font='DejaVuSans-12'][colour='FF0000FF']Puntos PLAYER: [colour='FF000000'] ");
+	sCadena << "[font='Batang-26']VENCEDOR: ";
+	if(iPuntosCpu > iPuntosPlayer)
+		sCadena << "[colour='FFFF0000']ENEMIGO";
+	else
+		sCadena << "[colour='FF0000FF']JUGADOR";
+	endMsgWin->getChild("Text2")->setText(sCadena.str());
+
+	sCadena.str("");
+	sCadena << "[font='DejaVuSans-12'][colour='FFFF0000']Puntos ENEMIGO: [colour='FFFFFFFF'] " << iPuntosCpu;
+	endMsgWin->getChild("Text3")->setText(sCadena.str());
+
+	sCadena.str("");
+	sCadena << "[font='DejaVuSans-12'][colour='FF0000FF']Puntos JUGADOR: [colour='FFFFFFFF'] " << iPuntosPlayer;
+	endMsgWin->getChild("Text4")->setText(sCadena.str());
 
 	// OK
 	CEGUI::Window* okButton = endMsgWin->getChild("btn_ok");
@@ -112,7 +126,7 @@ void EndGameState::showEndMsgCegui()
 
 bool EndGameState::BotonOk(const CEGUI::EventArgs &e)
 {
-	std::cout << __func__ << "----OK----" << std::endl;
+std::cout << __func__ << "----OK----" << std::endl;
 	changeState(MenuState::getSingletonPtr());
 	return true;
 }

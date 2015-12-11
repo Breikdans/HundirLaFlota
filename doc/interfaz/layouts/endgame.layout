@@ -28,6 +28,7 @@
             <Property name="Area" value="{{0,1},{0,94},{0,450},{0,163}}" />
             <Property name="Font" value="DejaVuSans-12" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            <Property name="HorzFormatting" value="CentreAligned" />
             <Property name="HorzScrollPageSize" value="439" />
             <Property name="VertScrollPageSize" value="59" />
             <Property name="HorizontalAlignment" value="Centre" />
