@@ -149,9 +149,10 @@ void MenuState::showMenuCegui()
 	newGameButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::newGame, this));
 	// RECORDS
-	CEGUI::Window* recordsButton = menuWin->getChild("btn_records");
-	recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
-							   	   CEGUI::Event::Subscriber(&MenuState::records, this));
+	//CEGUI::Window* recordsButton = menuWin->getChild("btn_records");
+	//recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+	//						   	   CEGUI::Event::Subscriber(&MenuState::records, this));
+
 	// CREDITS
 	CEGUI::Window* creditsButton = menuWin->getChild("btn_credits");
 	creditsButton->subscribeEvent( CEGUI::PushButton::EventClicked,

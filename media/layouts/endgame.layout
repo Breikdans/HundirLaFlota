@@ -2,7 +2,7 @@
 
 <GUILayout version="4" >
     <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
-        <Property name="Area" value="{{0,45},{0,79},{0.3,330},{0.3,264}}" />
+        <Property name="Area" value="{{0,-1},{0,179},{0.3,412},{0.3,354}}" />
         <Property name="Text" value="Hundir la flota!" />
         <Property name="AlwaysOnTop" value="true" />
         <Property name="SizingEnabled" value="false" />
@@ -13,42 +13,42 @@
             <Property name="DraggingEnabled" value="false" />
         </AutoWindow>
         <Window type="TaharezLook/StaticText" name="Text1" >
-            <Property name="Area" value="{{0,-1},{0,14},{0,482},{0,85}}" />
+            <Property name="Area" value="{{0,-1},{0,14},{0,652},{0,85}}" />
             <Property name="Font" value="DejaVuSans-12" />
             <Property name="Text" value="JUEGO TERMINADO" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
             <Property name="HorzFormatting" value="CentreAligned" />
-            <Property name="HorzScrollPageSize" value="473" />
-            <Property name="VertScrollPageSize" value="61" />
+            <Property name="HorzScrollPageSize" value="640.2" />
+            <Property name="VertScrollPageSize" value="58.2" />
             <Property name="HorizontalAlignment" value="Centre" />
-            <Property name="HorzScrollDocumentSize" value="131" />
-            <Property name="VertScrollDocumentSize" value="15.5148" />
+            <Property name="HorzScrollDocumentSize" value="167" />
+            <Property name="VertScrollDocumentSize" value="19.8618" />
         </Window>
         <Window type="TaharezLook/StaticText" name="Text2" >
-            <Property name="Area" value="{{0,1},{0,94},{0,450},{0,163}}" />
+            <Property name="Area" value="{{0,-1.5},{0,94},{0,610.5},{0,163}}" />
             <Property name="Font" value="DejaVuSans-12" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
             <Property name="HorzFormatting" value="CentreAligned" />
-            <Property name="HorzScrollPageSize" value="439" />
-            <Property name="VertScrollPageSize" value="59" />
+            <Property name="HorzScrollPageSize" value="599.2" />
+            <Property name="VertScrollPageSize" value="56.2" />
             <Property name="HorizontalAlignment" value="Centre" />
         </Window>
         <Window type="TaharezLook/StaticText" name="Text3" >
-            <Property name="Area" value="{{0,1},{0,171},{0,250},{0,213}}" />
+            <Property name="Area" value="{{0,-0.5},{0,171},{0,379.5},{0,213}}" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
-            <Property name="HorzScrollPageSize" value="239" />
-            <Property name="VertScrollPageSize" value="32" />
+            <Property name="HorzScrollPageSize" value="367.2" />
+            <Property name="VertScrollPageSize" value="29.2" />
             <Property name="HorizontalAlignment" value="Centre" />
         </Window>
         <Window type="TaharezLook/StaticText" name="Text4" >
-            <Property name="Area" value="{{0,1},{0,219},{0,251},{0,262}}" />
+            <Property name="Area" value="{{0,0},{0,219},{0,380},{0,262}}" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
-            <Property name="HorzScrollPageSize" value="240" />
-            <Property name="VertScrollPageSize" value="33" />
+            <Property name="HorzScrollPageSize" value="367.2" />
+            <Property name="VertScrollPageSize" value="30.2" />
             <Property name="HorizontalAlignment" value="Centre" />
         </Window>
         <Window type="TaharezLook/Button" name="btn_ok" >
-            <Property name="Area" value="{{0,1},{0,293},{0,97},{0,325}}" />
+            <Property name="Area" value="{{0,-1},{0,307},{0,95},{0,339}}" />
             <Property name="Text" value="Ok" />
             <Property name="HorizontalAlignment" value="Centre" />
         </Window>

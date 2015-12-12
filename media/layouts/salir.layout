@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
+        <Property name="Area" value="{{0,0},{0,-24},{0.3,244},{0.3,19}}" />
+        <Property name="Text" value="Salir" />
+        <Property name="VerticalAlignment" value="Centre" />
+        <Property name="HorizontalAlignment" value="Centre" />
+        <Window type="TaharezLook/Label" name="lbl_salir" >
+            <Property name="Area" value="{{0,-0.5},{0,38},{0,406.5},{0,94}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            <Property name="HorizontalAlignment" value="Centre" />
+        </Window>
+        <Window type="TaharezLook/Button" name="btn_si" >
+            <Property name="Area" value="{{0,-134},{0,147},{0,-38},{0,179}}" />
+            <Property name="Text" value="Si" />
+            <Property name="HorizontalAlignment" value="Centre" />
+        </Window>
+        <Window type="TaharezLook/Button" name="btn_no" >
+            <Property name="Area" value="{{0,125},{0,145},{0,221},{0,177}}" />
+            <Property name="Text" value="No" />
+            <Property name="HorizontalAlignment" value="Centre" />
+        </Window>
+    </Window>
+</GUILayout>

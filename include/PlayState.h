@@ -68,6 +68,11 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		bool CompruebaDisparo(Grid&, usint16 posx, usint16 posy);
 		bool CheckHundido(Grid& grid, usint16 posx, usint16 posy);
 		void CambiarTurno(EN_TURNO turno);
+		void showExitMsgCegui();
+		bool BotonSi(const CEGUI::EventArgs &e);
+		bool BotonNo(const CEGUI::EventArgs &e);
+		CEGUI::MouseButton convertMouseButton(OIS::MouseButtonID id);
+
 
 		void CalculaDisparoCPU(int &posX, int &posY);
 		bool BuscarCasillaLibreDerecha(int &posX, int &posY) const;

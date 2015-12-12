@@ -2,25 +2,24 @@
 
 <GUILayout version="4" >
     <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
-        <Property name="Area" value="{{0,0},{0,0},{0.3,136},{0.3,167}}" />
+        <Property name="Area" value="{{0,-34},{0,-66},{0.3,242},{0.3,139}}" />
         <Property name="Text" value="Menú Principal" />
         <Property name="VerticalAlignment" value="Centre" />
         <Property name="HorizontalAlignment" value="Centre" />
         <Window type="TaharezLook/Button" name="btn_new_game" >
-            <Property name="Area" value="{{0,106},{0,25},{0,251},{0,79}}" />
+            <Property name="Area" value="{{0,0},{0,29},{0,293},{0,83}}" />
             <Property name="Text" value="Nueva partida" />
-        </Window>
-        <Window type="TaharezLook/Button" name="btn_records" >
-            <Property name="Area" value="{{0,106},{0,85},{0,251},{0,139}}" />
-            <Property name="Text" value="Records" />
+            <Property name="HorizontalAlignment" value="Centre" />
         </Window>
         <Window type="TaharezLook/Button" name="btn_credits" >
-            <Property name="Area" value="{{0,106},{0,144},{0,251},{0,198}}" />
+            <Property name="Area" value="{{0,0.5},{0,93},{0,293.5},{0,147}}" />
             <Property name="Text" value="Créditos" />
+            <Property name="HorizontalAlignment" value="Centre" />
         </Window>
         <Window type="TaharezLook/Button" name="btn_quit" >
-            <Property name="Area" value="{{0,105},{0,233},{0,250},{0,287}}" />
+            <Property name="Area" value="{{0,2},{0,234},{0,213},{0,288}}" />
             <Property name="Text" value="Salir" />
+            <Property name="HorizontalAlignment" value="Centre" />
         </Window>
     </Window>
 </GUILayout>

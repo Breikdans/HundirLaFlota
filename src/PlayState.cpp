@@ -1,4 +1,5 @@
 #include <cstdio>
+#include "MenuState.h"
 #include "PlayState.h"
 #include "PauseState.h"
 #include "EndGameState.h"
@@ -86,6 +87,11 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 	{
 		pushState(PauseState::getSingletonPtr());
 	}
+	else if(e.key == OIS::KC_ESCAPE)
+	{
+		showExitMsgCegui();
+	}
+
 
 #ifdef _DEBUG
 	// movimiento de camara luego quitar
@@ -99,13 +105,7 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 
 }
 
-void PlayState::keyReleased(const OIS::KeyEvent &e)
-{
-	if (e.key == OIS::KC_ESCAPE)
-	{
-		_exitGame = true;
-	}
-}
+void PlayState::keyReleased(const OIS::KeyEvent &e) {}
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
@@ -162,6 +162,11 @@ void PlayState::mouseMoved(const OIS::MouseEvent &e)
 	Ogre::OverlayElement *oe;
 	oe = _overlayManager->getOverlayElement("cursor");
 	oe->setLeft(posx); oe->setTop(posy);
+
+	CEGUI::Vector2f mousePos = CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().getPosition();
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setPosition(CEGUI::Vector2f(e.state.X.abs,e.state.Y.abs));
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseMove(mousePos.d_x/float(e.state.width), mousePos.d_y/float(e.state.height));
+
 }
 
 void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
@@ -208,9 +213,13 @@ DEBUG_TRZ(std::cout << "PLAYER WIN!!!!!!" << " Puntos: " << puntosPlayer << std:
 			// hay pulsado el mouse fuera del area permitida, tablero usuario, o agua
 		}
 	}
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(convertMouseButton(id));
 }
 
-void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {}
+void PlayState::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonUp(convertMouseButton(id));
+}
 
 void PlayState::CambiarTurno(EN_TURNO turno)
 {
@@ -219,7 +228,6 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 
 	if(_turno == CPU)
 	{
-//		sleep(3);
 		CalculaDisparoCPU(x, y);
 DEBUG_TRZ(std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std::endl;)
 		if(CompruebaDisparo(PlayerGrid, x, y))
@@ -318,7 +326,7 @@ void PlayState::createScene()
 	Ogre::MeshManager::getSingleton().createPlane("plano_agua",				// nombre malla resultante
 												  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, // grupo de mallas
 												  planoAgua,				// objeto donde se ha definido el plano
-												  300,300,					// ancho y alto del plano en coordenadas del mundo
+												  350,200,					// ancho y alto del plano en coordenadas del mundo
 												  1,1,						// numero de segmentos para definir el plano (1x1)
 												  true,						// true indica que los vectores normales se calculan perpendicular al plano
 												  1,						// conjunto de coordenadas de texturas (por defecto 1)
@@ -1150,3 +1158,67 @@ void PlayState::updateInfoOverlay()
 
 }
 
+void PlayState::showExitMsgCegui()
+{
+	//Sheet
+	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","salir");
+
+	//Config Window
+	CEGUI::Window* exitMsg = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("salir.layout");
+
+	exitMsg->getChild("lbl_salir")->setText("[font='major_shift-18'] Quieres Salir?");
+
+	// OK
+	CEGUI::Window* siButton = exitMsg->getChild("btn_si");
+	siButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+							  CEGUI::Event::Subscriber(&PlayState::BotonSi, this));
+
+	CEGUI::Window* noButton = exitMsg->getChild("btn_no");
+	noButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+							  CEGUI::Event::Subscriber(&PlayState::BotonNo, this));
+
+	//Attaching buttons
+	_ceguiSheet->addChild(exitMsg);
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
+
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().show();
+}
+
+bool PlayState::BotonSi(const CEGUI::EventArgs &e)
+{
+	hideOverlay();
+	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
+	_sceneMgr->clearScene();
+	_root->getAutoCreatedWindow()->removeAllViewports();
+
+	changeState(MenuState::getSingletonPtr());
+	return true;
+}
+
+bool PlayState::BotonNo(const CEGUI::EventArgs &e)
+{
+	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
+//	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().show();
+
+	return true;
+}
+
+CEGUI::MouseButton PlayState::convertMouseButton(OIS::MouseButtonID id)
+{
+	CEGUI::MouseButton ceguiId;
+	switch(id)
+	{
+		case OIS::MB_Left:
+			ceguiId = CEGUI::LeftButton;
+			break;
+		case OIS::MB_Right:
+			ceguiId = CEGUI::RightButton;
+			break;
+		case OIS::MB_Middle:
+			ceguiId = CEGUI::MiddleButton;
+			break;
+		default:
+			ceguiId = CEGUI::LeftButton;
+	}
+	return ceguiId;
+}
