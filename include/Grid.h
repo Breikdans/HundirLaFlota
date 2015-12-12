@@ -83,6 +83,7 @@ class Grid
 		bool ActualizaDisparo(usint16 F, usint16 C);				// recibe unas coordenadas de disparo y actualiza la tabla si ha sido tocado y comprueba si es hundido para actualizarlas
 		usint16 getCasillasVida() const;
 		void setCasillasVida(usint16 c);
+		void clearGrid();
 		void restaCasillas(void);
 		void DebugGrid();
 };

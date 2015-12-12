@@ -4,8 +4,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
+#include <String.h>
 #include "Grid.h"
-#include "stdio.h"
 
 int rangeRandomNumber (int min, int max)
 {
@@ -192,6 +192,11 @@ void Grid::ColocaBarco(usint16 casillas)
 	}
 }
 
+void Grid::clearGrid()
+{
+	memset(_tbl_Grid, 0x00, sizeof(usint16) * (MAX_ROWS_GRID*MAX_COLS_GRID));
+}
+
 void Grid::DebugGrid()
 {
 	std::cout << std::endl;
@@ -206,5 +211,5 @@ void Grid::DebugGrid()
 }
 
 // ============================================================================
-// =========================== FIN METODOS PRIVADOS ===========================
+// =========================== FIN METODOS PUBLICOS ===========================
 // ============================================================================

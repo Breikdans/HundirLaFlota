@@ -31,15 +31,20 @@ void PlayState::enter ()
 	double height = _viewport->getActualHeight();	// recogemos alto del viewport actual
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
+	// inicializamos variables de juego
+	puntosPlayer	= 0;
+	puntosCPU		= 0;
+	PlayerGrid.setCasillasVida(5+4+3+3+2);
+	CPUGrid.setCasillasVida(5+4+3+3+2);
+	PlayerGrid.clearGrid();
+	CPUGrid.clearGrid();
+
 	createScene();		// creamos la escena
 	createOverlay();	// creamos el overlay
 
 	// Creamos nuestra query de rayos
 	_raySceneQuery = _sceneMgr->createRayQuery(Ogre::Ray());
 
-	// inicializamos variables de estado
-	puntosPlayer	= 0;
-	puntosCPU		= 0;
 	updateInfoOverlay();
 	CambiarTurno(PLAYER);
 	_exitGame 		= false;
@@ -48,8 +53,9 @@ void PlayState::enter ()
 void PlayState::exit ()
 {
 	_sceneMgr->destroyQuery(_raySceneQuery);
-	_sceneMgr->clearScene();
-	_root->getAutoCreatedWindow()->removeAllViewports();
+	// si lo descomentamos se elimina la escena y las particulas del fuego se quedan paradas...
+//	_sceneMgr->clearScene();
+//	_root->getAutoCreatedWindow()->removeAllViewports();
 }
 
 void PlayState::pause() {}
@@ -233,7 +239,7 @@ DEBUG_TRZ(PlayerGrid.DebugGrid();)
 				// FIN DE JUEGO, GANA LA CPU
 DEBUG_TRZ(std::cout << "CPU WIN!!!!!!" << " Puntos: " << puntosCPU << std::endl;)
 				hideOverlay();
-				pushState(EndGameState::getSingletonPtr());
+				changeState(EndGameState::getSingletonPtr());
 DEBUG_TRZ(_exitGame = true;)
 			}
 			else
