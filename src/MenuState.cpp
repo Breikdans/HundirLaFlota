@@ -1,5 +1,6 @@
 #include "MenuState.h"
 #include "PlayState.h"
+#include "CreditsState.h"
 
 template<> MenuState* Ogre::Singleton<MenuState>::msSingleton = 0;
 
@@ -42,7 +43,10 @@ void MenuState::exit ()
 
 void MenuState::pause() {}
 
-void MenuState::resume() {}
+void MenuState::resume()
+{
+	showMenuCegui();
+}
 
 bool MenuState::frameStarted(const Ogre::FrameEvent& evt)
 {
@@ -145,9 +149,10 @@ void MenuState::showMenuCegui()
 	newGameButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							   	   CEGUI::Event::Subscriber(&MenuState::newGame, this));
 	// RECORDS
-	CEGUI::Window* recordsButton = menuWin->getChild("btn_records");
-	recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
-							   	   CEGUI::Event::Subscriber(&MenuState::records, this));
+	//CEGUI::Window* recordsButton = menuWin->getChild("btn_records");
+	//recordsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+	//						   	   CEGUI::Event::Subscriber(&MenuState::records, this));
+
 	// CREDITS
 	CEGUI::Window* creditsButton = menuWin->getChild("btn_credits");
 	creditsButton->subscribeEvent( CEGUI::PushButton::EventClicked,
@@ -180,6 +185,7 @@ bool MenuState::records(const CEGUI::EventArgs &e)
 bool MenuState::credits(const CEGUI::EventArgs &e)
 {
 	std::cout << "CREDITS" << std::endl;
+	pushState(CreditsState::getSingletonPtr());
 	return true;
 }
 

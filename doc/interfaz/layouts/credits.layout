@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
+        <Property name="Area" value="{{0,137},{0,138},{0.3,573},{0.3,310}}" />
+        <Property name="Font" value="DejaVuSans-12" />
+        <Property name="Text" value="Creditos" />
+        <Property name="SizingEnabled" value="false" />
+        <Property name="CloseButtonEnabled" value="false" />
+        <Window type="TaharezLook/Label" name="Label" >
+            <Property name="Area" value="{{0,99},{0,13},{0,555},{0,66}}" />
+            <Property name="Text" value="Programadores:" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_jose" >
+            <Property name="Area" value="{{0,72},{0,101},{0,593},{0,153}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_alberto" >
+            <Property name="Area" value="{{0,72},{0,166},{0,592},{0,219}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Button" name="btn_ok" >
+            <Property name="Area" value="{{0,285},{0,254},{0,381},{0,286}}" />
+            <Property name="Text" value="Ok" />
+        </Window>
+    </Window>
+</GUILayout>
