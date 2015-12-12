@@ -63,12 +63,32 @@ void PlayState::pause() {}
 void PlayState::resume()
 {
 	// Se restaura el background colour.
-	_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
+	//_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
 }
 
 bool PlayState::frameStarted(const Ogre::FrameEvent& evt)
 {
 	return true;
+}
+
+bool PlayState::hayCasillaTocada(const Grid& grid, int &posX, int &posY) const
+{
+	bool sw_result = false;
+
+	for(int x = 0; x < MAX_COLS_GRID && sw_result == false; x++)
+	{
+		for(int y = 0; y < MAX_ROWS_GRID && sw_result == false; y++)
+		{
+			if(esCasillaTocada(grid,x,y))
+			{
+				posX = x; posY = y;
+				sw_result = true;
+			}
+		}
+	}
+
+DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
+	return sw_result;
 }
 
 bool PlayState::frameEnded(const Ogre::FrameEvent& evt)
@@ -910,26 +930,6 @@ bool PlayState::CheckHundido(Grid& grid, usint16 posX, usint16 posY)
 
 
 ///< Devuelve TRUE si hay casilla tocada y las posiciones, devuelve FALSE en caso contrario
-bool PlayState::hayCasillaTocada(const Grid& grid, int &posX, int &posY) const
-{
-	bool sw_result = false;
-
-	for(int x = 0; x < MAX_COLS_GRID && sw_result == false; x++)
-	{
-		for(int y = 0; y < MAX_ROWS_GRID && sw_result == false; y++)
-		{
-			if(esCasillaTocada(grid,x,y))
-			{
-				posX = x; posY = y;
-				sw_result = true;
-			}
-		}
-	}
-
-DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
-	return sw_result;
-}
-
 bool PlayState::esCasillaTocada(const Grid& grid, int posX, int posY) const
 {
 	bool sw_result = false;
