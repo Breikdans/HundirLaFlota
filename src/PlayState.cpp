@@ -197,6 +197,7 @@ DEBUG_TRZ(CPUGrid.DebugGrid();)
 					puntosPlayer += (PlayerGrid.getCasillasVida() * 5);
 					// FIN DE JUEGO, GANA EL PLAYER
 DEBUG_TRZ(std::cout << "PLAYER WIN!!!!!!" << " Puntos: " << puntosPlayer << std::endl;)
+					hideOverlay();
 					pushState(EndGameState::getSingletonPtr());
 					_exitGame = true;
 				}
@@ -241,6 +242,7 @@ DEBUG_TRZ(PlayerGrid.DebugGrid();)
 				puntosCPU += (CPUGrid.getCasillasVida() * 5);
 				// FIN DE JUEGO, GANA LA CPU
 DEBUG_TRZ(std::cout << "CPU WIN!!!!!!" << " Puntos: " << puntosCPU << std::endl;)
+				hideOverlay();
 				pushState(EndGameState::getSingletonPtr());
 DEBUG_TRZ(_exitGame = true;)
 			}
@@ -1124,6 +1126,15 @@ void PlayState::createOverlay()
 	overlay_cpu->show();
 	Ogre::Overlay *overlay_player = _overlayManager->getByName("panel_player");
 	overlay_player->show();
+}
+
+void PlayState::hideOverlay()
+{
+	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
+	Ogre::Overlay *overlay_cpu = _overlayManager->getByName("panel_cpu");
+	overlay_cpu->hide();
+	Ogre::Overlay *overlay_player = _overlayManager->getByName("panel_player");
+	overlay_player->hide();
 }
 
 
