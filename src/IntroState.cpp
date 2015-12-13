@@ -45,7 +45,13 @@ void IntroState::createCegui()
 
 void IntroState::createOverlay()
 {
+	unsigned int width, height, depth;
+	int left, top;
+
 	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
+	_root->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
+
+	overlay->setScale(((float(width) / 100) / 1024) * 100, ((float(height) / 100) / 768) * 100);
 	overlay->show();
 }
 
@@ -96,7 +102,18 @@ void IntroState::keyReleased(const OIS::KeyEvent &e )
 	}
 }
 
-void IntroState::mouseMoved(const OIS::MouseEvent &e) {}
+void IntroState::mouseMoved(const OIS::MouseEvent &e) {
+
+	// Gestion del overlay (CURSOR)-----------------------------
+		// posiciones del puntero del raton en pixeles
+		int posx = e.state.X.abs;
+		int posy = e.state.Y.abs;
+
+			Ogre::OverlayElement *oe;
+			oe = _overlayManager->getOverlayElement("cursor_intro");
+			oe->setLeft(posx); oe->setTop(posy);
+
+}
 
 void IntroState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
