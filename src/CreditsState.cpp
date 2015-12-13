@@ -20,13 +20,7 @@ void CreditsState::enter ()
 	showCreditsMsgCegui();
 }
 
-void CreditsState::exit ()
-{
-//	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
-//	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
-//	_sceneMgr->clearScene();
-//	_root->getAutoCreatedWindow()->removeAllViewports();
-}
+void CreditsState::exit () {}
 
 void CreditsState::pause () {}
 

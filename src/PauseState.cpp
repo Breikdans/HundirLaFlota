@@ -84,3 +84,4 @@ PauseState& PauseState::getSingleton ()
 	assert(msSingleton);
 	return *msSingleton;
 }
+
