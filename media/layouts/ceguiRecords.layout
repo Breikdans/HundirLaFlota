@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
+        <Property name="Area" value="{{0,0},{0,152},{0.3,476},{0.3,486}}" />
+        <Property name="Text" value="Tabla de records:" />
+        <Property name="HorizontalAlignment" value="Centre" />
+        <Window type="TaharezLook/Label" name="lbl_Name1" >
+            <Property name="Area" value="{{0,170},{0,42},{0,590},{0,74}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos1" >
+            <Property name="Area" value="{{0,601},{0,42},{0,729},{0,74}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos1" >
+            <Property name="Area" value="{{0,35},{0,42},{0,151},{0,74}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos2" >
+            <Property name="Area" value="{{0,35},{0,84},{0,151},{0,116}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos2" >
+            <Property name="Area" value="{{0,601},{0,84},{0,729},{0,116}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name2" >
+            <Property name="Area" value="{{0,170},{0,84},{0,590},{0,116}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos3" >
+            <Property name="Area" value="{{0,35},{0,123},{0,151},{0,155}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos3" >
+            <Property name="Area" value="{{0,602},{0,124},{0,730},{0,156}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name3" >
+            <Property name="Area" value="{{0,171},{0,124},{0,591},{0,156}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos4" >
+            <Property name="Area" value="{{0,35},{0,165},{0,151},{0,197}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos4" >
+            <Property name="Area" value="{{0,601},{0,165},{0,729},{0,197}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name4" >
+            <Property name="Area" value="{{0,170},{0,165},{0,590},{0,197}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos5" >
+            <Property name="Area" value="{{0,35},{0,205},{0,151},{0,237}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos5" >
+            <Property name="Area" value="{{0,601},{0,205},{0,729},{0,237}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name5" >
+            <Property name="Area" value="{{0,170},{0,205},{0,590},{0,237}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos6" >
+            <Property name="Area" value="{{0,36},{0,245},{0,152},{0,277}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos6" >
+            <Property name="Area" value="{{0,602},{0,245},{0,730},{0,277}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name6" >
+            <Property name="Area" value="{{0,171},{0,245},{0,591},{0,277}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos7" >
+            <Property name="Area" value="{{0,35},{0,286},{0,151},{0,318}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos7" >
+            <Property name="Area" value="{{0,601},{0,286},{0,729},{0,318}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name7" >
+            <Property name="Area" value="{{0,170},{0,286},{0,590},{0,318}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos8" >
+            <Property name="Area" value="{{0,37},{0,327},{0,153},{0,359}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos8" >
+            <Property name="Area" value="{{0,603},{0,327},{0,731},{0,359}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name8" >
+            <Property name="Area" value="{{0,172},{0,327},{0,592},{0,359}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos9" >
+            <Property name="Area" value="{{0,37},{0,367},{0,153},{0,399}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos9" >
+            <Property name="Area" value="{{0,604},{0,368},{0,732},{0,400}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name9" >
+            <Property name="Area" value="{{0,173},{0,368},{0,593},{0,400}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Pos10" >
+            <Property name="Area" value="{{0,38},{0,409},{0,154},{0,441}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Puntos10" >
+            <Property name="Area" value="{{0,604},{0,409},{0,732},{0,441}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="lbl_Name10" >
+            <Property name="Area" value="{{0,173},{0,409},{0,593},{0,441}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Button" name="btn_Volver" >
+            <Property name="Area" value="{{0,270},{0,468},{0,482},{0,500}}" />
+            <Property name="Text" value="Volver" />
+        </Window>
+    </Window>
+</GUILayout>

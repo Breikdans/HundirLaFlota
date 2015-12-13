@@ -149,8 +149,11 @@ std::cout << __func__ << "----OK----" << std::endl;
 		if(isNewRecord(iPuntosPlayer))
 			showEnterRecordName();
 	}
+	else
+	{
+		changeState(MenuState::getSingletonPtr());
+	}
 
-	changeState(MenuState::getSingletonPtr());
 	return true;
 }
 
@@ -165,7 +168,7 @@ void EndGameState::showEnterRecordName()
 	CEGUI::Window* newRecordWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("ceguiNewRecord.layout");
 
 	// OK
-	CEGUI::Window* okButton = newRecordWin->getChild("btn_aceptar");
+	CEGUI::Window* okButton = newRecordWin->getChild("btn_Aceptar");
 	okButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							  CEGUI::Event::Subscriber(&EndGameState::BotonAceptar, this));
 
@@ -187,7 +190,7 @@ bool EndGameState::BotonAceptar(const CEGUI::EventArgs &e)
 //	Puntos = PlayState::getSingleton().getPuntosPlayer();
 //
 //	gameRecords.insert(std::make_pair(Puntos, sCadena));
-
+	changeState(MenuState::getSingletonPtr());
 	return true;
 }
 

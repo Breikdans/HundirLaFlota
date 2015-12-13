@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
+        <Property name="Area" value="{{0,0},{0,150},{0.3,0},{0.3,89}}" />
+        <Property name="Text" value="¡Nuevo Record!" />
+        <Property name="HorizontalAlignment" value="Centre" />
+        <Window type="TaharezLook/Editbox" name="Editbox" >
+            <Property name="Area" value="{{0,35},{0,54},{0,260},{0,85}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="txt_Name" >
+            <Property name="Area" value="{{0,38},{0,23},{0,259},{0,45}}" />
+            <Property name="Text" value="Escribe tu nombre:" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Button" name="btn_Aceptar" >
+            <Property name="Area" value="{{0,84},{0,95},{0,204},{0,127}}" />
+            <Property name="Text" value="Aceptar" />
+        </Window>
+    </Window>
+</GUILayout>
