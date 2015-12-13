@@ -1166,7 +1166,7 @@ void PlayState::showExitMsgCegui()
 	//Config Window
 	CEGUI::Window* exitMsg = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("salir.layout");
 
-	exitMsg->getChild("lbl_salir")->setText("[font='major_shift-18'] Quieres Salir?");
+	exitMsg->getChild("lbl_salir")->setText("[font='major_shift-18'] Abandonar Partida?");
 
 	// OK
 	CEGUI::Window* siButton = exitMsg->getChild("btn_si");
@@ -1198,7 +1198,7 @@ bool PlayState::BotonSi(const CEGUI::EventArgs &e)
 bool PlayState::BotonNo(const CEGUI::EventArgs &e)
 {
 	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
-//	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().show();
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 
 	return true;
 }

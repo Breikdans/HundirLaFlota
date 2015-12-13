@@ -45,7 +45,13 @@ void IntroState::createCegui()
 
 void IntroState::createOverlay()
 {
+	unsigned int width, height, depth;
+	int left, top;
+
 	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
+	_root->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
+
+	overlay->setScale(((float(width) / 100) / 1024) * 100, ((float(height) / 100) / 768) * 100);
 	overlay->show();
 }
 
