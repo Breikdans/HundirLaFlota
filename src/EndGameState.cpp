@@ -48,11 +48,8 @@ bool EndGameState::frameEnded(const Ogre::FrameEvent& evt)
 
 void EndGameState::keyPressed(const OIS::KeyEvent &e)
 {
-	// Tecla p --> Estado anterior.
-	if (e.key == OIS::KC_P)
-	{
-		popState();
-	}
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(e.key));
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(e.text);
 }
 
 void EndGameState::keyReleased(const OIS::KeyEvent &e) {}
@@ -94,7 +91,7 @@ void EndGameState::showEndMsgCegui()
 	std::stringstream sCadena;
 
 	//Sheet
-	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","endgame");
+	_ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","endgame");
 
 	//Config Window
 	CEGUI::Window* endMsgWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("endgame.layout");
@@ -127,6 +124,7 @@ void EndGameState::showEndMsgCegui()
 bool EndGameState::isNewRecord(unsigned int puntos)
 {
 	bool sw_result = false;
+	std::multimap<unsigned int, std::string>::reverse_iterator rit;
 
 	rit = IntroState::getSingleton().gameRecords.rbegin();
 	for (int i = 0; rit != IntroState::getSingleton().gameRecords.rend() && sw_result != true; rit++,i++)
@@ -143,6 +141,8 @@ bool EndGameState::BotonOk(const CEGUI::EventArgs &e)
 std::cout << __func__ << "----OK----" << std::endl;
 	int iPuntosCpu = PlayState::getSingleton().getPuntosCPU();
 	int iPuntosPlayer = PlayState::getSingleton().getPuntosPlayer();
+
+iPuntosPlayer = 300;
 
 	if(iPuntosPlayer > iPuntosCpu)
 	{
@@ -162,34 +162,54 @@ void EndGameState::showEnterRecordName()
 	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
 
 	//Sheet
-	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","newrecord");
+	_ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","newrecord");
 
 	//Config Window
-	CEGUI::Window* newRecordWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("ceguiNewRecord.layout");
+	_newRecordWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("ceguiNewRecord.layout");
 
 	// OK
-	CEGUI::Window* okButton = newRecordWin->getChild("btn_Aceptar");
+	CEGUI::Window* okButton = _newRecordWin->getChild("btn_Aceptar");
 	okButton->subscribeEvent( CEGUI::PushButton::EventClicked,
 							  CEGUI::Event::Subscriber(&EndGameState::BotonAceptar, this));
 
 	//Attaching buttons
-	_ceguiSheet->addChild(newRecordWin);
+	_ceguiSheet->addChild(_newRecordWin);
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
 
 }
 
+void EndGameState::saveRecords()
+{
+	std::multimap<unsigned int, std::string>::reverse_iterator rit;
+	STR_Record str_record;
+
+	std::ofstream file;
+
+	file.open("records.txt");
+
+	rit = IntroState::getSingleton().gameRecords.rbegin();
+	for (int i = 0; rit != IntroState::getSingleton().gameRecords.rend() && i < MAX_PLAYER_RECORDS; rit++,i++)
+	{
+		file << (*rit).first << "_" << (*rit).second << std::endl;
+	}
+
+	file.close();
+}
+
 bool EndGameState::BotonAceptar(const CEGUI::EventArgs &e)
 {
-//	std::string sCadena;
-//	int Puntos = 0;
-//
-//	CEGUI::Window* newRecordWin = CEGUI::Window* newRecordWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("ceguiNewRecord.layout");
-//
-//	sCadena = newRecordWin->getChild("txt_Name")->getText();
-//
-//	Puntos = PlayState::getSingleton().getPuntosPlayer();
-//
-//	gameRecords.insert(std::make_pair(Puntos, sCadena));
+	CEGUI::String Cegui_sCadena;
+	std::string sCadena;
+	int Puntos = 0;
+
+	Cegui_sCadena = _newRecordWin->getChild("txt_Name")->getText();
+
+	sCadena = Cegui_sCadena.c_str();
+	Puntos = PlayState::getSingleton().getPuntosPlayer();
+
+	IntroState::getSingleton().gameRecords.insert(std::make_pair(Puntos, sCadena));
+	saveRecords();
+
 	changeState(MenuState::getSingletonPtr());
 	return true;
 }
