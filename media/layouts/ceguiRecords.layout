@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
+        <Property name="Area" value="{{0,0},{0,152},{0.3,476},{0.3,432}}" />
+        <Property name="Text" value="Tabla de records:" />
+        <Property name="HorizontalAlignment" value="Centre" />
+        <Window type="TaharezLook/Label" name="Label" >
+            <Property name="Area" value="{{0,170},{0,42},{0,590},{0,74}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label2" >
+            <Property name="Area" value="{{0,601},{0,42},{0,729},{0,74}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label3" >
+            <Property name="Area" value="{{0,30},{0,42},{0,146},{0,74}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label32" >
+            <Property name="Area" value="{{0,30},{0,84},{0,146},{0,116}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label22" >
+            <Property name="Area" value="{{0,601},{0,84},{0,729},{0,116}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label4" >
+            <Property name="Area" value="{{0,170},{0,84},{0,590},{0,116}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label33" >
+            <Property name="Area" value="{{0,31},{0,124},{0,147},{0,156}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label23" >
+            <Property name="Area" value="{{0,602},{0,124},{0,730},{0,156}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label5" >
+            <Property name="Area" value="{{0,171},{0,124},{0,591},{0,156}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label34" >
+            <Property name="Area" value="{{0,30},{0,165},{0,146},{0,197}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label24" >
+            <Property name="Area" value="{{0,601},{0,165},{0,729},{0,197}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label6" >
+            <Property name="Area" value="{{0,170},{0,165},{0,590},{0,197}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label35" >
+            <Property name="Area" value="{{0,30},{0,205},{0,146},{0,237}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label25" >
+            <Property name="Area" value="{{0,601},{0,205},{0,729},{0,237}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label7" >
+            <Property name="Area" value="{{0,170},{0,205},{0,590},{0,237}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label36" >
+            <Property name="Area" value="{{0,31},{0,245},{0,147},{0,277}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label26" >
+            <Property name="Area" value="{{0,602},{0,245},{0,730},{0,277}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label8" >
+            <Property name="Area" value="{{0,171},{0,245},{0,591},{0,277}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label37" >
+            <Property name="Area" value="{{0,30},{0,286},{0,146},{0,318}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label27" >
+            <Property name="Area" value="{{0,601},{0,286},{0,729},{0,318}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label9" >
+            <Property name="Area" value="{{0,170},{0,286},{0,590},{0,318}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label38" >
+            <Property name="Area" value="{{0,32},{0,327},{0,148},{0,359}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label28" >
+            <Property name="Area" value="{{0,603},{0,327},{0,731},{0,359}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label10" >
+            <Property name="Area" value="{{0,172},{0,327},{0,592},{0,359}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label39" >
+            <Property name="Area" value="{{0,33},{0,368},{0,149},{0,400}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label29" >
+            <Property name="Area" value="{{0,604},{0,368},{0,732},{0,400}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label11" >
+            <Property name="Area" value="{{0,173},{0,368},{0,593},{0,400}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label310" >
+            <Property name="Area" value="{{0,33},{0,409},{0,149},{0,441}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label210" >
+            <Property name="Area" value="{{0,604},{0,409},{0,732},{0,441}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+        <Window type="TaharezLook/Label" name="Label12" >
+            <Property name="Area" value="{{0,173},{0,409},{0,593},{0,441}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        </Window>
+    </Window>
+</GUILayout>
