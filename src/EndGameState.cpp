@@ -142,8 +142,6 @@ std::cout << __func__ << "----OK----" << std::endl;
 	int iPuntosCpu = PlayState::getSingleton().getPuntosCPU();
 	int iPuntosPlayer = PlayState::getSingleton().getPuntosPlayer();
 
-iPuntosPlayer = 300;
-
 	if(iPuntosPlayer > iPuntosCpu)
 	{
 		if(isNewRecord(iPuntosPlayer))

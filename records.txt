@@ -1,7 +1,7 @@
+135_Felipe
 110_Alberto
-0_CPU
-0_CPU
-0_CPU
+110_Jose
+100_Federico
 0_CPU
 0_CPU
 0_CPU
