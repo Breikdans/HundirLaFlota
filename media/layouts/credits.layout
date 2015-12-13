@@ -10,7 +10,7 @@
         <Property name="HorizontalAlignment" value="Centre" />
         <Window type="TaharezLook/Label" name="Label" >
             <Property name="Area" value="{{0,0},{0,27},{0,456},{0,80}}" />
-            <Property name="Text" value="Autores:" />
+            <Property name="Text" value="Programadores:" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
             <Property name="HorizontalAlignment" value="Centre" />
         </Window>
