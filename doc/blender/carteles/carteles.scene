@@ -1,57 +1,55 @@
-<scene export_time="1450019557.4654086" formatVersion="1.0.1" exported_by="jose" previous_export_time="1450019549.3339689" >
+<scene export_time="1450022223.8322554" exported_by="jose" formatVersion="1.0.1" previous_export_time="1450022140.6389875" >
   <nodes >
-    <node name="player" >
-      <position x="0.000000" y="0.186596" z="-0.000000" />
-      <rotation qx="0.000000" qz="-0.000000" qy="0.000000" qw="1.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <user_data value='&lt;bpy id prop: owner="OBplayer", name="cycles", address=0x7f2bd4921608&gt;' name="cycles" type="IDPropertyGroup" />
-      <user_data value='&lt;bpy id prop: owner="OBplayer", name="cycles_visibility", address=0x7f2bd49202a8&gt;' name="cycles_visibility" type="IDPropertyGroup" />
+    <node name="jugador" >
+      <position x="0.155145" z="-1.308362" y="0.158197" />
+      <rotation qy="0.000000" qw="1.000000" qz="-0.000000" qx="0.000000" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
       <game >
         <sensors />
         <actuators />
       </game>
-      <entity lock_trans_y="False" lock_rot_y="False" lock_trans_x="False" lock_trans_z="False" velocity_max="0.0" damping_rot="0.10000000149011612" anisotropic_friction="False" physics_type="STATIC" name="player" damping_trans="0.03999999910593033" friction_z="1.0" actor="False" lock_rot_z="False" lock_rot_x="False" friction_x="1.0" mass_radius="1.0" ghost="False" friction_y="1.0" meshFile="player.mesh" inertia_tensor="0.4000000059604645" mass="1.0" velocity_min="0.0" />
+      <entity damping_trans="0.03999999910593033" name="jugador" lock_rot_x="False" lock_trans_z="False" meshFile="jugador.mesh" lock_rot_y="False" friction_z="1.0" velocity_max="0.0" mass_radius="1.0" lock_rot_z="False" lock_trans_x="False" velocity_min="0.0" friction_x="1.0" actor="False" physics_type="STATIC" mass="1.0" lock_trans_y="False" ghost="False" friction_y="1.0" damping_rot="0.10000000149011612" anisotropic_friction="False" inertia_tensor="0.4000000059604645" />
     </node>
     <node name="Lamp" >
-      <position x="4.076245" y="5.903862" z="-1.005454" />
-      <rotation qx="0.169076" qz="-0.272171" qy="0.755880" qw="0.570947" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <user_data value='&lt;bpy id prop: owner="OBLamp", name="cycles", address=0x7f2bd4920f28&gt;' name="cycles" type="IDPropertyGroup" />
-      <user_data value='&lt;bpy id prop: owner="OBLamp", name="cycles_visibility", address=0x7f2bd4920208&gt;' name="cycles_visibility" type="IDPropertyGroup" />
+      <position x="4.076245" z="-1.005454" y="5.903862" />
+      <rotation qy="0.755880" qw="0.570947" qz="-0.272171" qx="0.169076" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <user_data type="IDPropertyGroup" name="cycles" value='&lt;bpy id prop: owner="OBLamp", name="cycles", address=0x7f27740fda68&gt;' />
+      <user_data type="IDPropertyGroup" name="cycles_visibility" value='&lt;bpy id prop: owner="OBLamp", name="cycles_visibility", address=0x7f27740fc5c8&gt;' />
       <game >
         <sensors />
         <actuators />
       </game>
-      <light type="point" shadow="true" name="Lamp" powerScale="1.0" >
-        <position x="4.076245" y="5.903862" z="-1.005454" />
-        <lightAttenuation constant="1.0" quadratic="0.0" linear="0.03333335240683057" range="5000" />
-        <colourDiffuse b="1.0" r="1.0" g="1.0" />
-        <colourSpecular b="1.0" r="1.0" g="1.0" />
-        <colourShadow b="1.0" r="1.0" g="1.0" />
+      <light shadow="true" type="point" powerScale="1.0" name="Lamp" >
+        <position x="4.076245" z="-1.005454" y="5.903862" />
+        <lightAttenuation range="5000" quadratic="0.0" linear="0.03333335240683057" constant="1.0" />
+        <colourDiffuse r="1.0" g="1.0" b="1.0" />
+        <colourSpecular r="1.0" g="1.0" b="1.0" />
+        <colourShadow r="1.0" g="1.0" b="1.0" />
       </light>
     </node>
     <node name="Camera" >
-      <position x="7.481132" y="5.343665" z="6.507640" />
-      <rotation qx="0.481707" qz="-0.212922" qy="0.334251" qw="0.781600" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <user_data value='&lt;bpy id prop: owner="OBCamera", name="cycles", address=0x7f2bd4921748&gt;' name="cycles" type="IDPropertyGroup" />
+      <position x="7.481132" z="6.507640" y="5.343665" />
+      <rotation qy="0.334251" qw="0.781600" qz="-0.212922" qx="0.481707" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <user_data type="IDPropertyGroup" name="cycles" value='&lt;bpy id prop: owner="OBCamera", name="cycles", address=0x7f27740fd888&gt;' />
       <game >
         <sensors />
         <actuators />
       </game>
-      <camera projectionType="perspective" name="Camera" fov="0.5033799435163735" >
-        <clipping farPlaneDist="100.0" near="0.10000000149011612" nearPlaneDist="0.10000000149011612" far="100.0" />
+      <camera projectionType="perspective" fov="0.5033799435163735" name="Camera" >
+        <clipping nearPlaneDist="0.10000000149011612" far="100.0" near="0.10000000149011612" farPlaneDist="100.0" />
       </camera>
     </node>
   </nodes>
   <externals >
     <item type="material" >
-      <file name="/home/jose/dev/workspace/HundirLaFlota/doc/blender/carteles/player.material" />
+      <file name="/home/jose/dev/workspace/HundirLaFlota/doc/blender/carteles/jugador.material" />
     </item>
   </externals>
   <environment >
-    <colourAmbient b="0.0" r="0.0" g="0.0" />
-    <colourBackground b="0.05087608844041824" r="0.05087608844041824" g="0.05087608844041824" />
-    <colourDiffuse b="0.05087608844041824" r="0.05087608844041824" g="0.05087608844041824" />
+    <colourBackground r="0.05087608844041824" g="0.05087608844041824" b="0.05087608844041824" />
+    <colourDiffuse r="0.05087608844041824" g="0.05087608844041824" b="0.05087608844041824" />
+    <colourAmbient r="0.0" g="0.0" b="0.0" />
   </environment>
 </scene>

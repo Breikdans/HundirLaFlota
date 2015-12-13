@@ -28,15 +28,33 @@ void MenuState::enter ()
 	double height = _viewport->getActualHeight();	// recogemos alto del viewport actual
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
+	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
+	createOverlay();
 	showMenuCegui();
 
 	_exitGame = false;
+}
+
+
+void MenuState::createOverlay() {
+
+		unsigned int width, height, depth;
+		int left, top;
+
+		Ogre::Overlay *overlay = _overlayManager->getByName("Menu");
+		_root->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
+
+		overlay->setScale(((float(width) / 100) / 1024) * 100, ((float(height) / 100) / 768) * 100);
+		overlay->show();
+
 }
 
 void MenuState::exit ()
 {
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
+	Ogre::Overlay *overlay = _overlayManager->getByName("Menu");
+	overlay->hide();
 	_sceneMgr->clearScene();
 	_root->getAutoCreatedWindow()->removeAllViewports();
 }
