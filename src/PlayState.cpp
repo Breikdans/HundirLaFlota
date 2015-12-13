@@ -40,6 +40,7 @@ void PlayState::enter ()
 	PlayerGrid.clearGrid();
 	CPUGrid.clearGrid();
 
+
 	createScene();		// creamos la escena
 	createOverlay();	// creamos el overlay
 
@@ -289,6 +290,9 @@ PlayState& PlayState::getSingleton ()
 
 void PlayState::createScene()
 {
+
+	//_sceneMgr->setSkyBox(false, "nubesM",0,0);
+
 	const int ESPACIO_ENTRE_TABLEROS = 2;
 	// creacion punteros a entidades para cargar los .mesh de las celdas
 	Ogre::Entity *ent_CeldaCPU;
@@ -368,19 +372,23 @@ void PlayState::createScene()
 	Ogre::Entity *cartel;
 	Ogre::SceneNode *node_cartel;
 
-	cartel = _sceneMgr->createEntity("cartel_jugador", "player.mesh");
+	cartel = _sceneMgr->createEntity("cartel_jugador", "jugador.mesh");
 	node_cartel = _sceneMgr->createSceneNode("node_cartel_player");
 	cartel->setQueryFlags(SEA_BACKGROUND);	// Lo identificamos para las Queries...
 	node_cartel->attachObject(cartel);
-	node_cartel->translate(-1 * ((MAX_COLS_GRID / 2) * CELL_WIDTH), 0, -4);
+	node_cartel->translate(-1 * ((MAX_COLS_GRID) * CELL_WIDTH), 0, -6);
+	node_cartel->scale(6,6,6);
 	node_water->addChild(node_cartel);
 
 	cartel = _sceneMgr->createEntity("cartel_enemigo", "enemigo.mesh");
 	node_cartel = _sceneMgr->createSceneNode("node_cartel_cpu");
 	cartel->setQueryFlags(SEA_BACKGROUND);	// Lo identificamos para las Queries...
 	node_cartel->attachObject(cartel);
-	node_cartel->translate(((MAX_COLS_GRID / 2) * CELL_WIDTH), 0, -4);
+	node_cartel->translate(((MAX_COLS_GRID ) * CELL_WIDTH)-20, 0, -6);
+	node_cartel->scale(6,6,6);
 	node_water->addChild(node_cartel);
+
+
 
 DEBUG_TRZ(std::cout << std::endl << "CPU:";)
 	CPUGrid.IniciaBarcosAleatorio();

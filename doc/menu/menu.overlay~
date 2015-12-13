@@ -1,0 +1,17 @@
+Menu
+{
+	zorder 500
+	
+	container Panel(panelMenu)
+	{
+            metrics_mode pixels
+	    left 0
+	    top 0
+	    width 1024
+	    height 768
+	    vert_align top
+	    material panelMenuM
+	
+	}
+	
+}

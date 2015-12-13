@@ -3,14 +3,15 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
+#include <iterator>
 #include <map>
 
 #include "GameState.h"
 
 typedef struct
 {
-	int iPuntos;
-	char sJugador[20+1];
+	unsigned int iPuntos;
+	std::string sJugador;
 }STR_Record;
 
 #define MAX_PLAYER_RECORDS		10

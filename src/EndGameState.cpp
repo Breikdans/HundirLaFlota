@@ -122,32 +122,75 @@ void EndGameState::showEndMsgCegui()
 	//Attaching buttons
 	_ceguiSheet->addChild(endMsgWin);
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
-
 }
 
-//bool EndGameState::isNewRecord(unsigned int puntos)
-//{
-//	bool sw_result = false;
-//
-//	std::multimap<unsigned int, char[20+1]>::iterator it = IntroState::getSingleton().gameRecords.find(puntos);
-//
-//}
+bool EndGameState::isNewRecord(unsigned int puntos)
+{
+	bool sw_result = false;
+
+	rit = IntroState::getSingleton().gameRecords.rbegin();
+	for (int i = 0; rit != IntroState::getSingleton().gameRecords.rend() && sw_result != true; rit++,i++)
+	{
+		if (puntos > (*rit).first && i < 10)
+			sw_result = true;
+	}
+
+	return sw_result;
+}
 
 bool EndGameState::BotonOk(const CEGUI::EventArgs &e)
 {
 std::cout << __func__ << "----OK----" << std::endl;
-//	int iPuntosCpu = PlayState::getSingleton().getPuntosCPU();
-//	int iPuntosPlayer = PlayState::getSingleton().getPuntosPlayer();
-//
-//	if(iPuntosPlayer > iPuntosCpu)
-//	{
-//		if(isNewRecord(iPuntosPlayer))
-//			changeState(NewRecordState::getSingletonPtr());
-//	}
+	int iPuntosCpu = PlayState::getSingleton().getPuntosCPU();
+	int iPuntosPlayer = PlayState::getSingleton().getPuntosPlayer();
+
+	if(iPuntosPlayer > iPuntosCpu)
+	{
+		if(isNewRecord(iPuntosPlayer))
+			showEnterRecordName();
+	}
 
 	changeState(MenuState::getSingletonPtr());
 	return true;
 }
+
+void EndGameState::showEnterRecordName()
+{
+	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
+
+	//Sheet
+	CEGUI::Window* _ceguiSheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow","newrecord");
+
+	//Config Window
+	CEGUI::Window* newRecordWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("ceguiNewRecord.layout");
+
+	// OK
+	CEGUI::Window* okButton = newRecordWin->getChild("btn_aceptar");
+	okButton->subscribeEvent( CEGUI::PushButton::EventClicked,
+							  CEGUI::Event::Subscriber(&EndGameState::BotonAceptar, this));
+
+	//Attaching buttons
+	_ceguiSheet->addChild(newRecordWin);
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(_ceguiSheet);
+
+}
+
+bool EndGameState::BotonAceptar(const CEGUI::EventArgs &e)
+{
+//	std::string sCadena;
+//	int Puntos = 0;
+//
+//	CEGUI::Window* newRecordWin = CEGUI::Window* newRecordWin = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("ceguiNewRecord.layout");
+//
+//	sCadena = newRecordWin->getChild("txt_Name")->getText();
+//
+//	Puntos = PlayState::getSingleton().getPuntosPlayer();
+//
+//	gameRecords.insert(std::make_pair(Puntos, sCadena));
+
+	return true;
+}
+
 
 CEGUI::MouseButton EndGameState::convertMouseButton(OIS::MouseButtonID id)
 {
