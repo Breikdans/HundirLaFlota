@@ -364,6 +364,28 @@ void PlayState::createScene()
 	_sceneMgr->getRootSceneNode()->addChild(node_water);
 	node_water->addChild(main_node_tablero_CPU);
 	node_water->addChild(main_node_tablero_Player);
+
+	Ogre::Entity *cartel;
+	Ogre::SceneNode *node_cartel;
+
+	cartel = _sceneMgr->createEntity("cartel_jugador", "player.mesh");
+	node_cartel = _sceneMgr->createSceneNode("node_cartel_player");
+	cartel->setQueryFlags(SEA_BACKGROUND);	// Lo identificamos para las Queries...
+	node_cartel->attachObject(cartel);
+	node_cartel->translate(-1 * ((MAX_COLS_GRID) * CELL_WIDTH), 0, -6);
+	node_cartel->scale(6,6,6);
+	node_water->addChild(node_cartel);
+
+	cartel = _sceneMgr->createEntity("cartel_enemigo", "enemigo.mesh");
+	node_cartel = _sceneMgr->createSceneNode("node_cartel_cpu");
+	cartel->setQueryFlags(SEA_BACKGROUND);	// Lo identificamos para las Queries...
+	node_cartel->attachObject(cartel);
+	node_cartel->translate(((MAX_COLS_GRID ) * CELL_WIDTH)-20, 0, -6);
+	node_cartel->scale(6,6,6);
+	node_water->addChild(node_cartel);
+
+
+
 DEBUG_TRZ(std::cout << std::endl << "CPU:";)
 	CPUGrid.IniciaBarcosAleatorio();
 DEBUG_TRZ(std::cout << std::endl << "PLAYER:";)

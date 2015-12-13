@@ -1,0 +1,55 @@
+<scene previous_export_time="1449967251.3615875" export_time="1449968346.1949775" exported_by="alberto" formatVersion="1.0.1" >
+  <nodes >
+    <node name="enemigo" >
+      <position x="-0.076441" z="-3.262131" y="0.311560" />
+      <rotation qx="0.000000" qy="0.000000" qw="1.000000" qz="-0.000000" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_y="False" mass_radius="1.0" lock_trans_y="False" name="enemigo" velocity_min="0.0" anisotropic_friction="False" lock_trans_z="False" lock_rot_z="False" damping_rot="0.10000000149011612" inertia_tensor="0.4000000059604645" ghost="False" lock_trans_x="False" velocity_max="0.0" friction_x="1.0" meshFile="enemigo.mesh" friction_y="1.0" mass="1.0" damping_trans="0.03999999910593033" physics_type="STATIC" actor="False" lock_rot_x="False" friction_z="1.0" />
+    </node>
+    <node name="Lamp" >
+      <position x="4.076245" z="-1.005454" y="5.903862" />
+      <rotation qx="0.169076" qy="0.755880" qw="0.570947" qz="-0.272171" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <user_data name="cycles" value='&lt;bpy id prop: owner="OBLamp", name="cycles", address=0x7f4c76d6e348&gt;' type="IDPropertyGroup" />
+      <user_data name="cycles_visibility" value='&lt;bpy id prop: owner="OBLamp", name="cycles_visibility", address=0x7f4c69bb3b08&gt;' type="IDPropertyGroup" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light name="Lamp" shadow="true" powerScale="1.0" type="point" >
+        <position x="4.076245" z="-1.005454" y="5.903862" />
+        <lightAttenuation constant="1.0" range="5000" linear="0.03333335240683057" quadratic="0.0" />
+        <colourDiffuse r="1.0" b="1.0" g="1.0" />
+        <colourSpecular r="1.0" b="1.0" g="1.0" />
+        <colourShadow r="1.0" b="1.0" g="1.0" />
+      </light>
+    </node>
+    <node name="Camera" >
+      <position x="7.481132" z="6.507640" y="5.343665" />
+      <rotation qx="0.481707" qy="0.334251" qw="0.781600" qz="-0.212922" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <user_data name="cycles" value='&lt;bpy id prop: owner="OBCamera", name="cycles", address=0x7f4c76d6e708&gt;' type="IDPropertyGroup" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera name="Camera" projectionType="perspective" fov="0.5033799435163735" >
+        <clipping farPlaneDist="100.0" near="0.10000000149011612" far="100.0" nearPlaneDist="0.10000000149011612" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="/home/alberto/DevGames/Programacion_Grafica/HundirLaFlota/doc/blender/Carteles/enemigo.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourAmbient r="0.0" b="0.0" g="0.0" />
+    <colourDiffuse r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+    <colourBackground r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+  </environment>
+</scene>
