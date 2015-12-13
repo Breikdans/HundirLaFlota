@@ -3,8 +3,17 @@
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
+#include <map>
 
 #include "GameState.h"
+
+typedef struct
+{
+	int iPuntos;
+	char sJugador[20+1];
+}STR_Record;
+
+#define MAX_PLAYER_RECORDS		10
 
 class IntroState : public Ogre::Singleton<IntroState>, public GameState
 {
@@ -26,6 +35,8 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
 		bool frameStarted (const Ogre::FrameEvent& evt);
 		bool frameEnded (const Ogre::FrameEvent& evt);
 
+		std::multimap<unsigned int, std::string> gameRecords;
+
 		// Heredados de Ogre::Singleton.
 		static IntroState& getSingleton ();
 		static IntroState* getSingletonPtr ();
@@ -40,6 +51,10 @@ class IntroState : public Ogre::Singleton<IntroState>, public GameState
 		void createOverlay();
 		void loadResources();
 		void createCegui();
+
+		void loadRecordsFile();
+		void fillRecordsFile();
+		void showRecordsFile();
 
 		bool _exitGame;
 };

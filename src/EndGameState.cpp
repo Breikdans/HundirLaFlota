@@ -1,6 +1,7 @@
 #include "EndGameState.h"
 #include "PlayState.h"
 #include "MenuState.h"
+#include "IntroState.h"
 
 template<> EndGameState* Ogre::Singleton<EndGameState>::msSingleton = 0;
 
@@ -124,9 +125,26 @@ void EndGameState::showEndMsgCegui()
 
 }
 
+//bool EndGameState::isNewRecord(unsigned int puntos)
+//{
+//	bool sw_result = false;
+//
+//	std::multimap<unsigned int, char[20+1]>::iterator it = IntroState::getSingleton().gameRecords.find(puntos);
+//
+//}
+
 bool EndGameState::BotonOk(const CEGUI::EventArgs &e)
 {
 std::cout << __func__ << "----OK----" << std::endl;
+//	int iPuntosCpu = PlayState::getSingleton().getPuntosCPU();
+//	int iPuntosPlayer = PlayState::getSingleton().getPuntosPlayer();
+//
+//	if(iPuntosPlayer > iPuntosCpu)
+//	{
+//		if(isNewRecord(iPuntosPlayer))
+//			changeState(NewRecordState::getSingletonPtr());
+//	}
+
 	changeState(MenuState::getSingletonPtr());
 	return true;
 }
