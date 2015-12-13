@@ -174,56 +174,68 @@ void IntroState::loadResources()
 void IntroState::fillRecordsFile()
 {
 	STR_Record str_record;
-	FILE *file = NULL;
-	size_t lenEscrito = 0;
 
-	memset(&str_record, 0x00, sizeof(str_record));
+	std::ofstream file;
 
-	file = fopen("records.txt","w");
+	file.open("records.txt");
+
+	str_record.iPuntos = 1000;
+	str_record.sJugador = "CPUUUUUU";
+
 	for(int i = 0; i < MAX_PLAYER_RECORDS; i++)
 	{
-		lenEscrito = fwrite(&str_record, sizeof(str_record), 1, file);
-		if(lenEscrito!=0)
-			gameRecords.insert(std::make_pair(str_record.iPuntos, str_record.sJugador));
+		file << str_record.iPuntos << "_" << str_record.sJugador << std::endl;
+		gameRecords.insert(std::make_pair(str_record.iPuntos, str_record.sJugador));
 
 std::cout << "iPuntos: " << str_record.iPuntos << " Jugador: " << str_record.sJugador << std::endl;
-std::cout << "gameRecords.size(): " << gameRecords.size() << " Escrito: " << lenEscrito << std::endl;
+std::cout << "gameRecords.size(): " << gameRecords.size() << std::endl;
 	}
 
-	fclose(file);
+	file.close();
 }
 
 void IntroState::loadRecordsFile()
 {
 	STR_Record str_record;
-	FILE *file = NULL;
-	size_t lenLeido = 0;
+	int puntos = 0;
+	char player[50+1];
+	std::ifstream file("records.txt");
 
-	file = fopen("records.txt","rb");
-	if(file)	// Existe y se ha podido abrir el fichero? lo leemos!
+	std::string line;
+
+	if (file.is_open())
 	{
-		while(!feof(file) && gameRecords.size() <= MAX_PLAYER_RECORDS)
+		while(getline(file, line))
 		{
-			memset(&str_record, 0x00, sizeof(str_record));
+			str_record.iPuntos = 0;
+			str_record.sJugador = "";
 
-			lenLeido = fread(&str_record, sizeof(str_record), 1, file);
-			if(lenLeido!=0)
-				gameRecords.insert(std::make_pair(str_record.iPuntos, str_record.sJugador));
-std::cout << "iPuntos: " << str_record.iPuntos << " Jugador: " << str_record.sJugador << std::endl;
-std::cout << "gameRecords.size(): " << gameRecords.size() << std::endl;
+			std::cout << "line: " << line << std::endl;
+			sscanf(line.c_str(),"%d_%s",&puntos, player);
+
+			str_record.iPuntos = puntos; str_record.sJugador = player;
+			gameRecords.insert(std::make_pair(str_record.iPuntos, str_record.sJugador));
 		}
-		fclose(file);
+
+		file.close();
 	}
 	else
+	{
 		fillRecordsFile();
+	}
+
+	showRecordsFile();
 }
 
 void IntroState::showRecordsFile()
 {
-	for (std::multimap<unsigned int, std::string>::iterator it = gameRecords.begin(); it != gameRecords.end(); it++)
+
+	std::multimap<unsigned int, std::string>::iterator it = gameRecords.begin();
+
+	for (; it != gameRecords.end(); it++)
 	{
-		//std::cout << " iPuntos: " << it->first() << " Jugador: " << it->second() << std::endl;
+		std::cout << " iPuntos: " << it->first << " Jugador: " << it->second << std::endl;
 	}
-	std::cout << "gameRecords.size(): " << gameRecords.size() << std::endl;
+	std::cout << __func__ << " gameRecords.size(): " << gameRecords.size() << std::endl;
 
 }

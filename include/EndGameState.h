@@ -39,9 +39,14 @@ class EndGameState : public Ogre::Singleton<EndGameState>, public GameState
 
 		bool _exitGame;
 
+		std::multimap<unsigned int, std::string>::reverse_iterator rit;
+
 		CEGUI::MouseButton convertMouseButton(OIS::MouseButtonID id);
 		void showEndMsgCegui();
 		bool BotonOk(const CEGUI::EventArgs &e);
+		bool isNewRecord(unsigned int puntos);
+		bool BotonAceptar(const CEGUI::EventArgs &e);
+		void showEnterRecordName();
 };
 
 #endif
