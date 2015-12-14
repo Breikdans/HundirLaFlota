@@ -134,7 +134,6 @@ void RecordsState::showRecordsMsgCegui()
 
 bool RecordsState::BotonVolver(const CEGUI::EventArgs &e)
 {
-std::cout << __func__ << "----CREDITS OK----" << std::endl;
 	popState();
 	return true;
 }

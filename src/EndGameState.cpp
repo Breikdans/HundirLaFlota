@@ -138,11 +138,8 @@ bool EndGameState::isNewRecord(unsigned int puntos)
 
 bool EndGameState::BotonOk(const CEGUI::EventArgs &e)
 {
-std::cout << __func__ << "----OK----" << std::endl;
 	int iPuntosCpu = PlayState::getSingleton().getPuntosCPU();
 	int iPuntosPlayer = PlayState::getSingleton().getPuntosPlayer();
-
-iPuntosPlayer = 300;
 
 	if(iPuntosPlayer > iPuntosCpu)
 	{

@@ -186,9 +186,6 @@ void IntroState::fillRecordsFile()
 	{
 		file << str_record.iPuntos << "_" << str_record.sJugador << std::endl;
 		gameRecords.insert(std::make_pair(str_record.iPuntos, str_record.sJugador));
-
-std::cout << "iPuntos: " << str_record.iPuntos << " Jugador: " << str_record.sJugador << std::endl;
-std::cout << "gameRecords.size(): " << gameRecords.size() << std::endl;
 	}
 
 	file.close();
@@ -210,7 +207,6 @@ void IntroState::loadRecordsFile()
 			str_record.iPuntos = 0;
 			str_record.sJugador = "";
 
-			std::cout << "line: " << line << std::endl;
 			sscanf(line.c_str(),"%d_%s",&puntos, player);
 
 			str_record.iPuntos = puntos; str_record.sJugador = player;
