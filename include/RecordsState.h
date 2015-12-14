@@ -1,5 +1,5 @@
-#ifndef EndGameState_H
-#define EndGameState_H
+#ifndef RecordsState_H
+#define RecordsState_H
 
 #include <Ogre.h>
 #include <OIS/OIS.h>
@@ -7,10 +7,10 @@
 
 #include "GameState.h"
 
-class EndGameState : public Ogre::Singleton<EndGameState>, public GameState
+class RecordsState : public Ogre::Singleton<RecordsState>, public GameState
 {
 	public:
-		EndGameState() {}
+		RecordsState() {}
 
 		void enter ();
 		void exit ();
@@ -28,26 +28,21 @@ class EndGameState : public Ogre::Singleton<EndGameState>, public GameState
 		bool frameEnded (const Ogre::FrameEvent& evt);
 
 		// Heredados de Ogre::Singleton.
-		static EndGameState& getSingleton ();
-		static EndGameState* getSingletonPtr ();
+		static RecordsState& getSingleton ();
+		static RecordsState* getSingletonPtr ();
 
 	protected:
 		Ogre::Root* _root;
 		Ogre::SceneManager* _sceneMgr;
 		Ogre::Viewport* _viewport;
 		Ogre::Camera* _camera;
-		CEGUI::Window* _ceguiSheet;
-		CEGUI::Window* _newRecordWin;
 
 		bool _exitGame;
 
 		CEGUI::MouseButton convertMouseButton(OIS::MouseButtonID id);
-		void showEndMsgCegui();
-		bool BotonOk(const CEGUI::EventArgs &e);
-		bool isNewRecord(unsigned int puntos);
-		bool BotonAceptar(const CEGUI::EventArgs &e);
-		void showEnterRecordName();
-		void saveRecords();
+		void showRecordsMsgCegui();
+		bool BotonVolver(const CEGUI::EventArgs &e);
+		void fillRecordsTable(CEGUI::Window* win);
 };
 
 #endif

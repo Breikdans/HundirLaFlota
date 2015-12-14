@@ -179,8 +179,8 @@ void IntroState::fillRecordsFile()
 
 	file.open("records.txt");
 
-	str_record.iPuntos = 1000;
-	str_record.sJugador = "CPUUUUUU";
+	str_record.iPuntos = 0;
+	str_record.sJugador = "CPU";
 
 	for(int i = 0; i < MAX_PLAYER_RECORDS; i++)
 	{

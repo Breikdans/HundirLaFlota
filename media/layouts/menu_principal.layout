@@ -4,8 +4,8 @@
     <Window type="TaharezLook/FrameWindow" name="FrameWindow" >
         <Property name="Area" value="{{0,-42},{0,-139.5},{0.3,-52},{0.3,-107.5}}" />
         <Property name="Text" value="Menú Principal" />
-        <Property name="VerticalAlignment" value="Bottom" />
-        <Property name="HorizontalAlignment" value="Right" />
+        <Property name="VerticalAlignment" value="Centre" />
+        <Property name="HorizontalAlignment" value="Centre" />
         <Window type="TaharezLook/Button" name="btn_new_game" >
             <Property name="Area" value="{{0,0},{0,32},{0,191},{0,71}}" />
             <Property name="Text" value="Nueva partida" />

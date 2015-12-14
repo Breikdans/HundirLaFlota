@@ -10,6 +10,7 @@
             <Item path="layouts/credits.layout" type="file" />
             <Item path="layouts/endgame.layout" type="file" />
             <Item path="layouts/menu_principal.layout" type="file" />
+            <Item path="layouts/ceguiRecords.layout" type="file" />
         </Item>
     </Items>
 </Project>
