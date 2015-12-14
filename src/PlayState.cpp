@@ -89,7 +89,6 @@ bool PlayState::hayCasillaTocada(const Grid& grid, int &posX, int &posY) const
 		}
 	}
 
-DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 	return sw_result;
 }
 
@@ -203,8 +202,6 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 		getSelectedNode(CPU_CELLS, posx, posy, s_CellName);
 		if (s_CellName != "")
 		{
-DEBUG_TRZ(std::cout << "CLICK NODE: " << s_CellName<< " X: " << posx << " Y: " << posy << std::endl;)
-
 			// Todos los disparos producen un cambio: AGUA -> TOCADO ó DISPARADO, menos cuando disparan sobre algo ya disparado (DISPARADO, PROA_H_T, PROA_H_Q,...)
 			if (CompruebaDisparo(CPUGrid, posx, posy))	// Si ha habido algun cambio con este disparo...
 			{
@@ -217,7 +214,6 @@ DEBUG_TRZ(CPUGrid.DebugGrid();)
 				{
 					puntosPlayer += (PlayerGrid.getCasillasVida() * 5);
 					// FIN DE JUEGO, GANA EL PLAYER
-DEBUG_TRZ(std::cout << "PLAYER WIN!!!!!!" << " Puntos: " << puntosPlayer << std::endl;)
 					hideOverlay();
 					pushState(EndGameState::getSingletonPtr());
 					_exitGame = true;
@@ -250,7 +246,6 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 	if(_turno == CPU)
 	{
 		CalculaDisparoCPU(x, y);
-DEBUG_TRZ(std::cout << "CALCULA DISPARO: " << " X: " << x << " Y: " << y << std::endl;)
 		if(CompruebaDisparo(PlayerGrid, x, y))
 		{
 			std::stringstream s_node_player;
@@ -266,10 +261,8 @@ DEBUG_TRZ(PlayerGrid.DebugGrid();)
 			{
 				puntosCPU += (CPUGrid.getCasillasVida() * 5);
 				// FIN DE JUEGO, GANA LA CPU
-DEBUG_TRZ(std::cout << "CPU WIN!!!!!!" << " Puntos: " << puntosCPU << std::endl;)
 				hideOverlay();
 				changeState(EndGameState::getSingletonPtr());
-DEBUG_TRZ(_exitGame = true;)
 			}
 			else
 				CambiarTurno(PLAYER);
@@ -388,13 +381,8 @@ void PlayState::createScene()
 	node_cartel->scale(6,6,6);
 	node_water->addChild(node_cartel);
 
-
-
-DEBUG_TRZ(std::cout << std::endl << "CPU:";)
 	CPUGrid.IniciaBarcosAleatorio();
-DEBUG_TRZ(std::cout << std::endl << "PLAYER:";)
 	PlayerGrid.IniciaBarcosAleatorio();
-
 
 	for(int y = 0; y < MAX_ROWS_GRID; y++)
 	{
@@ -405,11 +393,8 @@ DEBUG_TRZ(std::cout << std::endl << "PLAYER:";)
 			nodeNamePlayer << STRING_NODE_PLAYER_ << x << "_" << y;	// node_player_X_Y;
 			nodeNameCPU << STRING_NODE_CPU_ << x << "_" << y;	// node_cpu_X_Y;
 
-
 			// Actualizamos tablero PLAYER (se actualiza el contrario al TURNO)
 			_turno = CPU; ActualizaTablero(x, y);
-// Actualizamos tablero CPU (se actualiza el contrario al TURNO)
-//DEBUG_TRZ(_turno = PLAYER; ActualizaTablero(CPUGrid(x, y), nodeNameCPU.str());)
 		}
 	}
 }
@@ -438,7 +423,7 @@ void PlayState::ActualizaTablero(usint16 x, usint16 y)
 		valor = CPUGrid(x, y);
 		nodeName = s_node_stream.str();
 	}
-	else if(_turno == CPU)	// tablero PLAYER
+	else 					// tablero PLAYER
 	{
 		std::stringstream s_node_stream;
 		s_node_stream << STRING_NODE_PLAYER_ << x << "_" << y;
@@ -522,8 +507,6 @@ void PlayState::ActualizaTablero(usint16 x, usint16 y)
 		}
 
 		TableroNode->addChild(shipNode);
-
-		 // meter lo que sea
 	}
 }
 
@@ -971,8 +954,7 @@ bool PlayState::esCasillaTocada(const Grid& grid, int posX, int posY) const
 	if (grid(posX, posY) >= PROA_H_T && grid(posX, posY) <= POPA_V_T)
 		sw_result = true;
 
-DEBUG_TRZ(if(sw_result))
-DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
+DEBUG_TRZ(if(sw_result)std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
 	return sw_result;
 }
 
@@ -1043,8 +1025,6 @@ bool PlayState::BuscarCasillaLibreAbajo(int &posX, int &posY) const
 			sw_result = true;
 		}
 	}
-DEBUG_TRZ(std::cout << __func__ << " result: " << sw_result << " X: " << posX << " Y: " << posY << std::endl;)
-
 	return sw_result;
 }
 
@@ -1095,8 +1075,6 @@ void PlayState::ObtenerCasillaAleatoria(int &posX, int &posY) const
 			sw_valido = true;
 		}
 	}
-
-DEBUG_TRZ(std::cout << __func__ << " CASILLA: " << PlayerGrid(posX,posY) << "       X: " << posX << " Y: " << posY << std::endl;)
 }
 
 ///< Calculara un disparo y lo retornara en los parametros (SALIDA)

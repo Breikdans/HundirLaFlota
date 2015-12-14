@@ -106,7 +106,6 @@ void CreditsState::showCreditsMsgCegui()
 
 bool CreditsState::BotonOk(const CEGUI::EventArgs &e)
 {
-std::cout << __func__ << "----CREDITS OK----" << std::endl;
 	popState();
 	return true;
 }

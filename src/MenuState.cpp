@@ -114,7 +114,6 @@ void MenuState::mouseMoved(const OIS::MouseEvent &e)
 
 void MenuState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-	std::cout << __FILE__ << ": " << __func__ << ": " "SU PRIMA!! Boton: " << id << std::endl;
 	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(convertMouseButton(id));
 }
 
@@ -190,28 +189,24 @@ void MenuState::showMenuCegui()
 
 bool MenuState::newGame(const CEGUI::EventArgs &e)
 {
-	std::cout << "NEW GAME" << std::endl;
 	changeState(PlayState::getSingletonPtr());
 	return true;
 }
 
 bool MenuState::records(const CEGUI::EventArgs &e)
 {
-	std::cout << "RECORDS" << std::endl;
 	pushState(RecordsState::getSingletonPtr());
 	return true;
 }
 
 bool MenuState::credits(const CEGUI::EventArgs &e)
 {
-	std::cout << "CREDITS" << std::endl;
 	pushState(CreditsState::getSingletonPtr());
 	return true;
 }
 
 bool MenuState::quit(const CEGUI::EventArgs &e)
 {
-	std::cout << "QUIT" << std::endl;
 	_exitGame = true;
 	return true;
 }
