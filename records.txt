@@ -2,9 +2,9 @@
 120_Ernesto
 110_Jose
 110_Alberto
+110_Jose
 100_Federico
-0_CPU
-0_CPU
+95_Jugador 1
 0_CPU
 0_CPU
 0_CPU
