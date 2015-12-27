@@ -1,0 +1,20 @@
+Autores:
+-Jose Martínez Cano
+-Alberto Cerrada Jiménez
+
+Repositorio:
+https://github.com/Breikdans/HundirLaFlota
+
+Binario Linux:
+https://drive.google.com/drive/folders/0B_owltaOGcpqeWdCSHFETmJoclU
+
+Vídeo:
+https://youtu.be/CF2karde2N4
+
+Otra información:
+ESC : Mensaje "Salir del juego" durante la partida. Fuera de la partida, sale directamente.
+P :   Pausa
+flecha arriba : 	Zoom +
+flecha abajo :  	Zoom -
+flecha derecha : 	Cámara a la derecha
+flecha izquierda : 	Cámara a la izquierda 

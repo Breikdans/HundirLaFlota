@@ -1,8 +1,8 @@
-135_Felipe
-120_Ernesto
-110_Jose
-110_Alberto
-100_Federico
+125_Alberto Invictus
+100_Federico Magnus
+95_Felipito destroyer
+95_Perico Palotes
+0_CPU
 0_CPU
 0_CPU
 0_CPU

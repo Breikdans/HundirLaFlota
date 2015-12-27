@@ -51,6 +51,8 @@ void CreditsState::keyPressed(const OIS::KeyEvent &e)
 
 void CreditsState::keyReleased(const OIS::KeyEvent &e) {}
 
+//void CreditsState::isKeyDown(OIS::KeyCode key) const {}
+
 void CreditsState::mouseMoved(const OIS::MouseEvent &e)
 {
 	// para igualar punteros de raton en posicion 0,0
