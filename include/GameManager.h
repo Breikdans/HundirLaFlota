@@ -50,6 +50,7 @@ class GameManager : public Ogre::FrameListener, public Ogre::Singleton<GameManag
 		// y ratón en el estado actual.
 		bool keyPressed (const OIS::KeyEvent &e);
 		bool keyReleased (const OIS::KeyEvent &e);
+//		bool isKeyDown(OIS::KeyCode key) const;
 
 		bool mouseMoved (const OIS::MouseEvent &e);
 		bool mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id);

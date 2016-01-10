@@ -54,6 +54,8 @@ void EndGameState::keyPressed(const OIS::KeyEvent &e)
 
 void EndGameState::keyReleased(const OIS::KeyEvent &e) {}
 
+//void EndGameState::isKeyDown(OIS::KeyCode key) const {}
+
 void EndGameState::mouseMoved(const OIS::MouseEvent &e)
 {
 	// para igualar punteros de raton en posicion 0,0

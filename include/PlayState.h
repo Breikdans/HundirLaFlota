@@ -46,7 +46,6 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		int getPuntosPlayer(void) const {return puntosPlayer;}
 		int getPuntosCPU(void) const {return puntosCPU;}
 
-
 	protected:
 		Ogre::Root* _root;
 		Ogre::SceneManager* _sceneMgr;
@@ -55,6 +54,7 @@ class PlayState : public Ogre::Singleton<PlayState>, public GameState
 		Ogre::Camera* _camera;
 		Ogre::OverlayManager* _overlayManager;
 		Ogre::RaySceneQuery *_raySceneQuery;
+		Ogre::Light* _light;
 
 		void createScene();
 		void createOverlay();

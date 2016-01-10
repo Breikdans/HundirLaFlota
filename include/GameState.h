@@ -26,6 +26,7 @@ class GameState
 		// de eventos de teclado y ratón.
 		virtual void keyPressed (const OIS::KeyEvent &e) = 0;
 		virtual void keyReleased (const OIS::KeyEvent &e) = 0;
+//		virtual void isKeyDown(OIS::KeyCode key) const = 0;
 
 		virtual void mouseMoved (const OIS::MouseEvent &e) = 0;
 		virtual void mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id) = 0;

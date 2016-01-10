@@ -52,6 +52,8 @@ void RecordsState::keyPressed(const OIS::KeyEvent &e)
 
 void RecordsState::keyReleased(const OIS::KeyEvent &e) {}
 
+//void RecordsState::isKeyDown(OIS::KeyCode key) const {}
+
 void RecordsState::mouseMoved(const OIS::MouseEvent &e)
 {
 	// para igualar punteros de raton en posicion 0,0

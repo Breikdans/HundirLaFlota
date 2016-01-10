@@ -23,6 +23,7 @@ class MenuState : public Ogre::Singleton<MenuState>, public GameState
 
 		void keyPressed (const OIS::KeyEvent &e);
 		void keyReleased (const OIS::KeyEvent &e);
+//		void isKeyDown(OIS::KeyCode key) const;
 
 		void mouseMoved (const OIS::MouseEvent &e);
 		void mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id);
@@ -44,11 +45,14 @@ class MenuState : public Ogre::Singleton<MenuState>, public GameState
 		Ogre::OverlayManager* 	_overlayManager;
 		Ogre::RaySceneQuery *	_raySceneQuery;
 
+		//Fader* 					_fader;
+
 		bool _exitGame;
 
 		CEGUI::MouseButton convertMouseButton(OIS::MouseButtonID id);
 		void showMenuCegui();
 		void createOverlay();
+
 
 		// Funciones de tratamiento de botones de CEGUI
 		bool quit(const CEGUI::EventArgs &e);
