@@ -1,3 +1,5 @@
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include "IntroState.h"
 #include "MenuState.h"
 
@@ -5,6 +7,8 @@ template<> IntroState* Ogre::Singleton<IntroState>::msSingleton = 0;
 
 void IntroState::enter()
 {
+	initSDL();
+
 	_root 		= Ogre::Root::getSingletonPtr();
 	_sceneMgr 	= _root->createSceneManager(Ogre::ST_GENERIC, "SceneManager");
 	_camera 	= _sceneMgr->createCamera("IntroCamera");
@@ -15,14 +19,47 @@ void IntroState::enter()
 
 	loadResources();
 
+	_fader 					= new Fader("FadeInOut", "FadeMaterial");
+
 	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
 	createOverlay();	// creamos el overlay
 	createCegui();
 	loadRecordsFile();
 
+
+	_TrackManager 			= new TrackManager;
+	_SoundFXManager 		= new SoundFXManager;
+
+	_mainMenuTrack			= _TrackManager->load("GameMenu.mp3");
+	_gameThemeLoop			= _TrackManager->load("GameLoop.mp3");
+	_fireBangEffect 		= _SoundFXManager->load("fire.wav");
+	_cannonEffect			= _SoundFXManager->load("cannon.wav");
+	_waterExplosionEffect	= _SoundFXManager->load("water-explosion.wav");
+	_errorEffect			= _SoundFXManager->load("error.wav");
+	_finalExplosionEffect	= _SoundFXManager->load("final_explosion.wav");
+
 	_exitGame 	= false;
 }
 
+void IntroState::initSDL ()
+{
+	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+	{
+		std::cerr << "SDL: Imposible inicializar Audio!!" << std::endl;
+	}
+
+	// Llamar a  SDL_Quit al terminar.
+	atexit(SDL_Quit);
+
+	// Inicializando SDL mixer...
+	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS, 4096) < 0)
+	{
+		std::cerr << "SDL: Imposible inicializar MIXER!!" << std::endl;
+	}
+
+	// Llamar a Mix_CloseAudio al terminar.
+	atexit(Mix_CloseAudio);
+}
 
 void IntroState::createCegui()
 {
@@ -54,11 +91,16 @@ void IntroState::createOverlay()
 
 	overlay->setScale(((float(width) / 100) / 1024) * 100, ((float(height) / 100) / 768) * 100);
 	overlay->show();
+
+//	_fader->startFadeOut(5);
 }
 
 
 void IntroState::exit()
 {
+//	_fader->startFadeIn(0.1);
+
+	delete _fader;
 	Ogre::Overlay *overlay = _overlayManager->getByName("Intro");
 	overlay->clear();
 
@@ -73,6 +115,7 @@ void IntroState::resume() {}
 
 bool IntroState::frameStarted(const Ogre::FrameEvent& evt)
 {
+	_fader->fade(evt.timeSinceLastFrame);
 	return true;
 }
 
@@ -86,13 +129,8 @@ bool IntroState::frameEnded(const Ogre::FrameEvent& evt)
 
 void IntroState::keyPressed(const OIS::KeyEvent &e)
 {
-	// Transición al siguiente estado.
-	// Espacio --> PlayState
-	//if (e.key == OIS::KC_SPACE)
-	//{
-
+	// Transición al siguiente estado. Cualquier tecla
 	changeState(MenuState::getSingletonPtr());
-	//}
 }
 
 void IntroState::keyReleased(const OIS::KeyEvent &e )
@@ -103,17 +141,17 @@ void IntroState::keyReleased(const OIS::KeyEvent &e )
 	}
 }
 
-void IntroState::mouseMoved(const OIS::MouseEvent &e) {
 
+void IntroState::mouseMoved(const OIS::MouseEvent &e)
+{
 	// Gestion del overlay (CURSOR)-----------------------------
-		// posiciones del puntero del raton en pixeles
-		int posx = e.state.X.abs;
-		int posy = e.state.Y.abs;
+	// posiciones del puntero del raton en pixeles
+	int posx = e.state.X.abs;
+	int posy = e.state.Y.abs;
 
-			Ogre::OverlayElement *oe;
-			oe = _overlayManager->getOverlayElement("cursor_intro");
-			oe->setLeft(posx); oe->setTop(posy);
-
+	Ogre::OverlayElement *oe;
+	oe = _overlayManager->getOverlayElement("cursor_intro");
+	oe->setLeft(posx); oe->setTop(posy);
 }
 
 void IntroState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
@@ -207,7 +245,7 @@ void IntroState::loadRecordsFile()
 			str_record.iPuntos = 0;
 			str_record.sJugador = "";
 
-			sscanf(line.c_str(),"%d_%s",&puntos, player);
+			sscanf(line.c_str(),"%d_%[^\t\n]",&puntos, player);
 
 			str_record.iPuntos = puntos; str_record.sJugador = player;
 			gameRecords.insert(std::make_pair(str_record.iPuntos, str_record.sJugador));

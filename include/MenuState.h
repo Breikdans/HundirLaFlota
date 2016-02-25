@@ -23,6 +23,7 @@ class MenuState : public Ogre::Singleton<MenuState>, public GameState
 
 		void keyPressed (const OIS::KeyEvent &e);
 		void keyReleased (const OIS::KeyEvent &e);
+//		void isKeyDown(OIS::KeyCode key) const;
 
 		void mouseMoved (const OIS::MouseEvent &e);
 		void mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id);
@@ -43,6 +44,8 @@ class MenuState : public Ogre::Singleton<MenuState>, public GameState
 		Ogre::Camera* 			_camera;
 		Ogre::OverlayManager* 	_overlayManager;
 		Ogre::RaySceneQuery *	_raySceneQuery;
+
+		//Fader* 					_fader;
 
 		bool _exitGame;
 

@@ -1,4 +1,5 @@
 #include <cstdio>
+#include "IntroState.h"
 #include "MenuState.h"
 #include "PlayState.h"
 #include "PauseState.h"
@@ -40,6 +41,8 @@ void PlayState::enter ()
 	PlayerGrid.clearGrid();
 	CPUGrid.clearGrid();
 
+	// musica del juego
+	IntroState::getSingleton().getMainThemeTrackPtr()->play();
 
 	createScene();		// creamos la escena
 	createOverlay();	// creamos el overlay
@@ -54,22 +57,41 @@ void PlayState::enter ()
 
 void PlayState::exit ()
 {
+	// paramos musica del juego
+	IntroState::getSingleton().getMainThemeTrackPtr()->stop();
+
 	_sceneMgr->destroyQuery(_raySceneQuery);
 	// si lo descomentamos se elimina la escena y las particulas del fuego se quedan paradas...
 //	_sceneMgr->clearScene();
 //	_root->getAutoCreatedWindow()->removeAllViewports();
 }
 
-void PlayState::pause() {}
+void PlayState::pause()
+{
+	// pausamos musica del juego
+	//IntroState::getSingleton().getMainThemeTrackPtr()->pause();
+
+	// paramos musica del juego porque el Pause de SDL no esta funcionando bien con MP3
+	IntroState::getSingleton().getMainThemeTrackPtr()->stop();
+}
 
 void PlayState::resume()
 {
-	// Se restaura el background colour.
-	//_viewport->setBackgroundColour(Ogre::ColourValue(0.0, 0.0, 1.0));
+	// continuamos musica del juego
+	IntroState::getSingleton().getMainThemeTrackPtr()->play();
 }
 
 bool PlayState::frameStarted(const Ogre::FrameEvent& evt)
 {
+
+	// movimiento de camara luego quitar
+	Ogre::Vector3 vt(0,0,0);	Ogre::Real tSpeed = 1.0;
+	if(InputManager::getSingleton().getKeyboard()->isKeyDown(OIS::KC_UP))		vt+=Ogre::Vector3(0,0,-1);
+	if(InputManager::getSingleton().getKeyboard()->isKeyDown(OIS::KC_DOWN))		vt+=Ogre::Vector3(0,0,1);
+	if(InputManager::getSingleton().getKeyboard()->isKeyDown(OIS::KC_LEFT))		vt+=Ogre::Vector3(-1,0,0);
+	if(InputManager::getSingleton().getKeyboard()->isKeyDown(OIS::KC_RIGHT))	vt+=Ogre::Vector3(1,0,0);
+	_camera->moveRelative(vt * 0.1 * tSpeed);
+
 	return true;
 }
 
@@ -102,6 +124,8 @@ bool PlayState::frameEnded(const Ogre::FrameEvent& evt)
 
 void PlayState::keyPressed(const OIS::KeyEvent &e)
 {
+DEBUG_TRZ(std::cout << __FILE__ << " " << __func__ << " KEY PRESSED: " << e.key << std::endl;)
+
 	// Tecla p --> PauseState.
 	if (e.key == OIS::KC_P)
 	{
@@ -112,20 +136,16 @@ void PlayState::keyPressed(const OIS::KeyEvent &e)
 		showExitMsgCegui();
 	}
 
-
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	// movimiento de camara luego quitar
-	Ogre::Vector3 vt(0,0,0);	Ogre::Real tSpeed = 20.0;
-	if(e.key == OIS::KC_UP)		vt+=Ogre::Vector3(0,0,-1);
-	if(e.key == OIS::KC_DOWN)	vt+=Ogre::Vector3(0,0,1);
-	if(e.key == OIS::KC_LEFT)	vt+=Ogre::Vector3(-1,0,0);
-	if(e.key == OIS::KC_RIGHT)	vt+=Ogre::Vector3(1,0,0);
-	_camera->moveRelative(vt * 0.1 * tSpeed);
-#endif
+//#endif
 
 }
 
-void PlayState::keyReleased(const OIS::KeyEvent &e) {}
+void PlayState::keyReleased(const OIS::KeyEvent &e)
+{
+DEBUG_TRZ(std::cout << __FILE__ << " " << __func__ << " KEY RELEASED: " << e.key << std::endl;)
+}
 
 void PlayState::mouseMoved(const OIS::MouseEvent &e)
 {
@@ -206,7 +226,12 @@ void PlayState::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 			if (CompruebaDisparo(CPUGrid, posx, posy))	// Si ha habido algun cambio con este disparo...
 			{
 				ActualizaTablero(posx, posy);			// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
-				CheckHundido(CPUGrid, posx, posy);
+				if(CheckHundido(CPUGrid, posx, posy))
+				{
+					sleep(0.3);
+					IntroState::getSingleton().getFinalExplosionFXPtr()->play();
+				}
+
 				updateInfoOverlay();
 DEBUG_TRZ(std::cout << "CPU GRID: ";)
 DEBUG_TRZ(CPUGrid.DebugGrid();)
@@ -224,10 +249,9 @@ DEBUG_TRZ(CPUGrid.DebugGrid();)
 			else
 			{
 				//sonido de error y que tire otra vez
+				IntroState::getSingleton().getErrorFXPtr()->play();
 			}
 
-		} else {
-			// hay pulsado el mouse fuera del area permitida, tablero usuario, o agua
 		}
 	}
 	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(convertMouseButton(id));
@@ -252,7 +276,12 @@ void PlayState::CambiarTurno(EN_TURNO turno)
 			s_node_player << STRING_NODE_PLAYER_ << x << "_" << y;	// node_player_X_Y
 
 			ActualizaTablero(x, y);			// Actualizamos tablero gráfico, según contenido de posicion del grid ya actualizado.
-			CheckHundido(PlayerGrid, x, y);
+			if(CheckHundido(PlayerGrid, x, y))
+			{
+				sleep(0.3);
+				IntroState::getSingleton().getFinalExplosionFXPtr()->play();
+			}
+
 			updateInfoOverlay();
 DEBUG_TRZ(std::cout << "PLAYER GRID: ";)
 DEBUG_TRZ(PlayerGrid.DebugGrid();)
@@ -325,15 +354,25 @@ void PlayState::createScene()
 
 			node_Player = _sceneMgr->createSceneNode(s_node_player_aux.str());
 			node_Player->attachObject(ent_CeldaPlayer);
-			node_Player->translate(i*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, j*CELL_WIDTH);
+			node_Player->translate(i*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), -5, j*CELL_WIDTH);
+			//node_Player->translate(i*CELL_WIDTH - (MAX_COLS_GRID * CELL_WIDTH), 0, j*CELL_WIDTH);
 			main_node_tablero_Player->addChild(node_Player);
 
 			node_CPU = _sceneMgr->createSceneNode(s_node_cpu_aux.str());
 			node_CPU->attachObject(ent_CeldaCPU);
-			node_CPU->translate(i*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, j*CELL_WIDTH);
+			node_CPU->translate(i*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, -5, j*CELL_WIDTH);
+			//node_CPU->translate(i*CELL_WIDTH + ESPACIO_ENTRE_TABLEROS, 0, j*CELL_WIDTH);
 			main_node_tablero_CPU->addChild(node_CPU);
 		}
 	}
+
+	// Establecemos sombra
+	_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+	// Creamos la luz
+	_light = _sceneMgr->createLight("Light1");
+	_light->setType(Ogre::Light::LT_DIRECTIONAL);
+	_light->setDirection(Ogre::Vector3(2,-1,0));
+	_sceneMgr->getRootSceneNode()->attachObject(_light);
 
 	// definimos un plano
 	Ogre::Plane planoAgua(Ogre::Vector3::UNIT_Y,	// Vector normal del plano (el eje perpendicular)
@@ -369,7 +408,7 @@ void PlayState::createScene()
 	node_cartel = _sceneMgr->createSceneNode("node_cartel_player");
 	cartel->setQueryFlags(SEA_BACKGROUND);	// Lo identificamos para las Queries...
 	node_cartel->attachObject(cartel);
-	node_cartel->translate(-1 * ((MAX_COLS_GRID) * CELL_WIDTH), 0, -6);
+	node_cartel->translate(-1 * ((MAX_COLS_GRID) * CELL_WIDTH), -4, -6);
 	node_cartel->scale(6,6,6);
 	node_water->addChild(node_cartel);
 
@@ -377,7 +416,7 @@ void PlayState::createScene()
 	node_cartel = _sceneMgr->createSceneNode("node_cartel_cpu");
 	cartel->setQueryFlags(SEA_BACKGROUND);	// Lo identificamos para las Queries...
 	node_cartel->attachObject(cartel);
-	node_cartel->translate(((MAX_COLS_GRID ) * CELL_WIDTH)-20, 0, -6);
+	node_cartel->translate(((MAX_COLS_GRID ) * CELL_WIDTH)-20, -4, -6);
 	node_cartel->scale(6,6,6);
 	node_water->addChild(node_cartel);
 
@@ -481,7 +520,8 @@ void PlayState::ActualizaTablero(usint16 x, usint16 y)
 			pintarBarco = false;
 	}
 
-	if (pintarBarco) {
+	if (pintarBarco)
+	{
 
 		// si tiene algun hijo entonces es que ya tenia barco sin tocar, y hay que cambiar el modelo por el roto
 		if (TableroNode->numChildren()>0)
@@ -496,16 +536,19 @@ void PlayState::ActualizaTablero(usint16 x, usint16 y)
 		entidad->setQueryFlags(SHIP_CELL);
 		shipNode = _sceneMgr->createSceneNode(shipNodeName.str());
 		shipNode->attachObject(entidad);
-		if (esHorizontal) {
+		if (esHorizontal)
+		{
 			shipNode->yaw(Ogre::Degree(90));
 		}
 
-		if (pintarFuego) {
+		if (pintarFuego)
+		{
 			shipNodeName << "_Smoke";
 			Ogre::ParticleSystem* partSystem = _sceneMgr->createParticleSystem(shipNodeName.str(),"Smoke");
 			shipNode->attachObject(partSystem);
 		}
 
+//shipNode->translate(0,2,0);
 		TableroNode->addChild(shipNode);
 	}
 }
@@ -527,8 +570,10 @@ bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 	switch(celda)
 	{
 		case AGUA:
-			// SACAR SONIDO DE AGUA
 			grid(posx, posy) = DISPARADO; sw_casillaCambiada=true;
+
+			// Explosion agua
+			IntroState::getSingleton().getWaterFXPtr()->play();
 			break;
 		case DISPARADO:
 		case PROA_H_T:
@@ -581,7 +626,11 @@ bool PlayState::CompruebaDisparo(Grid& grid, usint16 posx, usint16 posy)
 
 	// si han tocado alguna pieza.... (el AGUA no lo queremos)
 	if(sw_casillaCambiada == true && celda != AGUA)
+	{
 		sumaPuntos();
+		// Efecto cañon
+		IntroState::getSingleton().getCannonFXPtr()->play();
+	}
 
 	return sw_casillaCambiada;
 }

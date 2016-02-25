@@ -18,6 +18,7 @@ class PauseState : public Ogre::Singleton<PauseState>, public GameState
 
 		void keyPressed (const OIS::KeyEvent &e);
 		void keyReleased (const OIS::KeyEvent &e);
+//		void isKeyDown(OIS::KeyCode key) const;
 
 		void mouseMoved (const OIS::MouseEvent &e);
 		void mousePressed (const OIS::MouseEvent &e, OIS::MouseButtonID id);

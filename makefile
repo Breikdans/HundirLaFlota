@@ -13,10 +13,10 @@ DIRHEA := include/
 CXX := g++
 
 # Flags de compilación -----------------------------------------------
-CXXFLAGS := -I $(DIRHEA) -Wall -I/usr/local/include/cegui-0/CEGUI -I/usr/local/include/cegui-0 `pkg-config --cflags OGRE OGRE-Overlay` `pkg-config --cflags OIS`
+CXXFLAGS := -I $(DIRHEA) -Wall -I/usr/local/include/cegui-0/CEGUI -I/usr/local/include/cegui-0 `pkg-config --cflags OGRE OGRE-Overlay` `pkg-config --cflags OIS` `pkg-config --cflags SDL2_mixer`
 
 # Flags del linker ---------------------------------------------------
-LDFLAGS :=  `pkg-config --libs OGRE OGRE-Overlay` -lOIS -lGL -lstdc++ -lboost_system  -lCEGUIBase-0 -lCEGUIOgreRenderer-0
+LDFLAGS :=  `pkg-config --libs OGRE OGRE-Overlay` `pkg-config --libs-only-L SDL2_mixer` `pkg-config --libs-only-l SDL2_mixer glu` -lOIS -lGL -lstdc++ -lboost_system  -lCEGUIBase-0 -lCEGUIOgreRenderer-0
 
 # Modo de compilación (-mode=release -mode=debug) --------------------
 ifeq ($(mode), release) 

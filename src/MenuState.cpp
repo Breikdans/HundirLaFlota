@@ -1,3 +1,4 @@
+#include "IntroState.h"
 #include "MenuState.h"
 #include "PlayState.h"
 #include "CreditsState.h"
@@ -30,6 +31,10 @@ void MenuState::enter ()
 	_camera->setAspectRatio(width / height);		// calculamos ratio (4:3 = 1,333 16:9 1,777)
 
 	_overlayManager = Ogre::OverlayManager::getSingletonPtr();
+
+	// musica del menu
+	IntroState::getSingleton().getMenuTrackPtr()->play();
+
 	createOverlay();
 	showMenuCegui();
 
@@ -37,21 +42,25 @@ void MenuState::enter ()
 }
 
 
-void MenuState::createOverlay() {
+void MenuState::createOverlay()
+{
+	unsigned int width, height, depth;
+	int left, top;
 
-		unsigned int width, height, depth;
-		int left, top;
+	Ogre::Overlay *overlay = _overlayManager->getByName("Menu");
+	_root->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
 
-		Ogre::Overlay *overlay = _overlayManager->getByName("Menu");
-		_root->getAutoCreatedWindow()->getMetrics(width, height, depth, left, top);
-
-		overlay->setScale(((float(width) / 100) / 1024) * 100, ((float(height) / 100) / 768) * 100);
-		overlay->show();
-
+	overlay->setScale(((float(width) / 100) / 1024) * 100, ((float(height) / 100) / 768) * 100);
+	overlay->show();
+//	_fader->startFadeIn(0);
 }
 
 void MenuState::exit ()
 {
+//	delete _fader;
+	// musica del menu STOP
+	IntroState::getSingleton().getMenuTrackPtr()->stop();
+
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 	CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow()->hide();
 	Ogre::Overlay *overlay = _overlayManager->getByName("Menu");
@@ -99,8 +108,9 @@ void MenuState::keyReleased(const OIS::KeyEvent &e)
 	{
 		_exitGame = true;
 	}
-
 }
+
+//void MenuState::isKeyDown(OIS::KeyCode key) const {}
 
 void MenuState::mouseMoved(const OIS::MouseEvent &e)
 {
