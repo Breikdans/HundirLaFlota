@@ -32,6 +32,7 @@ class Track : public Ogre::Resource
 		void loadImpl ();
 		void unloadImpl ();
 		size_t calculateSize () const;
+		Ogre::String _resource_group;
 
 		// Variables miembro.
 		Mix_Music* _pTrack; // SDL

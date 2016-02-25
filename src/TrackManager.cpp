@@ -20,11 +20,15 @@ TrackManager::~TrackManager()
 
 TrackPtr TrackManager::load(const Ogre::String& name, const Ogre::String& group)
 {
+
+	std::cout<<"GRUPO*********** "+group<<std::endl;
 	// Crea o recupera el recurso
 	TrackPtr trackPtr = createOrRetrieve(name, group, false, 0, 0).first.staticCast<Track>();
+	std::cout<<"createOrRetrieve*********** "+group<<std::endl;
 
 	// Carga explícita del recurso.
 	trackPtr->load();
+	std::cout<<"load*********** "+group<<std::endl;
 
 	return trackPtr;
 }

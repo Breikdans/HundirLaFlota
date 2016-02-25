@@ -30,13 +30,13 @@ void IntroState::enter()
 	_TrackManager 			= new TrackManager;
 	_SoundFXManager 		= new SoundFXManager;
 
-	_mainMenuTrack			= _TrackManager->load("GameMenu.mp3");
-	_gameThemeLoop			= _TrackManager->load("GameLoop.mp3");
-	_fireBangEffect 		= _SoundFXManager->load("fire.wav");
-	_cannonEffect			= _SoundFXManager->load("cannon.wav");
-	_waterExplosionEffect	= _SoundFXManager->load("water-explosion.wav");
-	_errorEffect			= _SoundFXManager->load("error.wav");
-	_finalExplosionEffect	= _SoundFXManager->load("final_explosion.wav");
+	_mainMenuTrack			= _TrackManager->load("GameMenu.mp3","level1");
+	_gameThemeLoop			= _TrackManager->load("GameLoop.mp3","level1");
+	_fireBangEffect 		= _SoundFXManager->load("fire.wav","level1");
+	_cannonEffect			= _SoundFXManager->load("cannon.wav","level1");
+	_waterExplosionEffect	= _SoundFXManager->load("water-explosion.wav","level1");
+	_errorEffect			= _SoundFXManager->load("error.wav","level1");
+	_finalExplosionEffect	= _SoundFXManager->load("final_explosion.wav","level1");
 
 	_exitGame 	= false;
 }
